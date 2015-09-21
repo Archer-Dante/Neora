@@ -20,7 +20,7 @@ mana_regen proc
 		CMP DWORD PTR DS:[ESI+304h],0
 		JLE [dont_regen]
 		
-					CMP DWORD PTR DS:[EBX+0DCh],0 ; если есть время отката от полученного урона
+					CMP DWORD PTR DS:[EBX+0DCh],0 ; РµСЃР»Рё РµСЃС‚СЊ РІСЂРµРјСЏ РѕС‚РєР°С‚Р° РѕС‚ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ СѓСЂРѕРЅР°
 					JLE [do_regen1]
 					DEC DWORD PTR DS:[EBX+0DCh]
 					JMP [dont_regen]
@@ -159,7 +159,7 @@ hp_regen proc
 	TEST EDX,EDX
 	JLE [skip_dead]
 	
-					CMP DWORD PTR DS:[EBX+0D4h],0 ; если есть время отката от полученного урона
+					CMP DWORD PTR DS:[EBX+0D4h],0 ; РµСЃР»Рё РµСЃС‚СЊ РІСЂРµРјСЏ РѕС‚РєР°С‚Р° РѕС‚ РїРѕР»СѓС‡РµРЅРЅРѕРіРѕ СѓСЂРѕРЅР°
 					JLE [do_regen2]
 					DEC DWORD PTR DS:[EBX+0D4h]
 					JMP [skip_dead]

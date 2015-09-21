@@ -44,16 +44,16 @@ ts_setup_0:
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
 		SUB DWORD PTR DS:[ESI+150h],1
-		JMP [blocked] ; отправляем дальше, пропуская считывание управления
+		JMP [blocked] ; РѕС‚РїСЂР°РІР»СЏРµРј РґР°Р»СЊС€Рµ, РїСЂРѕРїСѓСЃРєР°СЏ СЃС‡РёС‚С‹РІР°РЅРёРµ СѓРїСЂР°РІР»РµРЅРёСЏ
 		
 ts_setup_1:
 		MOV EAX,DWORD PTR DS:[ts_team]
-		CMP EAX,DWORD PTR DS:[ESI+364h] ; проверка, что команда та
+		CMP EAX,DWORD PTR DS:[ESI+364h] ; РїСЂРѕРІРµСЂРєР°, С‡С‚Рѕ РєРѕРјР°РЅРґР° С‚Р°
 		JE [proceed]
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
 		SUB DWORD PTR DS:[ESI+150h],1
-		JMP [blocked] ; отправляем дальше, пропуская считывание управления
+		JMP [blocked] ; РѕС‚РїСЂР°РІР»СЏРµРј РґР°Р»СЊС€Рµ, РїСЂРѕРїСѓСЃРєР°СЏ СЃС‡РёС‚С‹РІР°РЅРёРµ СѓРїСЂР°РІР»РµРЅРёСЏ
 		
 ts_setup_2:
 		MOV EAX,DWORD PTR DS:[ESI+368h]
@@ -62,7 +62,7 @@ ts_setup_2:
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
 		SUB DWORD PTR DS:[ESI+150h],1
-		JMP [blocked] ; отправляем дальше, пропуская считывание управления
+		JMP [blocked] ; РѕС‚РїСЂР°РІР»СЏРµРј РґР°Р»СЊС€Рµ, РїСЂРѕРїСѓСЃРєР°СЏ СЃС‡РёС‚С‹РІР°РЅРёРµ СѓРїСЂР°РІР»РµРЅРёСЏ
 		
 new_object:
 		MOV EAX, DWORD PTR DS:[ts_timer]
@@ -114,11 +114,11 @@ FPS_rework endp
 
 TS_substactor proc
 	
-		CMP BYTE PTR DS:[44FCB0h],1 ; проверка на паузу
+		CMP BYTE PTR DS:[44FCB0h],1 ; РїСЂРѕРІРµСЂРєР° РЅР° РїР°СѓР·Сѓ
 		JE [skip]
 		
 		MOV EAX, DWORD PTR DS:[ts_timer]
-		CMP EAX,0 ; проверяем, есть ли ТС
+		CMP EAX,0 ; РїСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё РўРЎ
 		JE [skip]
 		
 		SUB DWORD PTR DS:[ts_timer],1

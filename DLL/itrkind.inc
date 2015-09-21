@@ -146,15 +146,15 @@ kind8_dvx_X:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_0:
-	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
-	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
+	FLD DWORD PTR DS:[EAX+14h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ dvx РёР· itr
+	FISTP DWORD PTR DS:[EBX+70h] ; СЃС‚Р°РІРёС‚ РєР°РґСЂ РєР°Рє РІ dvx
 	
-	FLD QWORD PTR DS:[EDI+58h] ; загружает X основного объекта
-	FSTP QWORD PTR DS:[EBX+58h] ; записывает Х копирующего объекта
+	FLD QWORD PTR DS:[EDI+58h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ X РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+58h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ РҐ РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+68h] ; загружает Z основного объекта
+	FLD QWORD PTR DS:[EDI+68h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Z РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	FADD QWORD PTR DS:[447A08h]
-	FSTP QWORD PTR DS:[EBX+68h] ; записывает Z копирующего объекта
+	FSTP QWORD PTR DS:[EBX+68h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Z РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	JMP [ik8_return]
 	
 kind8_dvx_X_Y:
@@ -165,18 +165,18 @@ kind8_dvx_X_Y:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_1:
-	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
-	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
+	FLD DWORD PTR DS:[EAX+14h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ dvx РёР· itr
+	FISTP DWORD PTR DS:[EBX+70h] ; СЃС‚Р°РІРёС‚ РєР°РґСЂ РєР°Рє РІ dvx
 	
-	FLD QWORD PTR DS:[EDI+58h] ; загружает X основного объекта
-	FSTP QWORD PTR DS:[EBX+58h] ; записывает Х копирующего объекта
+	FLD QWORD PTR DS:[EDI+58h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ X РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+58h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ РҐ РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+60h] ; загружает Y основного объекта
-	FSTP QWORD PTR DS:[EBX+60h] ; записывает Y копирующего объекта
+	FLD QWORD PTR DS:[EDI+60h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Y РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+60h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Y РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+68h] ; загружает Z основного объекта
+	FLD QWORD PTR DS:[EDI+68h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Z РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	FADD QWORD PTR DS:[447A08h]
-	FSTP QWORD PTR DS:[EBX+68h] ; записывает Z копирующего объекта
+	FSTP QWORD PTR DS:[EBX+68h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Z РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	JMP [ik8_return]
 
 kind8_dvx_Y:
@@ -187,15 +187,15 @@ kind8_dvx_Y:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_2:
-	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
-	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
+	FLD DWORD PTR DS:[EAX+14h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ dvx РёР· itr
+	FISTP DWORD PTR DS:[EBX+70h] ; СЃС‚Р°РІРёС‚ РєР°РґСЂ РєР°Рє РІ dvx
 	
-	FLD QWORD PTR DS:[EDI+60h] ; загружает Y основного объекта
-	FSTP QWORD PTR DS:[EBX+60h] ; записывает Y копирующего объекта
+	FLD QWORD PTR DS:[EDI+60h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Y РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+60h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Y РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+68h] ; загружает Z основного объекта
+	FLD QWORD PTR DS:[EDI+68h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Z РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	FADD QWORD PTR DS:[447A08h]
-	FSTP QWORD PTR DS:[EBX+68h] ; записывает Z копирующего объекта
+	FSTP QWORD PTR DS:[EBX+68h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Z РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	JMP [ik8_return]
 
 kind8_X:
@@ -206,12 +206,12 @@ kind8_X:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_3:
-	FLD QWORD PTR DS:[EDI+58h] ; загружает X основного объекта
-	FSTP QWORD PTR DS:[EBX+58h] ; записывает Х копирующего объекта
+	FLD QWORD PTR DS:[EDI+58h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ X РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+58h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ РҐ РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+68h] ; загружает Z основного объекта
+	FLD QWORD PTR DS:[EDI+68h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Z РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	FADD QWORD PTR DS:[447A08h]
-	FSTP QWORD PTR DS:[EBX+68h] ; записывает Z копирующего объекта
+	FSTP QWORD PTR DS:[EBX+68h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Z РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	JMP [ik8_return]
 	
 kind8_X_Y:
@@ -222,15 +222,15 @@ kind8_X_Y:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_4:
-	FLD QWORD PTR DS:[EDI+58h] ; загружает X основного объекта
-	FSTP QWORD PTR DS:[EBX+58h] ; записывает Х копирующего объекта
+	FLD QWORD PTR DS:[EDI+58h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ X РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+58h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ РҐ РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+60h] ; загружает Y основного объекта
-	FSTP QWORD PTR DS:[EBX+60h] ; записывает Y копирующего объекта
+	FLD QWORD PTR DS:[EDI+60h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Y РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+60h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Y РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+68h] ; загружает Z основного объекта
+	FLD QWORD PTR DS:[EDI+68h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Z РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	FADD QWORD PTR DS:[447A08h]
-	FSTP QWORD PTR DS:[EBX+68h] ; записывает Z копирующего объекта
+	FSTP QWORD PTR DS:[EBX+68h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Z РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	JMP [ik8_return]
 
 kind8_Y:
@@ -241,12 +241,12 @@ kind8_Y:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_5:
-	FLD QWORD PTR DS:[EDI+60h] ; загружает Y основного объекта
-	FSTP QWORD PTR DS:[EBX+60h] ; записывает Y копирующего объекта
+	FLD QWORD PTR DS:[EDI+60h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Y РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
+	FSTP QWORD PTR DS:[EBX+60h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Y РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	
-	FLD QWORD PTR DS:[EDI+68h] ; загружает Z основного объекта
+	FLD QWORD PTR DS:[EDI+68h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ Z РѕСЃРЅРѕРІРЅРѕРіРѕ РѕР±СЉРµРєС‚Р°
 	FADD QWORD PTR DS:[447A08h]
-	FSTP QWORD PTR DS:[EBX+68h] ; записывает Z копирующего объекта
+	FSTP QWORD PTR DS:[EBX+68h] ; Р·Р°РїРёСЃС‹РІР°РµС‚ Z РєРѕРїРёСЂСѓСЋС‰РµРіРѕ РѕР±СЉРµРєС‚Р°
 	JMP [ik8_return]
 	
 kind8_dvx:
@@ -257,8 +257,8 @@ kind8_dvx:
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
 	skip_6:
-	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
-	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
+	FLD DWORD PTR DS:[EAX+14h] ; Р·Р°РіСЂСѓР¶Р°РµС‚ dvx РёР· itr
+	FISTP DWORD PTR DS:[EBX+70h] ; СЃС‚Р°РІРёС‚ РєР°РґСЂ РєР°Рє РІ dvx
 	JMP [ik8_return]
 
 
@@ -283,10 +283,10 @@ itr_kind8_types proc
 
 	MOV ECX, DWORD PTR SS:[ESI+368h]
 	
-	CMP DWORD PTR DS:[EBX],8 ; проверка что это IK8
+	CMP DWORD PTR DS:[EBX],8 ; РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ СЌС‚Рѕ IK8
 	JE kind80x_type0
 	
-	CMP DWORD PTR DS:[EBX],800 ; проверка что это IK800
+	CMP DWORD PTR DS:[EBX],800 ; РїСЂРѕРІРµСЂРєР° С‡С‚Рѕ СЌС‚Рѕ IK800
 	JE kind80x_type0
 	CMP DWORD PTR DS:[EBX],801
 	JE kind80x_type0
@@ -410,53 +410,53 @@ itr_kind8_types proc
 
 
 kind80x_type0:
-	CMP DWORD PTR SS:[ECX+6F8h],0 ; Проверка на Type 0
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем
+	CMP DWORD PTR SS:[ECX+6F8h],0 ; РџСЂРѕРІРµСЂРєР° РЅР° Type 0
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј
 	
 kind81x_type1:
-	CMP DWORD PTR SS:[ECX+6F8h],1 ; Проверка на Type
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем
+	CMP DWORD PTR SS:[ECX+6F8h],1 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј
 	
 kind82x_type2:
-	CMP DWORD PTR SS:[ECX+6F8h],2 ; Проверка на Type
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем
+	CMP DWORD PTR SS:[ECX+6F8h],2 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј
 	
 kind83x_type3:
-	CMP DWORD PTR SS:[ECX+6F8h],3 ; Проверка на Type
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем	
+	CMP DWORD PTR SS:[ECX+6F8h],3 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј	
 
 kind84x_type4:
-	CMP DWORD PTR SS:[ECX+6F8h],4 ; Проверка на Type
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем	
+	CMP DWORD PTR SS:[ECX+6F8h],4 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј	
 	
 kind85x_type5:
-	CMP DWORD PTR SS:[ECX+6F8h],5 ; Проверка на Type
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем	
+	CMP DWORD PTR SS:[ECX+6F8h],5 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј	
 	
 kind86x_type6:
-	CMP DWORD PTR SS:[ECX+6F8h],6 ; Проверка на Type
-	JNE [skip_kind] ; Иначе пропускаем обработку
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем	
+	CMP DWORD PTR SS:[ECX+6F8h],6 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JNE [skip_kind] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј	
 
 ;===============================================================
 kind87x_type1_2_4_6:
-	CMP DWORD PTR SS:[ECX+6F8h],1 ; Проверка на Type
-	JE [kind87x_type1_2_4_6_fix] ; Иначе пропускаем обработку
-	CMP DWORD PTR SS:[ECX+6F8h],2 ; Проверка на Type
-	JE [kind87x_type1_2_4_6_fix] ; Иначе пропускаем обработку
-	CMP DWORD PTR SS:[ECX+6F8h],4 ; Проверка на Type
-	JE [kind87x_type1_2_4_6_fix] ; Иначе пропускаем обработку
-	CMP DWORD PTR SS:[ECX+6F8h],6 ; Проверка на Type
-	JE [kind87x_type1_2_4_6_fix] ; Иначе пропускаем обработку
+	CMP DWORD PTR SS:[ECX+6F8h],1 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JE [kind87x_type1_2_4_6_fix] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	CMP DWORD PTR SS:[ECX+6F8h],2 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JE [kind87x_type1_2_4_6_fix] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	CMP DWORD PTR SS:[ECX+6F8h],4 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JE [kind87x_type1_2_4_6_fix] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
+	CMP DWORD PTR SS:[ECX+6F8h],6 ; РџСЂРѕРІРµСЂРєР° РЅР° Type
+	JE [kind87x_type1_2_4_6_fix] ; РРЅР°С‡Рµ РїСЂРѕРїСѓСЃРєР°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
 	JMP [skip_kind]
 kind87x_type1_2_4_6_fix:
-	JMP [ik8_fix1] ; Если всё нормально - продолжаем
+	JMP [ik8_fix1] ; Р•СЃР»Рё РІСЃС‘ РЅРѕСЂРјР°Р»СЊРЅРѕ - РїСЂРѕРґРѕР»Р¶Р°РµРј
 ;===============================================================
 
 skip_kind:

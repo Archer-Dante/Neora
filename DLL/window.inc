@@ -185,7 +185,7 @@ Window_Size_10 proc
 
 		MOV EDX,DWORD PTR DS:[452984h]
 		MOV EAX,DWORD PTR DS:[EDX]
-		SUB EAX,[win_width] ;важная часть, определяет границу карты относительно экрана вычитанием
+		SUB EAX,[win_width] ;РІР°Р¶РЅР°СЏ С‡Р°СЃС‚СЊ, РѕРїСЂРµРґРµР»СЏРµС‚ РіСЂР°РЅРёС†Сѓ РєР°СЂС‚С‹ РѕС‚РЅРѕСЃРёС‚РµР»СЊРЅРѕ СЌРєСЂР°РЅР° РІС‹С‡РёС‚Р°РЅРёРµРј
 		CMP ESI,EAX	
 
 		JMP [Window_back15]
@@ -198,8 +198,8 @@ Window_Size_11 proc
 		MOV EBX,DWORD PTR DS:[EAX]
 		
 
-		LEA EAX,DWORD PTR DS:[EBX] ;решить
-		SUB EAX,[win_width] ; добавлено
+		LEA EAX,DWORD PTR DS:[EBX] ;СЂРµС€РёС‚СЊ
+		SUB EAX,[win_width] ; РґРѕР±Р°РІР»РµРЅРѕ
 		
 		CMP EDI,EAX
 		JLE SHORT Window_blabla2
