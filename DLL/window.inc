@@ -23,9 +23,13 @@ Window_back20	dd 00437B68h
 Window_back21	dd 004384EAh
 Window_back22	dd 0043854Dh
 
-
 win_width  dd 31Ah ; ”правление шириной окна
 win_height dd 226h ; ”правление высотой окна
+
+name_back 	dd 00401B8Ch
+
+
+
 
 .Code
 
@@ -268,3 +272,42 @@ Window_Size_15 proc
 		JMP [Window_back22]
 
 Window_Size_15 endp
+
+
+
+Application_Name proc
+		
+		XOR ECX,ECX
+		XOR EDX,EDX
+		XOR EAX,EAX
+		
+		MOV EDI,00455CB8h
+		LEA ESI,[GameName]
+		
+	leigth_calc:
+		MOV DL,BYTE PTR DS:[ESI+ECX]
+		INC ECX
+		CMP DL,00h
+		JNE [leigth_calc]
+		
+	write_string:
+		MOV AL, BYTE PTR DS:[ESI+EDX]
+		MOV BYTE PTR DS:[EDI+EDX*2],AL
+		ADD EDX,1
+		DEC ECX
+		CMP ECX,0
+		JNE [write_string]
+		
+		JMP [name_back]
+
+Application_Name endp
+
+
+
+
+
+
+
+
+
+

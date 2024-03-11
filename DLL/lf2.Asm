@@ -13,11 +13,10 @@ includelib C:\masm32\lib\kernel32.lib
 includelib C:\masm32\lib\debug.lib
 
 include lf2.inc
-include generic.inc
-include itreff.inc
+include addresses.inc
 include itrkind.inc
+include itreff.inc
 include states.inc
-include ai.inc
 include window.inc
 include replay.inc
 include battle.inc
@@ -26,11 +25,18 @@ include spawner.inc
 include cursor.inc
 include external.inc
 include UI.inc
+include hack.inc
+include bodies.inc  
+include loading.inc  
+include time.inc 
 
 .data
 memAlloc dd ?
 solAlloc dd ?
-
+; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
+copycat  	db "Neora Engine build by Archer-Dante",00
+; Put your game name between quotes below
+GameName	db "LF2: Neora Engine 2.00",00
 .data?
 
 
@@ -51,34 +57,28 @@ DllEntryPoint endp
 
 DLLStartup proc
 
-	;===============Random stuff(generic.inc)===========
-	invoke JmpPatch, 004201E3h, addr Max_HP	      ;Max_HP_of_opointed_objectsT0
-	;invoke JmpPatch, 00420272h, addr opoint_kind
-	invoke JmpPatch, 0042EE17h, addr Shaker	      ;Shake_It_Baby!
-	;===================================================
-
 	;=============itr kind(itrkind.inc)=================
 	invoke JmpPatch, 0042FFF8h, addr itr_kind8
 	invoke JmpPatch, 00417526h, addr itr_kind8_types
+	invoke JmpPatch, 00417A6Eh, addr itr_specials
 	;===================================================
 
 	;=============itr effects(itreff.inc)===============
 	invoke JmpPatch, 0042F54Ah, addr itr_effect_1xxx_to_9xxx 
+	invoke JmpPatch, 0042E90Fh, addr effect50 			; contains part of Bdy 50 counting
 	;===================================================
 
 	;=================states(states.inc)================
 	invoke JmpPatch, 0041F656h, addr State8xxx ; 140-frameless fix (+id list for +140)
-	invoke JmpPatch, 0041F603h, addr StateMore ; Set X-coord, Y-coord, Z-coord and more
-	invoke JmpPatch, 0041334Ah, addr StateTurn3x ; Turning State 30, 31, 32
+	invoke JmpPatch, 0041F603h, addr StateMore ; Set X-coord, Y-coord, Z-coord, TimeStop State and more
+	invoke JmpPatch, 0041334Ah, addr StateTurn3x ; Turning State 30, 31
 	invoke JmpPatch, 0042EC9Eh, addr State9xxx ; Go to XXX Frame if hit something. XXX from 0 to 799
-
-	;invoke WriteMem, 0040EC13h, addr doubleNOP,2 ; Keep it, Can be usuful
-	;invoke WriteMem, 0040EC15h, addr oneNOP,1 ; Keep it, Can be usuful
-
-	;invoke JmpPatch, 004177B9h, addr Hit_teammates
 	;==================================================
-	
+
 	;===============Window Properities(window.inc)=========
+	invoke JmpPatch, 00401B85h, addr Application_Name
+	invoke WriteMem, 00401B9Ch, addr oneNOP,7 ; Annoying Karter
+
 	invoke JmpPatch, 00401B3Ch, addr Window_Size_2	 	
 	invoke JmpPatch, 00401007h, addr Window_Size_3
 	invoke JmpPatch, 00401050h, addr Window_Size_4 
@@ -101,7 +101,8 @@ DLLStartup proc
 	;===================================================	
 	
 	;=============== Battle Mode (battle.inc)===========
-	invoke JmpPatch, 0043947Fh, addr defence	 	
+ 	invoke JmpPatch, 0043947Fh, addr defence			; enhance defence limits 
+ 	invoke JmpPatch, 0043A7F6h, addr batte_diffucult	; allows to choose CRAZY! in Battle Mode
 	;===================================================	
 	
 	;=============== Regen (regen.inc)==================
@@ -113,7 +114,7 @@ DLLStartup proc
 	invoke JmpPatch, 0042D68Fh, addr SpawnerBoth1
 	invoke JmpPatch, 0042D4C0h, addr SpawnerPlayer1
 	invoke JmpPatch, 0042D3ADh, addr SpawnerCom1
-	invoke JmpPatch, 00437664h, addr SpawnerComStages1	
+	invoke JmpPatch, 00437664h, addr SpawnerComStages1
 	;===================================================	
 	
 	;=============== Cursor (cursor.inc)=================
@@ -162,83 +163,118 @@ DLLStartup proc
 	invoke JmpPatch, 0040C336h, addr CMA2img
 	invoke JmpPatch, 0040C345h, addr CMC_img
 	invoke JmpPatch, 0040C354h, addr RFACEimg
+	invoke JmpPatch, 0040C363h, addr spark
 	;===================================================
 
 	;=============== UI Manipulation (UI.inc)===========
 	invoke WriteMem, 0041AF3Ah, addr opacity,2 ; Frame
-	invoke WriteMem, 0042A5D2h, addr opacity,2 ; RFace
+	invoke WriteMem, 0042A5D2h, addr opacity,2 ; RFace first phase
 	invoke WriteMem, 0042A53Fh, addr opacity,2 ; Character Faces
 	invoke WriteMem, 0042BE93h, addr opacity,2 ; ???
 	invoke WriteMem, 0042BDEBh, addr opacity,2 ; ???
 	invoke WriteMem, 0042AFA2h, addr opacity,2 ; ???
 	invoke WriteMem, 0042BB5Dh, addr opacity,2 ; ???
+	
+	invoke WriteMem, 0041AF85h, addr opacity,2 ; small icons in status-bar
+	invoke WriteMem, 0042A415h, addr opacity,2 ; CMA.png + CMA2.png
+	invoke WriteMem, 0042A444h, addr opacity,2 ; ???
+	invoke WriteMem, 0042AAA0h, addr opacity,2 ; ???
+	invoke WriteMem, 0042AB09h, addr opacity,2 ; RFace second phase
+	
+	invoke JmpPatch, 0041B01Fh, addr HP_bars_change
+	
+	invoke JmpPatch, 0041B01Fh, addr HP_bars_change
+	invoke WriteMem, 0041F523h, addr numbersFix,1 ; fix debug info in corner
 	;===================================================
-	;invoke WriteMem, 0042A1E1h, addr ResetCoord,2	; Activate by your choise,
-	;invoke WriteMem, 0042A1E3h, addr ResetCoord,2  ; resets CHARMENU coords to zero
+
+	;===================================================
+	;invoke WriteMem, 0042A1E1h, addr ResetCoord,2 ; resets CHARMENU coords to zero
+	;invoke WriteMem, 0042A1E3h, addr ResetCoord,2 ; resets CHARMENU coords to zero
+	;===================================================
+
+	;=============== Hacked Regulars (hack.inc)==========
+	;invoke JmpPatch, 00416E6Dh, addr F6_custom_modes ; Allows F6 in Stage mode (or custom list)
+	;invoke JmpPatch, 00416EBDh, addr F7_custom_modes ; Allows F7 in Stage mode (or custom list)
+	;invoke JmpPatch, 00416F1Dh, addr F8_custom_modes ; Allows F8 in Stage mode (or custom list)
+	;invoke JmpPatch, 00416F71h, addr F9_custom_modes ; Allows F9 in Stage mode (or custom list)
+	
+	invoke JmpPatch, 0042184Eh, addr F7_rework  ; now cures Poison, Weak, Silence and Confuse
+	invoke JmpPatch, 004217D0h, addr F9_rework  ; now is does NOT killing characters if used not in VS
+												; also there is a filter by ID or type, if you're 
+												; using item-key-objects in your maps or stages
+
+	invoke JmpPatch, 00437719h, addr act_rework  		; allows to use "act:" not only with type 0 and 5	
+	invoke WriteMem, 00416EE0h, addr oneNOP,9 			; Allows to use F7 after round ends, like in 1.9 version!
+	;invoke JmpPatch, 0042A037h, addr Independent_Stages    ; Makes All players be in Independent team
+															; disable if u're using "ChangeAble_teams" (below)
+															; and on the contrary
+	invoke JmpPatch, 0042A837h, addr ChangeAble_teams 	; Allows players choose Team in Stage Mode
+													 	; Must be disabled if u're using "Independent_Stages"
+	invoke JmpPatch, 0041DB46h, addr Result_Sound_Delay  	; time before sound play after last fighter defeated
+														 	; has regular LF2 value, so you can keep it work
+	
+
+	
+	
 	;===================================================
 
 
+	;==============body kinds(bodies.inc)===============
+	invoke JmpPatch, 0042E677h, addr weNeedMoarBodies
+	invoke WriteMem, 0042E67Ch, addr oneNOP,7
+	invoke JmpPatch, 0042E75Bh, addr hurtingBodies
+	invoke JmpPatch, 0042E89Ah, addr bdy50
+	;===================================================
 
-	;call AI
+
+	;================ Memory Relocation ================
+	;= don't change anything till u dunno what u doing =
+	
+	; this block sets free 81,82 and 83 bytes for use
+	invoke WriteMem, 00417246h, addr MakeByte1,1
+	invoke WriteMem, 00417226h, addr MakeByte1,1
+	invoke WriteMem, 0041769Ah, addr MakeByte1,1
+	invoke WriteMem, 00430975h, addr MakeByte1,1
+	invoke WriteMem, 004176B7h, addr MakeByte1,1
+	invoke WriteMem, 00412A7Eh, addr MakeByte2,1
+	invoke WriteMem, 00430953h, addr MakeByte1,1
+	invoke WriteMem, 00412CC6h, addr MakeByte1,1
+
+	;===================================================
+	
+	;================ Loading Rework ================	
+	invoke WriteMem, 00447F68h, addr fix_hidden,8     ; change "hiden:" to "hidden:" attribute                
+	invoke WriteMem, 00447F80h, addr fix_silence,9	  ; change "manacle:" to "silence:" attribute
+	invoke WriteMem, 00447E4Eh, addr fix_slow,6	  	  ; change "delay:" to "slow:" attribute
+	invoke WriteMem, 00447FACh, addr fix_confuse,9	  ; change "confus:" to "confuse:" attribute
+	invoke WriteMem, 0044860Ch, addr fix_sound,8	  ; change "respond:" to "sound:" attribute
+	invoke WriteMem, 00448613h, addr cleaner,1		  ; memory fix
+	
+	invoke JmpPatch, 00402442h, addr StartDataZ	
+	invoke JmpPatch, 0040F2D3h, addr Loading_Rework
+	;===================================================
+	
+	;================== Time Tracing ===================
+	invoke JmpPatch, 0043D12Dh, addr FPS_rework 		; + adds slow motion in every round end on last hit
+	invoke JmpPatch, 0041310Dh, addr TimeStop 			; TimeStop Engine
+	invoke JmpPatch, 0041DD4Ah, addr TS_substactor		; part of TS Engine
+	
+	invoke JmpPatch, 0043D154h, addr TS_menu_fix
+	;===================================================
+	
+	;================== RPG Rework ====================
+	invoke JmpPatch, 0041FAEBh, addr limit_breaker
+	invoke JmpPatch, 0041FA8Eh, addr limit_breaker2
+	invoke JmpPatch, 0041FACEh, addr limit_breaker3
+	;===================================================
+	
+	
 	ret
 
 
 DLLStartup endp
 
-AI proc
 
-	;=================Range Stuff=================
-	invoke JmpPatch, 0040AE0Ah, addr Range1
-	invoke WriteMem, 0040AE0Fh, addr FourNOP,4
-	invoke JmpPatch, 0040B217h, addr Range2
-	invoke JmpPatch, 0040B2CBh, addr Range3
-	invoke JmpPatch, 0040B383h, addr Range4
-	invoke JmpPatch, 00403878h, addr Deep_Ball
-	invoke WriteMem, 0040387Dh, addr doubleNOP,2
-	;=============================================
-	
-	;==================Other AIs==================
-	;Generic D>A
-	invoke JmpPatch, 00403608h, addr AI_Ball1
-	;Generic D>A #2
-	invoke JmpPatch, 004036FBh, addr AI_Ball2
-	;Deep AI
-	invoke JmpPatch, 00403E89h, addr AI_Deep
-	invoke WriteMem, 00403E8Eh, addr doubleNOP,2
-	;John AI
-	invoke JmpPatch, 00403A7Eh, addr AI_John
-	invoke WriteMem, 00403A83h, addr doubleNOP,2
-	;Henry AI
-	invoke JmpPatch, 004041F1h, addr AI_Henry
-	invoke WriteMem, 004041F6h, addr doubleNOP,2
-	;Rudolf AI
-	invoke JmpPatch, 0040436Eh, addr AI_Rudolf
-	invoke WriteMem, 00404373h, addr doubleNOP,2
-	;Louis AI
-	invoke JmpPatch, 004044FAh, addr AI_Louis
-	invoke WriteMem, 004044FFh, addr doubleNOP,2
-	;Firen AI
-	invoke JmpPatch, 00404609h, addr AI_Firen
-	invoke WriteMem, 0040460Eh, addr doubleNOP,2
-	;Freeze AI
-	invoke JmpPatch, 0040499Ah, addr AI_Freeze
-	invoke WriteMem, 0040499Fh, addr doubleNOP,2
-	;Dennis AI
-	invoke JmpPatch, 00405147h, addr AI_Dennis
-	invoke WriteMem, 0040514Ch, addr doubleNOP,2
-	;Woody AI
-	invoke JmpPatch, 00404DBBh, addr AI_Woody
-	invoke WriteMem, 00404DC0h, addr doubleNOP,2
-	;Davis AI
-	;invoke JmpPatch, 00404C12h, addr AI_Davis
-	;invoke WriteMem, 00404C17h, addr doubleNOP,2
-	;Sorcerer AI
-	invoke JmpPatch, 0040555Dh, addr AI_Sorcerer
-	invoke WriteMem, 00405562h, addr doubleNOP,2
-	;=============================================
-	
-	ret
-AI endp
 
 
 

@@ -6,7 +6,7 @@ e1_t3_e9 dd 0042F594h ;0042F58Fh ; куда возвращаютс€ эффекты после выполнени€
 
 e_finish dd 0043087Ch ; куда уход€т все эффекты после всех сравнений и выполнений.
 					  ; ¬ коде ниже не используетс€, но может сократить нагрузку на комп
-
+e50_back1 dd 0042E918h
 .Code
 
 
@@ -16,11 +16,11 @@ itr_effect_1xxx_to_9xxx proc
 	JE [Back1]
 
 
-state1xxx:
+effect1xxx:
 	CMP EAX, 3E8h ; 1000
 	JL [Back2]  ; ≈сли меньше 1000, уходим сразу
 	CMP EAX, 7CFh ; 1999
-	JG [state2xxx]
+	JG [effect2xxx]
 	
 
 	PUSH EAX ; резервируем
@@ -52,9 +52,9 @@ state1xxx:
 	JMP [e1_t3_e9] ; завершаем обработку
 
 
-state2xxx:
+effect2xxx:
 	CMP EAX, 0BB7h ; 2999
-	JG [state3xxx]
+	JG [effect3xxx]
 
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
@@ -82,9 +82,9 @@ state2xxx:
 	
 	JMP [e1_t3_e9] ; завершаем обработку
 
-state3xxx:
+effect3xxx:
 	CMP EAX, 0F9Fh ; 3999
-	JG [state4xxx]
+	JG [effect4xxx]
 
 	PUSH EAX ; резервируем
 	PUSH ECX ; резервируем
@@ -105,9 +105,9 @@ state3xxx:
 	
 	JMP [e1_t3_e9] ; завершаем обработку
 
-state4xxx:
+effect4xxx:
 	CMP EAX, 1387h ; 4999
-	JG [state5xxx]
+	JG [effect5xxx]
 
 	PUSH EAX ; резервируем
 	PUSH EBX ; резервируем
@@ -132,9 +132,9 @@ state4xxx:
 
 
 
-state5xxx:
+effect5xxx:
 	CMP EAX, 176Fh ; 5999
-	JG [state6xxx]
+	JG [effect6xxx]
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
@@ -164,9 +164,9 @@ state5xxx:
 
 
 
-state6xxx:
+effect6xxx:
 	CMP EAX, 1B57h ; 6999
-	JG [state7xxx]
+	JG [effect7xxx]
 
 	PUSH EAX ; резервируем
 	PUSH EBX ; резервируем
@@ -190,9 +190,9 @@ state6xxx:
 	JMP [e1_t3_e9] ; завершаем обработку
 
 
-state7xxx:
+effect7xxx:
 	CMP EAX, 1F3Fh ; 7999
-	JG [state8xxx]
+	JG [effect8xxx]
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
@@ -214,9 +214,9 @@ state7xxx:
 
 
 
-state8xxx:
+effect8xxx:
 	CMP EAX, 2327h ; 8999
-	JG [state9xxx] 
+	JG [effect9xxx] 
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
@@ -247,7 +247,7 @@ state8xxx:
 	JMP [e1_t3_e9] ; завершаем обработку
 
 
-state9xxx:
+effect9xxx:
 	CMP EAX, 270Fh ; 9999
 	JG [Back2] ; больше некуда, поэтому валим.
 	
@@ -268,7 +268,8 @@ state9xxx:
 	MOV EAX,DWORD PTR DS:[EDI+10h] ; кусок оригинального кода, берет ’-координату
 	
 	JMP [e1_t3_e9] ; завершаем обработку
-	
+
+
 
 
 Back1: 
@@ -281,6 +282,50 @@ Back3:
 itr_effect_1xxx_to_9xxx endp
 
 
+
+
+effect50 proc
+
+		PUSH EDX
+		PUSH ECX
+		
+		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h ; получаем страницу фрейма
+		FSTP ST
+		ADD ECX,DWORD PTR DS:[EBX+368h]
+		LEA ECX,DWORD PTR DS:[ECX+958h] 
+		CMP DWORD PTR DS:[ECX],0 	
+		JLE [skip]
+		MOV ECX,DWORD PTR DS:[ECX+8]
+		MOV EDX,DWORD PTR DS:[ECX+2Ch] ; эффект
+		CMP EDX, 50
+		JE [eff_50]
+		
+		IMUL ECX,DWORD PTR DS:[EDI+70h],1B0h ; получаем страницу фрейма
+		FSTP ST
+		ADD ECX,DWORD PTR DS:[EDI+368h]
+		LEA ECX,DWORD PTR DS:[ECX+95Ch] ;bdy
+		CMP DWORD PTR DS:[ECX],0 	
+		JLE [skip]
+		MOV ECX,DWORD PTR DS:[ECX+8]
+		MOV EDX,DWORD PTR DS:[ECX]
+		CMP EDX, 50
+		JE [eff_50]
+		
+skip:
+		POP ECX
+		POP EDX
+		MOV DWORD PTR DS:[EDI+70h],EDX
+		MOV DWORD PTR DS:[EDI+0B0h],ECX
+		JMP [e50_back1]
+
+eff_50:
+		POP ECX
+		POP EDX
+		MOV DWORD PTR DS:[EDI+0B0h],0
+    	JMP [e50_back1]
+
+
+effect50 endp
 
 
 

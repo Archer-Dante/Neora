@@ -5,6 +5,9 @@ ik8_back2	dd 0043087Ch
 
 ik8_fix1	dd 00417535h
 ik8_fix2	dd 00417A10h
+
+itr_sp_b1   dd 00417A97h
+itr_sp_b2   dd 00417A73h
 	
 .code
 itr_kind8 proc
@@ -237,6 +240,8 @@ kind8_dvx:
 	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
 	JMP [ik8_return]
 
+
+
  
 ik8_return:
 	JMP [ik8_back2]
@@ -438,6 +443,101 @@ skip_kind:
 
 
 itr_kind8_types endp
+
+
+
+
+
+
+
+
+
+
+
+
+itr_specials proc
+
+	PUSH EDX
+	PUSH EAX
+
+		CMP EAX,1Eh ; original code
+		JL [ori_back_1] ; original code
+		
+		CMP EAX,1000 ; IK-1000
+		JE SHORT [kind1000] ; original code
+		
+		JMP [condition_fail] ; afterpatch
+
+
+;====================================================================
+kind1000:
+
+	FLD DWORD PTR DS:[EBX+14h] ; gets HP condition
+	FISTP DWORD PTR DS:[EDI+82h]
+	MOV EDX, DWORD PTR DS:[EDI+14Bh] ; gets HP condition
+	CMP DWORD PTR DS:[EDI+2FCh], EDX ; compares with character's HP
+	JL [condition_fail]
+	
+	MOV EAX, EDX ; reserves HP condition
+	
+	FLD DWORD PTR DS:[EBX+18h] ; gets MP condition
+	FISTP DWORD PTR DS:[EDI+82h]
+	MOV EDX, DWORD PTR DS:[EDI+14Bh] ; gets MP condition
+	CMP DWORD PTR DS:[EDI+308h], EDX ; compares with character's MP
+	JL [condition_fail]
+	
+	SUB DWORD PTR DS:[EDI+2FCh], EAX ; substract HP condition
+	SUB DWORD PTR DS:[EDI+308h], EDX ; substract MP condition
+	
+	
+		CMP DWORD PTR DS:[EBX+4h],-1 ; check X for -1
+		JLE [skip_X]
+		MOV EDX, DWORD PTR DS:[EBX+4h]
+		MOV DWORD PTR DS:[EDI+10h],EDX
+		FILD DWORD PTR DS:[EDI+10h] 
+		FSTP QWORD PTR DS:[EDI+58h] 
+	skip_X:
+	
+		CMP DWORD PTR DS:[EBX+8h],-1 ; check Y for -1
+		JLE [skip_Y]
+		MOV EDX, DWORD PTR DS:[EBX+8h]
+		NEG EDX
+		MOV DWORD PTR DS:[EDI+14h],EDX
+		FILD DWORD PTR DS:[EDI+14h]
+		FSTP QWORD PTR DS:[EDI+60h] 
+	skip_Y:
+	
+		CMP DWORD PTR DS:[EBX+4Ch],-1 ; check Z for -1
+		JLE [skip_Z]
+		MOV EDX, DWORD PTR DS:[EBX+4Ch]
+		MOV DWORD PTR DS:[EDI+18h],EDX
+		FILD DWORD PTR DS:[EDI+18h]
+		FSTP QWORD PTR DS:[EDI+68h]
+	skip_Z:
+	
+		CMP DWORD PTR DS:[EBX+44h],-1 ; check Z for -1
+		JLE [condition_fail]
+		MOV EDX, DWORD PTR DS:[EBX+44h]
+		MOV DWORD PTR DS:[EDI+70h],EDX
+		MOV DWORD PTR DS:[EDI+88h],0
+	
+condition_fail:
+		POP EAX
+		POP EDX
+		JMP [itr_sp_b2]
+		
+ori_back_1:
+		POP EAX
+		POP EDX
+		JMP [itr_sp_b1]
+		
+
+itr_specials endp
+
+
+
+
+
 
 
 

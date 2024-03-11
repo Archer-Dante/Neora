@@ -114,6 +114,9 @@ BackFrame37 dd 0040C34Ah
 RFACE db "sprite\UI\RFACE.png",0
 BackFrame38 dd 0040C359h
 
+SPARK db "sprite\UI\spark.png",0
+BackFrame39 dd 0040C368h
+
 .code
 
 FRAMEimg proc
@@ -344,6 +347,11 @@ RFACEimg proc
 	JMP [BackFrame38]
 RFACEimg endp
 
+spark proc
+	MOV ECX, offset [SPARK]
+	PUSH ECX 
+	JMP [BackFrame39]
+spark endp
 
 
 

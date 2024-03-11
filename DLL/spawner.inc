@@ -147,14 +147,71 @@ SpawnerCom1 endp
 
 SpawnerComStages1 proc
 
-		ADD EAX,DWORD PTR DS:[EBX+0B0h] ; добавление рандомного числа к точки призыва по X
-		;MOV EAX,DWORD PTR DS:[EBX+0B0h] ; «аменить этой строкой строчку выше, чтобы отключить рандом
+		CMP DWORD PTR DS:[EBX+0B0h],100000 ; F4240, filter 1xxxxx
+		JGE SHORT [no_random]
+
+random_on:
+		ADD EAX,DWORD PTR DS:[EBX+0B0h] ; — учетом рандома
 		ADD ESP,8
 		MOV EDX,EAX
-		
+		JMP [spawner4]	
+
+no_random:		
+		MOV EAX,DWORD PTR DS:[EBX+0B0h] ; Ѕез учета рандома
+		SUB EAX,100000
+		ADD ESP,8
+		MOV EDX,EAX
 		JMP [spawner4]
 
 SpawnerComStages1 endp
+
+
+
+
+StartDataZ proc
+
+		MOV ECX,1F4h
+		MOV DWORD PTR DS:[ESI+3F8h],EAX
+		MOV DWORD PTR DS:[ESI+2F4h],EAX
+		MOV DWORD PTR DS:[ESI+2F8h],EAX
+		MOV DWORD PTR DS:[ESI+354h],63h
+		
+		PUSH EDI
+		CMP DWORD PTR DS:[44D020h],0
+		JNE [regular_hp]
+		MOV EDI,DWORD PTR DS:[ESI+368h]
+		MOV EDI,DWORD PTR DS:[EDI+0B0h]
+		CMP EDI,0
+		JLE [regular_hp]
+		MOV DWORD PTR DS:[ESI+2FCh],EDI ;hp
+		MOV DWORD PTR DS:[ESI+300h],EDI ;darkred hp
+		MOV DWORD PTR DS:[ESI+304h],EDI
+		JMP [next1]
+		regular_hp:
+		MOV DWORD PTR DS:[ESI+304h],500
+		MOV DWORD PTR DS:[ESI+2FCh],ECX ;hp
+		MOV DWORD PTR DS:[ESI+300h],ECX ;darkred hp
+next1:	POP EDI
+
+		MOV DWORD PTR DS:[ESI+308h],500
+		MOV DWORD PTR DS:[ESI+360h],EAX
+		MOV DWORD PTR DS:[ESI+324h],EAX
+		MOV DWORD PTR DS:[ESI+328h],EAX
+		MOV DWORD PTR DS:[ESI+32Ch],EAX
+		MOV DWORD PTR DS:[ESI+33Ch],EAX
+
+		MOV DWORD PTR DS:[ESI+2E8h],1000
+		MOV DWORD PTR DS:[ESI+2ECh],1000
+		MOV DWORD PTR DS:[ESI+2F0h],1000
+		MOV DWORD PTR DS:[ESI+3FCh],-1000
+		MOV DWORD PTR DS:[ESI+400h],-1000
+		POP EDI ; original
+		POP ESI ; original
+		POP EBX ; original
+		RETN ; original
+
+StartDataZ endp
+
 
 
 
