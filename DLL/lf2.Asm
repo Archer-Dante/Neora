@@ -40,7 +40,7 @@ copycat  db "Neora Engine by Archer-Dante",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.05 Prototype-Test Version",00 ; Name of the Game Window
+		GameName		db "LF2: Neora Engine 2.07 Prototype-Test Version",00 ; Name of the Game Window
 		win_width   	dd 794		; Game window width  in pixels. "794" is default
 		win_height  	dd 550 		; Game window height in pixels. "550" is default
 		
@@ -278,9 +278,9 @@ DLLStartup proc
 	
 	
 	
-	invoke JmpPatch, 00417879h, addr bdy_solo_hit_recall 	; allows game engine track which bdy of target was
+	;invoke JmpPatch, 00417879h, addr bdy_solo_hit_recall 	; allows game engine track which bdy of target was
 															; attacked (for 1 target on hit)
-	invoke JmpPatch, 004179EEh, addr bdy_multi_hit_recall 	; allows game engine track which bdy of target was
+	;invoke JmpPatch, 004179EEh, addr bdy_multi_hit_recall 	; allows game engine track which bdy of target was
 															; attacked (for 2+ targets at once or multihit)
 															
 	invoke JmpPatch, 0042E756h, addr dmg_calc_rework ; makes resists and stats works on
