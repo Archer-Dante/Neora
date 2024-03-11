@@ -1,6 +1,8 @@
 # Neora
-[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
+
 Neora Engine Mod Toolkit
+
+[![CC BY-NC-SA 4.0][cc-by-nc-sa-shield]][cc-by-nc-sa]
 
 Advanced LF2 engine modification as toolset and helper for modmakers.
 
