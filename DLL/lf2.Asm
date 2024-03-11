@@ -21,7 +21,6 @@ include window.inc
 include replay.inc
 include battle.inc
 include regen.inc
-include spawner.inc
 include cursor.inc
 include external.inc
 include UI.inc
@@ -36,7 +35,7 @@ solAlloc dd ?
 ; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
 copycat  	db "Neora Engine build by Archer-Dante",00
 ; Put your game name between quotes below
-GameName	db "LF2: Neora Engine 2.00",00
+GameName	db "LF2: Neora Engine 2.01",00
 .data?
 
 
@@ -108,14 +107,7 @@ DLLStartup proc
 	;=============== Regen (regen.inc)==================
 	invoke JmpPatch, 0041FAE5h, addr mana_speed	 	
 	invoke JmpPatch, 0041F9E2h, addr hp_speed
-	;===================================================	
-
-	;=============== Spawner (regen.inc)================
-	invoke JmpPatch, 0042D68Fh, addr SpawnerBoth1
-	invoke JmpPatch, 0042D4C0h, addr SpawnerPlayer1
-	invoke JmpPatch, 0042D3ADh, addr SpawnerCom1
-	invoke JmpPatch, 00437664h, addr SpawnerComStages1
-	;===================================================	
+	;===================================================		
 	
 	;=============== Cursor (cursor.inc)=================
 	invoke JmpPatch, 00425EB1h, addr CursorFix1
@@ -250,8 +242,9 @@ DLLStartup proc
 	invoke WriteMem, 0044860Ch, addr fix_sound,8	  ; change "respond:" to "sound:" attribute
 	invoke WriteMem, 00448613h, addr cleaner,1		  ; memory fix
 	
-	invoke JmpPatch, 00402442h, addr StartDataZ	
 	invoke JmpPatch, 0040F2D3h, addr Loading_Rework
+	invoke JmpPatch, 0042D4EFh, addr Player_Stats	
+	invoke JmpPatch, 0042D3E1h, addr Computer_Stats
 	;===================================================
 	
 	;================== Time Tracing ===================
