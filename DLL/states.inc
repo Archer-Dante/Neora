@@ -66,21 +66,21 @@ StateMore proc
 		PUSH ECX ;reserve
 		PUSH EBX ;reserve
 			
-		CMP EAX,9C40h ; 40000
+		CMP EAX,60000 ; 60000
 		JL  [skip] ; Если меньше - в обычный код
-		CMP EAX,0C34Fh ; 49999
-		JLE [State4xxxx]
-		CMP EAX,0EA5Fh ; 59999
-		JLE [State5xxxx]
-		CMP EAX,1116Fh ; 69999
+		CMP EAX,69999 ; 69999
 		JLE [State6xxxx]
-		CMP EAX,1387Fh ; 79999
+		CMP EAX,79999 ; 79999
 		JLE [State7xxxx]
+		CMP EAX,89999 ; 89999
+		JLE [State8xxxx]
+		CMP EAX,99999 ; 99999
+		JLE [State9xxxx]
 		
 		JMP [skip] ; если ни один из стейтов выше
 
-State4xxxx:
-		SUB EAX, 9C40h ; 40000
+State6xxxx:
+		SUB EAX, 60000 ; 60000
 		
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
 		MOV DWORD PTR DS:[ECX+10h],EAX ; change X of object
@@ -89,8 +89,9 @@ State4xxxx:
 
 		JMP [skip]
 		
-State5xxxx:
-		SUB EAX, 0C350h ; 50000
+State7xxxx:
+		SUB EAX, 70000 ; 70000
+		NEG EAX
 		
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
 		MOV DWORD PTR DS:[ECX+14h],EAX ; change Y of object
@@ -99,8 +100,8 @@ State5xxxx:
 
 		JMP [skip]
 		
-State6xxxx:
-		SUB EAX, 0EA60h ; 60000
+State8xxxx:
+		SUB EAX, 80000 ; 80000
 		
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
 		MOV DWORD PTR DS:[ECX+18h],EAX ; change Z of object
@@ -109,8 +110,8 @@ State6xxxx:
 
 		JMP [skip]
 
-State7xxxx:
-		;SUB EAX, 11170h ; 70000
+State9xxxx:
+		;SUB EAX, 90000 ; 90000
 
 		MOV EAX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
 		
@@ -120,8 +121,11 @@ State7xxxx:
 	
 		FLD DWORD PTR DS:[EDX+ECX+920h]
 		FSTP QWORD PTR DS:[EAX+58h]
+		
 		FLD DWORD PTR DS:[EDX+ECX+924h]
+		FCHS
 		FSTP QWORD PTR DS:[EAX+60h]
+		
 		FLD DWORD PTR DS:[EDX+ECX+928h]
 		FSTP QWORD PTR DS:[EAX+68h]
 		
