@@ -22,6 +22,7 @@ include generic.inc
 include itrkind.inc
 include states.inc
 include ai.inc
+include window.inc
 
 .data
 memAlloc dd ?
@@ -66,7 +67,7 @@ DLLStartup proc
 	;===================================================
 
 	;=================states(states.inc)================
-	invoke JmpPatch, 0041F5FCh, addr State8xxx
+	invoke JmpPatch, 0041F656h, addr State8xxx
 	;invoke JmpPatch, 0041408Bh, addr State_Turning
 	;invoke JmpPatch, 004177B9h, addr Hit_teammates
 	;==================================================
@@ -91,13 +92,25 @@ DLLStartup proc
 	;invoke JmpPatch, 0042D473h, addr perspective4
 	;=====================================================
 	
+	
+	;===============Window Properities(window.inc)=========
+	invoke JmpPatch, 00401B3Ch, addr Window_Size_2	 	
+	invoke JmpPatch, 00401007h, addr Window_Size_3
+	invoke JmpPatch, 00401050h, addr Window_Size_4
+	invoke JmpPatch, 0042386Dh, addr Window_Size_5
+	invoke JmpPatch, 0043F03Dh, addr Window_Size_6
+	invoke JmpPatch, 0043F08Bh, addr Window_Size_7
+	invoke JmpPatch, 0041A0AEh, addr Window_Size	
+	invoke JmpPatch, 0041A1DBh, addr Window_Size_8
+	;===================================================
+
 	call AI
 	ret
 
 DLLStartup endp
 
 AI proc
-	
+
 	;=================Range Stuff=================
 	invoke JmpPatch, 0040AE0Ah, addr Range1
 	invoke WriteMem, 0040AE0Fh, addr FourNOP,4

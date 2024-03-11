@@ -142,18 +142,18 @@ Hide_shadow endp
 
 Shaker proc
  
-MOV DWORD PTR DS:[EBX+0B4h],35 ;”правление задержкой атакующего в TU
+MOV DWORD PTR DS:[EBX+0B4h],3 ;”правление задержкой атакующего в TU
 MOV ECX,DWORD PTR SS:[ESP+0Ch]
-MOV DWORD PTR DS:[EDI+0B4h],-35 ;”правление задержкой защищающегос€ в TU
-MOV EAX,DWORD PTR DS:[ECX+20]
+MOV DWORD PTR DS:[EDI+0B4h],-3 ;”правление задержкой защищающегос€ в TU
+MOV EAX,DWORD PTR DS:[ECX+20h]
 CMP EAX,4
 JGE short shake1
-CMP DWORD PTR DS:[ECX+24],0
+CMP DWORD PTR DS:[ECX+24h],0
 JNZ short shake1
 MOV DWORD PTR DS:[EBX+0ECh],4
 JMP short shake2
 MOV DWORD PTR DS:[EBX+0ECh],EAX
-CMP DWORD PTR DS:[ECX+24],0
+CMP DWORD PTR DS:[ECX+24h],0
 JLE short shake3
 
 shake1:

@@ -1,9 +1,6 @@
 .data
 ;state4xxx
 Transform1	dd 0041F675h
-Transform2	dd 0041F67Ch
-;Transform2	dd 0041F656h
-Transform3	dd 0041F60Ah
 
 ;state_turning
 st_r1		dd 00414099h
@@ -18,56 +15,86 @@ ht_r3		dd 0041780Bh
 
 State8xxx proc
 
-; Логика следующих 4-х строк такова, что если Статус меньше 8000 и больше 9000 - идет переход к другим обработкам.
-; В противном случае код продолжит выполняться дальше.
-; Это означает, что любой код 8ххх, кроме 8000 сделает трансформацию согласно коду дальше.
+		CMP EDX, 38
+		JE plus140
+		CMP EDX, 37
+		JE plus140
+		CMP EDX, 36
+		JE plus140
+		CMP EDX, 35
+		JE plus140
+		CMP EDX, 34
+		JE plus140
+		CMP EDX, 33
+		JE plus140
+		CMP EDX, 32
+		JE plus140
+		CMP EDX, 31
+		JE plus140
+		CMP EDX, 30
+		JE plus140
 
-
-		CMP EAX,1F40h ; 8000
-		JL SHORT exit1 ; Если меньше текущего статуса
-		CMP EAX,2328h ; 9000
-		JGE SHORT state4xxx ; Больше или равно текущему статусу
-		jmp SHORT exit2 ; Если ничего не подошло, продолжаем обработку как в исходнике
-		
-exit1: 	jmp dword ptr [Transform1] ; Ссылка на адрес обычного кода
-exit2: 	jmp dword ptr [Transform3] ; Ссылка на адрес обычного кода
-		
-state4xxx:	
-		CMP EAX, 0EA60h ; 40 000
-		JL SHORT exit1 ; Если меньше 4 000 сваливаем в обычный код
-		CMP EAX, 0EE47h ; 40 999
-		JGE SHORT exit1 ; Если меньше 4 000 сваливаем в обычный код
-		;Если меньше 8000, но не меньше 4000, то делаем код дальше.
-		MOV ECX,DWORD PTR DS:[452980h] ; добавляем h к мистическому хексу
-		LEA EDX,DWORD PTR DS:[EAX-0EA60h] ; вычитаем из 4ххх число 4000, оставляя ххх как ID (ПРОБЛЕМААААА!!!! 0FA0h )
-		XOR EAX,EAX 					; делаем проверку, не является ли текущий ID равен целевому
-		CMP DWORD PTR DS:[452990h],EAX
-		JLE SHORT sector3
-		
-sector1:	
-		MOV ESI,DWORD PTR DS:[ECX]
-		CMP DWORD PTR DS:[ESI+6F4h],EDX
-		JE SHORT sector2
-		MOV ESI,DWORD PTR DS:[452980h]
-		ADD EAX,1
-		ADD ECX,4
-		CMP EAX,DWORD PTR DS:[452990h]
-		JL SHORT sector1
-		JMP SHORT sector3
-
-sector2:
-		MOV ECX,DWORD PTR DS:[452980h]
-		MOV ECX,DWORD PTR DS:[ECX+EAX*4]
-		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-		MOV DWORD PTR DS:[EAX+368h],ECX
-
-sector3:
 		MOV EDX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-		MOV DWORD PTR DS:[EDX+70h],0 ; стартовый кадр
+		MOV DWORD PTR DS:[EDX+70h],0
 		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-		MOV DWORD PTR DS:[EAX+318h],0h ; +140 кадров
+		MOV DWORD PTR DS:[EAX+318h],0
+		JMP [Transform1]
+
+plus140:
+		MOV EDX,DWORD PTR DS:[EBX+EDI*4+3ECh]
+		MOV DWORD PTR DS:[EDX+70h],0
 		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-		jmp Transform2 ; Ссылка на адрес обычного кода
+		MOV DWORD PTR DS:[EAX+318h],8Ch
+		JMP [Transform1]
+
+  
+
+
+
+
+;
+;
+;
+;		CMP EAX,1F40h
+;		JL SHORT exit1
+;		CMP EAX,2327h
+;		JGE SHORT exit1
+;			
+;		MOV ECX,DWORD PTR DS:[452980h]
+;		LEA EDX,DWORD PTR DS:[EAX-1F40h]
+;		XOR EAX,EAX
+;		CMP DWORD PTR DS:[452990h],EAX
+;		JLE SHORT sector3_8xxx
+;		
+;
+;
+;sector1_8xxx:
+;		MOV ESI,DWORD PTR DS:[ECX]
+;		CMP DWORD PTR DS:[ESI+6F4h],EDX
+;		JE SHORT sector2_8xxx
+;		MOV ESI,DWORD PTR DS:[452980h]
+;		ADD EAX,1
+;		ADD ECX,4
+;		CMP EAX,DWORD PTR DS:[452990h]
+;		JL SHORT sector1_8xxx
+;		JMP SHORT sector3_8xxx
+;		
+;sector2_8xxx:	
+;		MOV ECX,DWORD PTR DS:[452980h]
+;		MOV ECX,DWORD PTR DS:[ECX+EAX*4]
+;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
+;		MOV DWORD PTR DS:[EAX+368h],ECX
+;		
+;sector3_8xxx:		
+;		MOV EDX,DWORD PTR DS:[EBX+EDI*4+3ECh]
+;		MOV DWORD PTR DS:[EDX+70h],0
+;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
+;		MOV DWORD PTR DS:[EAX+318h],8Ch
+;		JMP DWORD PTR DS:[Transform1]            
+;  
+;
+;exit1:  JMP DWORD PTR DS:[Transform1]
+
 
     
     
@@ -110,86 +137,6 @@ State8xxx endp
 
 
 
-;1000165F   3D 401F0000      CMP EAX,1F40 ; 8 000
-;10001664   7C 78            JL SHORT erkd.100016DE
-;10001666   3D 27230000      CMP EAX,2327 ; 9 000
-;1000166B   7D 71            JGE SHORT erkd.100016DE
- 
-
-
-
-
-
-;1000166D   8B0D 80294500    MOV ECX,DWORD PTR DS:[452980]
-;10001673   8D90 C0E0FFFF    LEA EDX,DWORD PTR DS:[EAX-1F40]
-;10001679   33C0             XOR EAX,EAX
-;1000167B   3905 90294500    CMP DWORD PTR DS:[452990],EAX
-;10001681   7E 36            JLE SHORT erkd.100016B9
-;10001683   8B31             MOV ESI,DWORD PTR DS:[ECX]
-;10001685   3996 F4060000    CMP DWORD PTR DS:[ESI+6F4],EDX
-;1000168B   74 16            JE SHORT erkd.100016A3
-;1000168D   8B35 80294500    MOV ESI,DWORD PTR DS:[452980]
-;10001693   83C0 01          ADD EAX,1
-;10001696   83C1 04          ADD ECX,4
-;10001699   3B05 90294500    CMP EAX,DWORD PTR DS:[452990]
-;1000169F  ^7C E2            JL SHORT erkd.10001683
-;100016A1   EB 16            JMP SHORT erkd.100016B9
-;100016A3   8B0D 80294500    MOV ECX,DWORD PTR DS:[452980]
-;100016A9   8B0C81           MOV ECX,DWORD PTR DS:[ECX+EAX*4]
-;100016AC   8B84BB EC030000  MOV EAX,DWORD PTR DS:[EBX+EDI*4+3EC]
-;100016B3   8988 68030000    MOV DWORD PTR DS:[EAX+368],ECX
-;100016B9   8B94BB EC030000  MOV EDX,DWORD PTR DS:[EBX+EDI*4+3EC]
-;100016C0   C742 70 00000000 MOV DWORD PTR DS:[EDX+70],0
-;100016C7   8B84BB EC030000  MOV EAX,DWORD PTR DS:[EBX+EDI*4+3EC]
-;100016CE   C780 18030000 8C>MOV DWORD PTR DS:[EAX+318],8C
-;100016D8  -FF25 08510010    JMP DWORD PTR DS:[10005108]              ; NTLH_с_D.0041F675
-;
-;100016DE   3D 60EA0000      CMP EAX,0EA60 ; 60 000
-;100016E3   7C 78            JL SHORT erkd.1000175D
-;100016E5   3D 47EE0000      CMP EAX,0EE47 ; 60 999
-;100016EA   7D 71            JGE SHORT erkd.1000175D
-;
-;
-;100016EC   8B0D 80294500    MOV ECX,DWORD PTR DS:[452980]
-;100016F2   8D90 A015FFFF    LEA EDX,DWORD PTR DS:[EAX+FFFF15A0]
-;100016F8   33C0             XOR EAX,EAX
-;100016FA   3905 90294500    CMP DWORD PTR DS:[452990],EAX
-;10001700   7E 36            JLE SHORT erkd.10001738
-;10001702   8B31             MOV ESI,DWORD PTR DS:[ECX]
-;10001704   3996 F4060000    CMP DWORD PTR DS:[ESI+6F4],EDX
-;1000170A   74 16            JE SHORT erkd.10001722
-;1000170C   8B35 80294500    MOV ESI,DWORD PTR DS:[452980]
-;10001712   83C0 01          ADD EAX,1
-;10001715   83C1 04          ADD ECX,4
-;10001718   3B05 90294500    CMP EAX,DWORD PTR DS:[452990]
-;1000171E  ^7C E2            JL SHORT erkd.10001702
-;10001720   EB 16            JMP SHORT erkd.10001738
-;10001722   8B0D 80294500    MOV ECX,DWORD PTR DS:[452980]
-;10001728   8B0C81           MOV ECX,DWORD PTR DS:[ECX+EAX*4]
-;1000172B   8B84BB EC030000  MOV EAX,DWORD PTR DS:[EBX+EDI*4+3EC]
-;10001732   8988 68030000    MOV DWORD PTR DS:[EAX+368],ECX
-;10001738   8B94BB EC030000  MOV EDX,DWORD PTR DS:[EBX+EDI*4+3EC]
-;1000173F   C742 70 00000000 MOV DWORD PTR DS:[EDX+70],0
-;10001746   8B84BB EC030000  MOV EAX,DWORD PTR DS:[EBX+EDI*4+3EC]
-;1000174D   C780 18030000 00>MOV DWORD PTR DS:[EAX+318],0
-;10001757  -FF25 08510010    JMP DWORD PTR DS:[10005108]              ; NTLH_с_D.0041F675
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -203,20 +150,24 @@ State8xxx endp
 
 
 ;		CMP EAX,1F40h ; 8000
-;		JL SHORT exit1 ; Если меньше текущего статуса
+;		JL SHORT state4xxx ; Если меньше текущего статуса
 ;		CMP EAX,2328h ; 9000
-;		JGE SHORT exit1 ; Больше или равно текущему статусу
-;		jmp SHORT state4xxx ; Если ничего не подошло, продолжаем обработку как в исходнике
+;		JGE SHORT state4xxx ; Больше или равно текущему статусу
+;		jmp SHORT exit2 ; Если ничего не подошло, продолжаем обработку как в исходнике
 ;		
 ;exit1: 	jmp dword ptr [Transform1] ; Ссылка на адрес обычного кода
-;
+;exit2: 	jmp dword ptr [Transform3] ; Ссылка на адрес обычного кода
 ;		
 ;state4xxx:	
-;		;CMP EAX, 0FA0h ; 4000
-;		;JL SHORT exit1 ; Если меньше 4000 сваливаем в обычный код
+;		CMP EAX, 0EA60h ; 40 000
+;		JL SHORT exit1 ; Если меньше 4 000 сваливаем в обычный код
+;		CMP EAX, 0EE47h ; 40 999
+;		JGE SHORT exit1 ; Если больше 4 000 сваливаем в обычный код
+;		
+;		
 ;		;Если меньше 8000, но не меньше 4000, то делаем код дальше.
 ;		MOV ECX,DWORD PTR DS:[452980h] ; добавляем h к мистическому хексу
-;		LEA EDX,DWORD PTR DS:[EAX-1F40h] ; вычитаем из 4ххх число 4000, оставляя ххх как ID
+;		LEA EDX,DWORD PTR DS:[EAX-0EA60h] ; вычитаем из 4ххх число 4000, оставляя ххх как ID (ПРОБЛЕМААААА!!!! 0FA0h )
 ;		XOR EAX,EAX 					; делаем проверку, не является ли текущий ID равен целевому
 ;		CMP DWORD PTR DS:[452990h],EAX
 ;		JLE SHORT sector3
@@ -240,44 +191,11 @@ State8xxx endp
 ;
 ;sector3:
 ;		MOV EDX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EDX+70],0
+;		MOV DWORD PTR DS:[EDX+70h],0 ; стартовый кадр
 ;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EAX+318h],8ch
+;		MOV DWORD PTR DS:[EAX+318h],0 ; +140 кадров
 ;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
 ;		jmp Transform2 ; Ссылка на адрес обычного кода
-;
-;    
-;    
-
-
-
-
-;
-;
-;
-;		CMP EAX,1F40h ; 8000
-;		JL SHORT state4xxxTRUE ; Если меньше текущего статуса
-;		CMP EAX,2328h ; 9000
-;		JGE SHORT state4xxxTRUE ; Больше или равно текущему статусу
-;		jmp short exit1 ; Если ничего не подошло, продолжаем обработку как в исходнике
-;		
-;exit1: 	jmp dword ptr [Transform1] ; Ссылка на адрес обычного кода
-;
-;state4xxxCheck:
-;		CMP EAX, 0FA0h ; 4000
-;		JGE SHORT state4xxxTRUE ; Если меньше 8000 и больше\равно 4000, то значит промежуток 4000-7999, статус 4ххх
-;		jmp short exit1
-;		
-;state4xxxTRUE:	
-;		MOV ECX,DWORD PTR DS:[452980h] ; добавляем h к мистическому хексу
-;		LEA EDX,DWORD PTR DS:[EAX-1F40h] ; вычитаем из 4ххх число 4000, оставляя ххх как ID
-;		XOR EAX,EAX 					; делаем проверку, является ли текущий ID равен целевому
-;		CMP DWORD PTR DS:[452990h],EAX
-;		JLE SHORT sector3
-;
-;
-
-
 
 
 
