@@ -12,9 +12,8 @@ SpawnerBoth1 proc
 
 		MOV ECX,DWORD PTR DS:[ESI]
 		ADD ESP,8h
-		;ADD EAX,32h ; original
-		MOV EAX, 100 ; заставляем спавнится только на 0 координате Х
-		MOV DWORD PTR DS:[ECX+10h],EAX ; Если отключить эту строку - спавн будет рандомный на всю ширину карты
+		ADD EAX,32h ; Можно заменить на "MOV EAX, N", где X - координата X, по которой должны спавниться игроки
+		MOV DWORD PTR DS:[ECX+10h],EAX ; Если закомментить эту строку - спавн будет рандомный на всю ширину карты
 		MOV EAX,DWORD PTR DS:[ESI]
 		FILD DWORD PTR DS:[EAX+10h]
 		FSTP QWORD PTR DS:[EAX+58h]
@@ -27,8 +26,7 @@ SpawnerPlayer1 proc
 
 		ADD EAX,DWORD PTR DS:[EDI+4h]
 		MOV EDX,DWORD PTR DS:[ESI]
-		;MOV DWORD PTR DS:[EDX+18h],EAX ; спавн игроков по Z, оригинал
-		MOV DWORD PTR DS:[EDX+18h],400 ; спавн игроков по Z
+		MOV DWORD PTR DS:[EDX+18h],EAX ; спавн игроков по Z. Можно заменить EAX на число, если хочется точной точки спавна
 		MOV EAX,DWORD PTR DS:[ESI]	
 		MOV DWORD PTR DS:[EAX+14h],0h ; спавн игроков по Y
 		MOV EAX,DWORD PTR DS:[ESI]
@@ -90,10 +88,9 @@ SpawnerCom1 proc
 
 		ADD EAX,DWORD PTR DS:[EDI+4h]
 		MOV EDX,DWORD PTR DS:[ESI+28h]
-		;MOV DWORD PTR DS:[EDX+18],EAX ; спавн игроков по Z, оригинал
-		MOV DWORD PTR DS:[EDX+18h],400 ; спавн игроков по Z, оригинал
+		MOV DWORD PTR DS:[EDX+18],EAX ; спавн компов по Z. Можно заменить EAX на число, если хочется точной точки спавна
 		MOV EAX,DWORD PTR DS:[ESI+28]
-		MOV DWORD PTR DS:[EAX+14h],0h ; спавн игроков по Y
+		MOV DWORD PTR DS:[EAX+14h],0h ; спавн компов по Y
 		MOV EAX,DWORD PTR DS:[ESI+28h]
 		ADD ESP,10h
 		FILD DWORD PTR DS:[EAX+10h] ; x ???
@@ -150,8 +147,8 @@ SpawnerCom1 endp
 
 SpawnerComStages1 proc
 
-		;ADD EAX,DWORD PTR DS:[EBX+0B0h] ; добавление рандомного числа к точки призыва по X
-		MOV EAX,DWORD PTR DS:[EBX+0B0h] ; считываем, вместо обработки рандомным числом.
+		ADD EAX,DWORD PTR DS:[EBX+0B0h] ; добавление рандомного числа к точки призыва по X
+		;MOV EAX,DWORD PTR DS:[EBX+0B0h] ; Заменить этой строкой строчку выше, чтобы отключить рандом
 		ADD ESP,8
 		MOV EDX,EAX
 		

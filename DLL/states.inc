@@ -134,7 +134,7 @@ skip:
 		POP EAX ;reserve
 		POP EDX ;reserve
 		
-		CMP EAX,2328 ; 9000
+		CMP EAX,2328h ; 9000
 		JGE SHORT [recover_1]
 		JMP [TransBack1]
 
