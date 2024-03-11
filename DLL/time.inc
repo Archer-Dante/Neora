@@ -1,28 +1,28 @@
 .Data
 
-FPS_back   dd 0043D13Eh
+FPS_back   		dd 0043D13Eh
 
-tt_proceed dd 00413119h
-tt_blocked dd 004143C6h
+tt_proceed 		dd 00413119h
+tt_blocked 		dd 004143C6h
 
-ts_sub_back dd 0041DD4Fh
+ts_sub_back 	dd 0041DD4Fh
 
-ts_timer dd ?
-ts_team  dd ?
-ts_type  dd ?
+ts_timer 		dd ?
+ts_team  		dd ?
+ts_type  		dd ?
 
-ts_fix	 dd 0043D159h
-ts_fire	 dd 004211A0h
-ts_jan1	 dd 0040704Dh
-ts_jan1b dd 00407DD3h
-ts_fa_b1 dd 0040DA78h
-ts_fa_b2 dd 0040837Eh
-ts_fa_b3 dd 00408396h
-ts_bg_b1 dd 0041A138h
-ts_bg_b2 dd 0041A2E9h
-ts_bg_b3 dd 0041A1C6h
+ts_fix	 		dd 0043D159h
+ts_fire	 		dd 004211A0h
+ts_jan1	 		dd 0040704Dh
+ts_jan1b 		dd 00407DD3h
+ts_fa_b1 		dd 0040DA78h
+ts_fa_b2 		dd 0040837Eh
+ts_fa_b3 		dd 00408396h
+ts_bg_b1 		dd 0041A138h
+ts_bg_b2 		dd 0041A2E9h
+ts_bg_b3 		dd 0041A1C6h
 
-some_function dd 00417170h
+some_function 	dd 00417170h
 .Code
 
 
@@ -100,14 +100,10 @@ FPS_rework proc
 		CMP DWORD PTR DS:[450BDCh],1 ; check if round close to ends up
 		JLE [change_fps]
 		CMP DWORD PTR DS:[450BDCh],24 ; check timer of round ending
-		JGE [regular]
+		JGE [change_fps]
 		ADD EBX,DWORD PTR DS:[slow_power] ; end round slow motion
 
 change_fps:
-		JMP [FPS_back]
-
-regular:
-		MOV EBX,33 ; regular FPS
 		JMP [FPS_back]
 
 FPS_rework endp
@@ -137,13 +133,13 @@ TS_substactor endp
 
 TS_menu_fix proc
 
-	CMP DWORD PTR DS:[44D020h],0
-	JE [skip]
-	MOV DWORD PTR DS:[ts_timer],0
+		CMP DWORD PTR DS:[44D020h],0
+		JE [skip]
+		MOV DWORD PTR DS:[ts_timer],0
 
 skip:
-	MOV EAX,DWORD PTR DS:[457BC8h]
-	JMP [ts_fix]
+		MOV EAX,DWORD PTR DS:[457BC8h]
+		JMP [ts_fix]
 
 TS_menu_fix endp
 

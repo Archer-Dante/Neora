@@ -28,7 +28,14 @@ limit_b_back3 	dd 0041FAD3h
 shake_back 	dd 0042EE2Fh
 
 spawner	dd 0043766Fh
+
+db3_fix  dd 00423B2Dh
+
+DropBoxLPfixb	dd 0043EA16h
+
 .Code
+
+
 
 
 
@@ -411,6 +418,46 @@ no_random:
 		JMP [spawner]
 
 Stage_Spawn_Coords endp
+
+
+dropbox3_fix proc
+
+		CMP DWORD PTR DS:[EAX+1Eh],002E002Eh
+		JNE [skip]
+		
+		MOV DWORD PTR DS:[EAX+1Eh],002E0031h
+		MOV DWORD PTR DS:[EAX+22h],0066006Ch
+		MOV DWORD PTR DS:[EAX+26h],00000069h
+
+skip:
+		PUSH EBX
+		PUSH ESI
+		PUSH EDI
+		PUSH EBP
+		MOV EBP,ESP
+		JMP [DropBoxLPfixb]
+
+
+dropbox3_fix endp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

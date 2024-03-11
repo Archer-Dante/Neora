@@ -25,8 +25,8 @@ include cursor.inc
 include external.inc
 include UI.inc
 include hack.inc
-include bodies.inc  
-include loading.inc  
+include bodies.inc
+include loading.inc
 include time.inc 
 
 .data
@@ -39,7 +39,7 @@ copycat  db "Neora Engine by Archer-Dante",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.03",00 ; Name of the Game Window
+		GameName		db "LF2: Neora Engine 2.04",00 ; Name of the Game Window
 		win_width   	dd 794		; Game window width  in pixels. "794" is default
 		win_height  	dd 550 		; Game window height in pixels. "550" is default
 		
@@ -53,7 +53,7 @@ copycat  db "Neora Engine by Archer-Dante",00
 		battle_limit	dd 1000		; Battle Mode defence limit. (ex.300 = 3.0), "300" is default
 		battle_step		dd 100		; Increasing and Decreasing step of defence change (ex.50 = 0.5), "50" is default
 		
-		Menu_Picture_R	dd 0		; Resets CHARMENU.png picture coords to 0 by x\y axis. 1 - enable, 0 - disable
+		Menu_Picture_R	dd 0		; Resets CHARMENU.png picture coords to 0 by x\y axis. (1 - on, 0 - off)
 		Unlock_Teams	dd 1		; Allows to change Team in Stage Mode. (1 - on, 0 - off)
 		F7_for_dead		dd 1		; Allows to use F7 after round ends. (1 - on, 0 - off)
 		;====================================================================================
@@ -196,7 +196,6 @@ DLLStartup proc
 	
 	invoke JmpPatch, 0041B01Fh, addr HP_bars_change
 	
-	invoke JmpPatch, 0041B01Fh, addr HP_bars_change
 	invoke WriteMem, 0041F523h, addr numbersFix,1 ; fix debug info in corner
 	;===================================================
 
@@ -236,6 +235,9 @@ DLLStartup proc
 	invoke JmpPatch, 0042EE0Eh, addr main_Shake	      	; Allows to change Shaking via Config Block
 	
 	invoke JmpPatch, 00437664h, addr Stage_Spawn_Coords
+	
+	invoke JmpPatch, 0043EA10h, addr dropbox3_fix		; fixes game crash after being affected by Dropbox 3+
+	invoke WriteMem, 0043EA15h, addr oneNOP,1	
 	;===================================================
 
 
