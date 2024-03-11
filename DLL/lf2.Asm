@@ -18,7 +18,6 @@ include itrkind.inc
 include itreff.inc
 include states.inc
 include window.inc
-include replay.inc
 include battle.inc
 include regen.inc
 include cursor.inc
@@ -28,6 +27,8 @@ include hack.inc
 include bodies.inc
 include loading.inc
 include time.inc 
+include rpg.inc 
+include event.inc
 
 .data
 memAlloc dd ?
@@ -39,7 +40,7 @@ copycat  db "Neora Engine by Archer-Dante",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.04",00 ; Name of the Game Window
+		GameName		db "LF2: Neora Engine 2.05 Prototype-Test Version",00 ; Name of the Game Window
 		win_width   	dd 794		; Game window width  in pixels. "794" is default
 		win_height  	dd 550 		; Game window height in pixels. "550" is default
 		
@@ -85,7 +86,7 @@ DLLStartup proc
 
 	;=============itr effects(itreff.inc)===============
 	invoke JmpPatch, 0042F54Ah, addr itr_effect_1xxx_to_9xxx 
-	invoke JmpPatch, 0042E90Fh, addr effect50 			; contains part of Bdy 50 counting
+	invoke JmpPatch, 0042E90Fh, addr effect50 			; contains part of Untouchable work
 	;===================================================
 
 	;=================states(states.inc)================
@@ -122,12 +123,37 @@ DLLStartup proc
 	
 	;=============== Battle Mode (battle.inc)===========
  	invoke JmpPatch, 0043947Fh, addr defence			; enhance defence limits 
- 	invoke JmpPatch, 0043A7F6h, addr batte_diffucult	; allows to choose CRAZY! in Battle Mode
+ 	invoke JmpPatch, 0043A7F6h, addr battle_diffucult	; allows to choose CRAZY! in Battle Mode
 	;===================================================	
 	
 	;=============== Regen (regen.inc)==================
-	invoke JmpPatch, 0041FAE5h, addr mana_speed	 	
-	invoke JmpPatch, 0041F9E2h, addr hp_speed
+	invoke JmpPatch, 0041F9E2h, addr hp_regen
+	invoke WriteMem, 0041F9C3h, addr oneNOP,14			; removes original HP to Dark HP binding (part 1)
+	invoke WriteMem, 0041F9D1h, addr oneNOP,14			; removes original HP to Dark HP binding (part 2)
+	invoke WriteMem, 0041F9DFh, addr oneNOP,3			; removes original HP to Dark HP binding (part 3)
+
+	invoke JmpPatch, 0041FA48h, addr mana_regen	 	
+	invoke WriteMem, 0041FA4Dh, addr oneNOP,15
+	invoke WriteMem, 0041FA5Ch, addr oneNOP,15
+	invoke WriteMem, 0041FA6Bh, addr oneNOP,15
+	invoke WriteMem, 0041FA7Ah, addr oneNOP,14
+	invoke WriteMem, 0041FA89h, addr oneNOP,15
+	invoke WriteMem, 0041FA98h, addr oneNOP,15
+	invoke WriteMem, 0041FAA7h, addr oneNOP,15
+	invoke WriteMem, 0041FAB6h, addr oneNOP,15
+	invoke WriteMem, 0041FAC5h, addr oneNOP,15
+	invoke WriteMem, 0041FAD4h, addr oneNOP,15
+	invoke WriteMem, 0041FAE3h, addr oneNOP,15
+	invoke WriteMem, 0041FAF2h, addr oneNOP,15
+	invoke WriteMem, 0041FB01h, addr oneNOP,15
+	invoke WriteMem, 0041FB10h, addr oneNOP,15
+	invoke WriteMem, 0041FB1Fh, addr oneNOP,9
+	
+	invoke CallPatch,00418223h, addr bottle_limit
+	invoke CallPatch,00418154h, addr bottle_limit
+	
+	invoke JmpPatch, 004370FEh, addr stage_refill	 
+	invoke WriteMem, 00437103h, addr oneNOP,5
 	;===================================================		
 	
 	;=============== Cursor (cursor.inc)=================
@@ -194,7 +220,9 @@ DLLStartup proc
 	invoke WriteMem, 0042AAA0h, addr opacity,2 ; ???
 	invoke WriteMem, 0042AB09h, addr opacity,2 ; RFace second phase
 	
-	invoke JmpPatch, 0041B01Fh, addr HP_bars_change
+	;invoke JmpPatch, 0041B01Fh, addr HP_bars_change
+	
+	invoke JmpPatch, 0041AF20h, addr total_bar_rework ; complete rehook of original game bar-draw procedure
 	
 	invoke WriteMem, 0041F523h, addr numbersFix,1 ; fix debug info in corner
 	;===================================================
@@ -242,11 +270,23 @@ DLLStartup proc
 
 
 	;==============body kinds(bodies.inc)===============
-	invoke JmpPatch, 0042E677h, addr weNeedMoarBodies
-	invoke WriteMem, 0042E67Ch, addr oneNOP,7
-	invoke JmpPatch, 0042E75Bh, addr hurtingBodies
-	invoke JmpPatch, 0042E89Ah, addr bdy50
+	;invoke JmpPatch, 0042E677h, addr weNeedMoarBodies
+	;invoke WriteMem, 0042E67Ch, addr oneNOP,7
+	;invoke JmpPatch, 0042E89Ah, addr untouchable
+	;invoke JmpPatch, 0042E75Bh, addr bdy_rework
+	
+	
+	
+	
+	invoke JmpPatch, 00417879h, addr bdy_solo_hit_recall 	; allows game engine track which bdy of target was
+															; attacked (for 1 target on hit)
+	invoke JmpPatch, 004179EEh, addr bdy_multi_hit_recall 	; allows game engine track which bdy of target was
+															; attacked (for 2+ targets at once or multihit)
+															
+	invoke JmpPatch, 0042E756h, addr dmg_calc_rework ; makes resists and stats works on
 	;===================================================
+
+
 
 
 	;================ Memory Relocation ================
@@ -275,9 +315,15 @@ DLLStartup proc
 	invoke JmpPatch, 004110D2h, addr Loading_Rework_SlowAttr ; change "delay:" to "slow:" attribute (except armor)
 	invoke JmpPatch, 0042D4EFh, addr Player_Stats	
 	invoke JmpPatch, 0042D3E1h, addr Computer_Stats
+	invoke JmpPatch, 00410795h, addr Loading_Rework_ohp		; adds "ohp:" attribute to opoint
+	invoke JmpPatch, 004201E3h, addr ohp					; makes "ohp:" feature possible
+	invoke JmpPatch, 004111D4h, addr Loading_Rework_bdy		; adds lots of features for bdy
+	invoke JmpPatch, 00410EB8h, addr Loading_Rework_itr		; adds lots of features for itr	
+
+	invoke JmpPatch, 00402402h, addr Initialization			; initializes everything in game since exe launch
 	;===================================================
-	
-	;================== Time Tracing ===================
+
+	;============== Time Tracing (time.inc) ============
 	invoke JmpPatch, 0043D12Dh, addr FPS_rework 		; + adds slow motion in every round end on last hit
 	invoke JmpPatch, 0041310Dh, addr TimeStop 			; TimeStop Engine
 	invoke JmpPatch, 0041DD4Ah, addr TS_substactor		; part of TS Engine
@@ -292,13 +338,33 @@ DLLStartup proc
 	invoke JmpPatch, 0041A1BDh, addr TS_bg_stop_2 			; stops all another BGs
 	;===================================================
 
-	;================== RPG Rework ====================
-	invoke JmpPatch, 0041FAEBh, addr limit_breaker
-	invoke JmpPatch, 0041FA8Eh, addr limit_breaker2
-	invoke JmpPatch, 0041FACEh, addr limit_breaker3
+
+	;==================   Real RPG   ===================
+	;invoke JmpPatch, 00413F1Fh, addr all_stats_calculation ; calculates Stats and Resists in real time
+	
+	;invoke JmpPatch, 00413F1Fh, addr calculate_Max_MP
 	;===================================================
-	
-	
+
+
+
+	;===============================================================
+	; All codes below made only for demo or experimental expirience
+	; There nothing of public nor useful, so u can juse ignore it
+	;===============================================================
+	;=======================   Event Only   ========================
+;	MOV DWORD PTR DS:[451160h],1 ; в стадию
+;	MOV DWORD PTR DS:[450C30h],-1 ; только Crazy
+;	
+;	invoke CallPatch, 00432114h, addr lock_game_mode ; сразу перейти к выбору перса
+;	
+;	invoke WriteMem,  0042A4EBh, addr oneNOP, 6 ; отрубаем возможность вернуться назад
+;	invoke WriteMem,  0042A4D7h, addr oneNOP, 12 ; отрубаем звук клика назад по меню
+;	invoke WriteMem,  00429F9Bh, addr disable_menu_render, 1 ; отрубаем отрисовку меню (блик перехода)
+;	
+;	invoke JmpPatch,  0042D749h, addr only_crazy ; не даем менять сложность
+	;===============================================================
+
+
 	ret
 
 

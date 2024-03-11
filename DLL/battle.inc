@@ -32,7 +32,7 @@ jmp2:	JMP [defence1]
 defence endp
 
 
-batte_diffucult proc
+battle_diffucult proc
 
 
 		CMP DWORD PTR DS:[458428h],1 ; check cheat
@@ -60,7 +60,7 @@ proceed:
 		JMP [crazyness]
 		
 
-batte_diffucult endp
+battle_diffucult endp
 
 
 

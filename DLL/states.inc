@@ -138,7 +138,7 @@ ts_setup_0:
 		JE [doesnt_exist_0]
 		
 		MOV EAX,DWORD PTR DS:[EBX+ECX*4+3ECh] 
-		MOV DWORD PTR DS:[EAX+158h],EDX ; записываем объекту таймер
+		MOV DWORD PTR DS:[EAX+150h],EDX ; записываем объекту таймер
 
 		doesnt_exist_0:
 		INC ECX
@@ -146,7 +146,7 @@ ts_setup_0:
 		JL [ts_setup_0]
 		
 		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; исходный владелец стейта
-		MOV DWORD PTR DS:[EAX+158h],-1 ; помечаем его как неподверженного эффекту
+		MOV DWORD PTR DS:[EAX+150h],-1 ; помечаем его как неподверженного эффекту
 		MOV DWORD PTR DS:[ts_timer],EDX ; запись времени ТС для движка
 		
 		MOV DWORD PTR DS:[ts_team],0 ; обнуление команды, чтобы ТС 0 работал после ТС 1
@@ -165,9 +165,9 @@ ts_setup_1:
 		
 		MOV EAX,DWORD PTR DS:[EBX+ECX*4+3ECh] 
 		CMP DWORD PTR DS:[EAX+364h],ESI ; проверка команды
-		MOV DWORD PTR DS:[EAX+158h],EDX ; записываем объекту таймер
+		MOV DWORD PTR DS:[EAX+150h],EDX ; записываем объекту таймер
 		JNE [doesnt_exist_1]
-		MOV DWORD PTR DS:[EAX+158h],-1 ; если равна, то даем сопротивление ТС
+		MOV DWORD PTR DS:[EAX+150h],-1 ; если равна, то даем сопротивление ТС
 
 		doesnt_exist_1:
 		INC ECX
@@ -176,7 +176,7 @@ ts_setup_1:
 		
 
 		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; исходный владелец стейта
-		MOV DWORD PTR DS:[EAX+158h],-1 ; помечаем его как неподверженного эффекту
+		MOV DWORD PTR DS:[EAX+150h],-1 ; помечаем его как неподверженного эффекту
 		MOV DWORD PTR DS:[ts_timer],EDX ; запись времени ТС для движка
 		MOV DWORD PTR DS:[ts_type],1 ; записываем Time Stop Type
 		POP ESI
@@ -188,7 +188,7 @@ ts_setup_2:
 		JE [doesnt_exist_2]
 		
 		MOV EAX,DWORD PTR DS:[EBX+ECX*4+3ECh] 
-		MOV DWORD PTR DS:[EAX+158h],EDX ; записываем объекту таймер
+		MOV DWORD PTR DS:[EAX+150h],EDX ; записываем объекту таймер
 
 		doesnt_exist_2:
 		INC ECX
@@ -196,7 +196,7 @@ ts_setup_2:
 		JL [ts_setup_2]
 		
 		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; исходный владелец стейта
-		MOV DWORD PTR DS:[EAX+158h],-1 ; помечаем его как неподверженного эффекту
+		MOV DWORD PTR DS:[EAX+150h],-1 ; помечаем его как неподверженного эффекту
 		MOV DWORD PTR DS:[ts_timer],EDX ; запись времени ТС для движка
 		
 		MOV DWORD PTR DS:[ts_team],0 ; обнуление команды, чтобы ТС 0 работал после ТС 1

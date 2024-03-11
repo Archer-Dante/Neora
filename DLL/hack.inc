@@ -1,4 +1,7 @@
 .Data
+comp_back1	dd 004326EAh
+comp_back2  dd 004326DEh
+
 F7_rework_back dd 0042188Bh
 
 F9_deny 		dd 00421828h
@@ -37,15 +40,46 @@ DropBoxLPfixb	dd 0043EA16h
 
 
 
+comparator proc
+
+		CMP [replay_switch],TRUE
+		JE [skip]
+
+		CMP EAX,DWORD PTR DS:[44F620h]
+		JE SHORT [skip]
+		JMP [comp_back2]
+skip: 
+		JMP [comp_back1]
+
+comparator endp
+
 
 
 F7_rework proc
 
 		MOV EAX,DWORD PTR DS:[ESI]
-		MOV ECX,1F4h
-		CMP DWORD PTR DS:[EAX+304h],ECX
-		JGE [skip]
+		MOV EDX,DWORD PTR DS:[EAX+368h]
+		MOV EDX,DWORD PTR DS:[EDX+0B0h]
+		CMP EDX,0
+		JLE [skip]
+		
+		start_hp_max:
+		CMP DWORD PTR DS:[EDX+4],0
+		JLE [start_hp]
+		MOV ECX,DWORD PTR DS:[EDX+4]
 		MOV DWORD PTR DS:[EAX+304h],ECX
+		JMP [start_hp]
+		skip_hp_max:
+		MOV ECX,1F4h
+		MOV DWORD PTR DS:[EAX+304h],ECX
+		
+		start_hp:
+		CMP DWORD PTR DS:[EDX+0],0
+		JLE [skip]
+		MOV ECX,DWORD PTR DS:[EDX+0]
+		MOV DWORD PTR DS:[EAX+2FCh],ECX
+		MOV DWORD PTR DS:[EAX+300h],ECX
+		JMP [start_hp_exist]
 
 skip:
 		MOV EAX,DWORD PTR DS:[ESI]
@@ -54,8 +88,26 @@ skip:
 		MOV EAX,DWORD PTR DS:[ESI]
 		MOV ECX,DWORD PTR DS:[EAX+300h]
 		MOV DWORD PTR DS:[EAX+2FCh],ECX
+start_hp_exist:
+		MOV ECX,1F4h ; regular value
+
 		MOV EDX,DWORD PTR DS:[ESI]
-		MOV DWORD PTR DS:[EDX+308h],1F4h
+		MOV EAX,DWORD PTR DS:[EDX+190h]
+		CMP EAX,0
+		JLE [no_max_mp]
+		
+		
+			CMP DWORD PTR DS:[EAX+60h],0 ; max mp
+			JLE [no_max_mp]
+			MOV ECX,DWORD PTR DS:[EAX+60h] ; max mp
+		
+			CMP DWORD PTR DS:[EAX+70h],0 ; mana cap
+			JLE [no_mp_cap]
+			MOV ECX,DWORD PTR DS:[EAX+70h] ; mana cap
+		
+		no_max_mp:
+		no_mp_cap:
+		MOV DWORD PTR DS:[EDX+308h],ECX
 		MOV DWORD PTR DS:[EDX+120h],0 ; resets poison
 		MOV DWORD PTR DS:[EDX+12Ch],0 ; resets weak
 		MOV DWORD PTR DS:[EDX+130h],0 ; resets silence
@@ -332,51 +384,6 @@ Result_Sound_Delay endp
 
 
 
-
-
-
-
-limit_breaker proc
-
-			MOV ECX,DWORD PTR DS:[ESI+304h]
-			CMP ECX,DWORD PTR DS:[ESI+2FCh]
-			JGE SHORT [j1]
-			MOV DWORD PTR DS:[ESI+2FCh],ECX
-		j1:
-			CMP ECX,DWORD PTR DS:[ESI+300h]
-			JGE SHORT [j2]
-			MOV DWORD PTR DS:[ESI+300h],ECX
-		j2:
-			MOV ECX,1F4h
-			MOV EAX,DWORD PTR DS:[ESI+308h]
-			CMP EAX,ECX
-			JG SHORT [j3]
-			TEST EAX,EAX
-			JGE SHORT [j4]
-			XOR ECX,ECX
-		j3:
-			MOV DWORD PTR DS:[ESI+308h],ECX
-		j4:
-			JMP [limit_b_back]
-
-limit_breaker endp
-
-
-
-limit_breaker2 proc
-
-			MOV EAX,DWORD PTR DS:[ESI+300h] ; dark hp
-			JMP [limit_b_back2]
-
-limit_breaker2 endp
-
-
-limit_breaker3 proc
-
-			MOV ECX,DWORD PTR DS:[ESI+300h] ; dark hp
-			JMP [limit_b_back3]
-
-limit_breaker3 endp
 
 
 

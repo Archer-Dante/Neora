@@ -37,13 +37,13 @@ TimeStop proc
 		JE [ts_setup_2]
 		
 ts_setup_0:
-		CMP DWORD PTR DS:[ESI+158h],-1
+		CMP DWORD PTR DS:[ESI+150h],-1
 		JE [proceed]
-		CMP DWORD PTR DS:[ESI+158h],0
+		CMP DWORD PTR DS:[ESI+150h],0
 		JE [new_object]
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
-		SUB DWORD PTR DS:[ESI+158h],1
+		SUB DWORD PTR DS:[ESI+150h],1
 		JMP [blocked] ; отправляем дальше, пропуская считывание управления
 		
 ts_setup_1:
@@ -52,7 +52,7 @@ ts_setup_1:
 		JE [proceed]
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
-		SUB DWORD PTR DS:[ESI+158h],1
+		SUB DWORD PTR DS:[ESI+150h],1
 		JMP [blocked] ; отправляем дальше, пропуская считывание управления
 		
 ts_setup_2:
@@ -61,12 +61,12 @@ ts_setup_2:
 		JE [proceed]
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
-		SUB DWORD PTR DS:[ESI+158h],1
+		SUB DWORD PTR DS:[ESI+150h],1
 		JMP [blocked] ; отправляем дальше, пропуская считывание управления
 		
 new_object:
 		MOV EAX, DWORD PTR DS:[ts_timer]
-		MOV DWORD PTR DS:[ESI+158h],EAX
+		MOV DWORD PTR DS:[ESI+150h],EAX
 		JMP [blocked]
 
 proceed:

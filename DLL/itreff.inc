@@ -67,7 +67,7 @@ effect4xxx:
 
 	SUB EAX,0FA0h ; -4000
 	SUB DWORD PTR DS:[EBX+308h],EAX ; отнимаем ману
-	ADD DWORD PTR DS:[EBX+350h],EDX ; запись MP Lost
+	ADD DWORD PTR DS:[EBX+350h],EAX ; запись MP Lost
 
 	JMP [Back4]
 	
@@ -194,9 +194,9 @@ effect50 proc
 		CMP DWORD PTR DS:[ECX],0 	
 		JLE [skip]
 		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX]
-		CMP EDX, 50
-		JE [bdy_50]
+		MOV EDX,DWORD PTR DS:[ECX+20h]
+		TEST EDX,EDX
+		JNZ [untouchable_true]
 		
 skip:
 		POP ECX
@@ -212,23 +212,10 @@ eff_50:
     	JMP [e50_back1]
     	
     	
-bdy_50:
-		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h ; получаем страницу фрейма
-		FSTP ST
-		ADD ECX,DWORD PTR DS:[EBX+368h]
-		LEA ECX,DWORD PTR DS:[ECX+958h] ;bdy
-		CMP DWORD PTR DS:[ECX],0 	
-		JLE [skip]
-		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX+2Ch]
-		CMP EDX, 2
-		JE [skip]
-		CMP EDX, 20
-		JE [skip]
-		CMP EDX, 21
-		JE [skip]
-		CMP EDX, 22
-		JE [skip]
+untouchable_true:
+		MOV EDX,DWORD PTR DS:[EDX]
+		TEST EDX,EDX
+		JZ [skip]
 
 		POP ECX
 		POP EDX

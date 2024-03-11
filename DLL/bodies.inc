@@ -4,11 +4,17 @@ body_back_1	dd 0042E683h
 body_back_2 dd 00430A67h
 body_back_3 dd 0042E6DDh
 
-bdy50_back  dd 0042E8A4h
+untouchable_back  dd 0042E8A4h
 
 regular_damage  dd 0042E767h
 after_damage	dd 0042E792h
 
+karters_attributes dd 00430DA0h
+dmg_calc_rework_back dd 0042E75Bh
+
+
+solo_hit_recall 	dd 0041787Fh
+multi_hit_recall 	dd 004179F5h
 .code
 
 weNeedMoarBodies proc
@@ -26,28 +32,25 @@ weNeedMoarBodies proc
 										; в этом случае мы получаем указатель на самый верхний (первый) "bdy",
 										; который был настигнут атакой Itr
 		
-		
-										
 		CMP DWORD PTR DS:[EAX],999		; проверка, что этот "bdy" не меньше 999
 		JLE [not_match1]				; если нет - уходим
 		
 		CMP DWORD PTR DS:[EAX],1999		; проверка, что этот "bdy" больше 1999
-		JL [state1000]					; если меньше, то это 1000-1999
+		JL [bdy1000]					; если меньше, то это 1000-1999
 		
 		CMP DWORD PTR DS:[EAX],2999		; проверка, что этот "bdy" больше 2999
-		JL [state2000]					; если меньше, то это 2000-2999
+		JL [bdy2000]					; если меньше, то это 2000-2999
 		
 		CMP DWORD PTR DS:[EAX],3999		; проверка, что этот "bdy" больше 3999
-		JL [state3000]					; если меньше, то это 3000-3999
+		JL [bdy3000]					; если меньше, то это 3000-3999
 		
 		CMP DWORD PTR DS:[EAX],4999		; проверка, что этот "bdy" больше 4999
-		JL [state4000]					; если меньше, то это 4000-4999
+		JL [bdy4000]					; если меньше, то это 4000-4999
 		
-		CMP DWORD PTR DS:[EAX],1000000000	; 1xxyyyzzzw
-		JG [bdy_1xxyyyzzzww]
 		JMP [not_match1] ; ДЛЯ УСТРАНЕНИЯ БАГОВ, КОГДА ПОПАДАЕТСЯ НЕИЗВЕСТНЫЙ BDY
 		
-state1000:
+		
+bdy1000:
 		MOV ECX,DWORD PTR DS:[EBX+368h]
 		CMP DWORD PTR DS:[ECX+6F8h],0
 		JNE [finish_xzzz]
@@ -63,7 +66,7 @@ state1000:
 		MOV DWORD PTR DS:[EDI+0B4h],-3 ; даем Шейк Цели в 1\10 секунды
 		JMP [finish_xzzz]	
 		
-state2000:	
+bdy2000:	
 		MOV ECX,DWORD PTR DS:[EBX+368h]
 		CMP DWORD PTR DS:[ECX+6F8h],0
 		JNE [finish_xzzz]
@@ -77,7 +80,7 @@ state2000:
 		MOV DWORD PTR DS:[EDI+70h],ECX
 		JMP [finish_xzzz]
 		
-state3000:	
+bdy3000:	
 		MOV ECX,DWORD PTR DS:[EBX+364h]
 		MOV DWORD PTR DS:[EDI+364h],ECX	
 		MOV ECX,DWORD PTR DS:[EAX]
@@ -87,7 +90,7 @@ state3000:
 		MOV DWORD PTR DS:[EDI+0B4h],-3 ; даем Шейк Цели в 1\10 секунды
 		JMP [finish_xzzz]
 		
-state4000:	
+bdy4000:	
 		MOV ECX,DWORD PTR DS:[EBX+364h]
 		MOV DWORD PTR DS:[EDI+364h],ECX	
 		MOV ECX,DWORD PTR DS:[EAX]
@@ -98,450 +101,15 @@ state4000:
 finish_xzzz:
 		JMP [body_back_2]	
 
-
-bdy_1xxyyyzzzww:	; ECX активно используется, как и EAX
-		PUSH EAX
-		PUSH EDX
-		PUSH ECX
-		PUSH EBX
-
-		MOV EAX,DWORD PTR DS:[EAX] ; получаем № тела
-		SUB EAX,1000000000 ; убираем фильтр от переменных
-		MOV ECX,10000000
-		CDQ
-		IDIV ECX
-		CMP EAX,0
-		JE [zero_fix]
-		
-		MOV EBX,EAX ; если число рандом не 0, то сохраним его на время после рассчета рандома
-		PUSH 100 ; макс число рандома
-		PUSH EDX ; резервируем остаток
-		CALL DWORD PTR [random] ; result in EAX ~ EDX
-		POP EAX ; перемещаем остаток в EAX для дальнейшего парсинга
-		ADD ESP,4h ; выравниваем стек
-		CMP EBX,EDX ; сравниваем (наш %) и (рандом %)
-		JL [skip] ; если не хватило - уходим сразу	
-		
-		JMP [target_f]
-zero_fix:		
-		XCHG EAX,EDX
-target_f:
-		POP EBX ; восстанавливаем адрес атакующего
-		MOV ECX, 10000
-		CDQ
-		IDIV ECX ; достаем из EAX адрес, куда перейдет Цель
-		CMP EAX, 799
-		JG [attacker_f]
-		MOV DWORD PTR DS:[EDI+70h],EAX
-		MOV DWORD PTR DS:[EDI+88h],0
-
-attacker_f:
-		MOV EAX,EDX ; переносим остаток в EAX для нового деления
-		MOV ECX,10
-		CDQ
-		IDIV ECX
-		CMP EAX, 799
-		JG [last_effect]
-		MOV ECX, DWORD PTR DS:[EBX+70h]
-		MOV DWORD PTR DS:[EBX+70h],EAX
-		MOV DWORD PTR DS:[EBX+88h],0
-		
-last_effect:
-		MOV EAX,EDX
-		
-		CMP EAX,0 ;
-		JLE [not_match2]
-		CMP EAX,1 ;
-		JE [setup_1]
-		CMP EAX,2 ;
-		JE [setup_2]
-		CMP EAX,3 ;
-		JE [setup_3]
-		CMP EAX,4 ;
-		JE [setup_4]
-		CMP EAX,5 ;
-		JE [setup_5]
-		CMP EAX,6 ;
-		JE [setup_5]
-		CMP EAX,7 ;
-		JE [setup_5]
-		JMP [not_match2]
-		
-		setup_1:
-		MOV EAX, DWORD PTR DS:[EBX+364h]
-		MOV DWORD PTR DS:[EDI+364h],EAX
-		JMP [not_match2]
-		
-		setup_2:
-		IMUL EAX,ECX,1B0h
-		FSTP ST
-		ADD EAX,DWORD PTR DS:[EBX+368h]
-		LEA EAX,DWORD PTR DS:[EAX+958h] ; itr check
-		CMP DWORD PTR DS:[EAX],0
-		JLE [there_is_no_itr]
-		
-		MOV EAX,DWORD PTR DS:[EAX+8]
-		MOV EAX,DWORD PTR DS:[EAX+44h] ; gets Injury
-		SUB DWORD PTR DS:[EDI+2FCh],EAX
-		CMP DWORD PTR DS:[EDI+2FCh],0
-		JGE [dont_fix]
-		MOV DWORD PTR DS:[EDI+2FCh],0
-		dont_fix:
-		ADD DWORD PTR DS:[EDI+34Ch],EAX ; HP Lost - target
-		ADD DWORD PTR DS:[EBX+348h],EAX ; Attack  - attacker
-		there_is_no_itr:
-		JMP [not_match2]
-		
-		setup_3:
-		MOV EAX, DWORD PTR DS:[EBX+364h]
-		MOV DWORD PTR DS:[EDI+364h],EAX
-		JMP [setup_2]
-		
-		setup_4:
-		MOV DWORD PTR DS:[EBX+0B4h],3 
-		MOV DWORD PTR DS:[EDI+0B4h],-3
-		JMP [not_match2]
-		
-		setup_5:
-		MOV DWORD PTR DS:[EBX+0B4h],3 
-		MOV DWORD PTR DS:[EDI+0B4h],-3
-		JMP [setup_1]
-		
-		setup_6:
-		MOV DWORD PTR DS:[EBX+0B4h],3 
-		MOV DWORD PTR DS:[EDI+0B4h],-3
-		JMP [setup_2]
-		
-		setup_7:
-		MOV DWORD PTR DS:[EBX+0B4h],3 
-		MOV DWORD PTR DS:[EDI+0B4h],-3
-		JMP [setup_3]
-		
-		
-skip:
-		POP EBX
-		POP ECX
-		POP EDX
-		POP EAX
-		
 not_match1:
 		JMP [body_back_3]
-		
-not_match2:
-		POP ECX
-		POP EDX
-		POP EAX
-		JMP [body_back_2] ; если заменить на "body_back1" и "body_back3",
-						  ; то атаки будут проходить не давая менять кадр
 
 weNeedMoarBodies endp
 
 
-hurtingBodies proc
-
-		PUSH EAX
-		PUSH ECX
-		PUSH EDX
-		
-		MOV ECX, DWORD PTR DS:[EDI+368h] ; цель
-		CMP DWORD PTR DS:[ECX+6F8h],0 ; избавляемся от багов при атаке не по Типам 0
-		JNE [type_r]
-		
-		MOV ECX, DWORD PTR DS:[EBX+368h] ; атакующий
-		CMP DWORD PTR DS:[ECX+6F8h],0 ; избавляемся от багов при атаке удерживаемым оружием
-		JNE [type_r]
-		
-		IMUL ECX,DWORD PTR DS:[EDI+70h],1B0h
-		FSTP ST
-		ADD ECX,DWORD PTR DS:[EDI+368h]
-		LEA EDX,DWORD PTR DS:[ECX+95Ch] 
-		CMP DWORD PTR DS:[EDX],0 ; фикс, если ни одного bdy нету
-		JE	[type_r]
-		MOV EAX,DWORD PTR DS:[EDX+8]
-		MOV EAX,DWORD PTR DS:[EAX]	
-
-		CMP EAX,1000000; проверка, что этот "bdy" не меньше 1000000 (bdy 1XXYYYX)
-		JLE [type_r]					; если нет - уходим
-		CMP EAX,1999999; проверка, что этот "bdy" не меньше 1999999 (bdy 1XXYYYX)
-		JLE [calculate]					; если фильтр сработал - это наш "bdy"
-
-		JMP [type_r] ; любой неподходящий урон будет считаться типом 00
 
 
-calculate:
-		PUSH EBX
-		
-		SUB EAX, 1000000 ; получаем наши переменные
-		MOV ECX, 10000   ; этим мы оставим в ECX только % вероятности
-		CDQ
-		IDIV ECX
-		
-		CMP EAX, 0
-		JE [skip_random]
-		
-		MOV EBX,EAX ; если число рандом не 0, то сохраним его на время после рассчета рандома
-		PUSH 100 ; макс число рандома
-		PUSH EDX ; резервируем остаток
-		CALL DWORD PTR [random] ; result in EAX ~ EDX
-		POP EAX ; перемещаем остаток в EAX для дальнейшего парсинга
-		ADD ESP,4h ; выравниваем стек
-		CMP EBX,EDX ; сравниваем (наш %) и (рандом %)
-		JL [no_chance] ; если не хватило - допускаем, что урон просто пройдется по цели
-		JMP [check_percentage]
-
-; ======================================================================================
-
-skip_random:
-		XCHG EAX,EDX ; отправляем в EAX остаток
-check_percentage:
-		POP EBX
-
-		MOV ECX, 10 ; отсекаем тип урона от %
-		CDQ
-		IDIV ECX ; тип урона в EDX, % отражения в EAX
-
-		CMP EAX,0 ; если отражается 0%
-		JE [type_r] ; то уходим в простое нанесение урона
-		
-		
-		PUSH EDX ; резервим тип урона
-		CALL [gets_Injury_from_attacker]
-		IMUL EAX,ECX ; умножаем урон на % отражения
-		MOV ECX,100
-		CDQ
-		IDIV ECX ; делим результат ещё на 100, получаем возврвщаемый % урона
-		POP EDX ; восстанавливаем тип урона
-
-check_type: ; сюда нет переходов, метка-ориентир
-		CMP EDX,0 ; damage type 0
-		JE [Dtype_0]
-		CMP EDX,1 ; damage type 1
-		JE [Dtype_1]
-		CMP EDX,2 ; damage type 2
-		JE [Dtype_2]
-		CMP EDX,3 ; damage type 3
-		JE [Dtype_3]
-		CMP EDX,4 ; damage type 4
-		JE [Dtype_4]
-		CMP EDX,5 ; damage type 5
-		JE [Dtype_5]
-		CMP EDX,6 ; damage type 6
-		JE [Dtype_6]
-		CMP EDX,7 ; damage type 7
-		JE [Dtype_7]
-		JMP [type_r] ; если не соответствует никакому типу урон будет нанесен как обычный, без спец тела
-
-Dtype_0:
-		CMP DWORD PTR DS:[EBX+160h],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+160h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_1:
-		CMP DWORD PTR DS:[EBX+164h],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+164h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_2:
-		CMP DWORD PTR DS:[EBX+168h],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+168h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_3:
-		CMP DWORD PTR DS:[EBX+16Ch],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+16Ch] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_4:
-		CMP DWORD PTR DS:[EBX+170h],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+170h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_5:
-		CMP DWORD PTR DS:[EBX+174h],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+174h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_6:
-		CMP DWORD PTR DS:[EBX+178h],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+178h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-Dtype_7:
-		CMP DWORD PTR DS:[EBX+17Ch],0
-		JLE [Reflect_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EBX+17Ch] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Reflect_DMG]
-
-Reflect_DMG:		
-		SUB DWORD PTR DS:[EBX+2FCh],EAX ; вычитаем хп у атакующего
-		CMP DWORD PTR DS:[EBX+2FCh],0
-		JG [its_alive]
-		MOV DWORD PTR DS:[EBX+70h],0
-		MOV DWORD PTR DS:[EBX+88h],0		
-its_alive:
-		ADD DWORD PTR DS:[EBX+34Ch],EAX ; добавляем HP Lost
-		ADD DWORD PTR DS:[EDI+348h],EAX ; добавляем защищающемуся Attack
-		
-; ======================================================================================
-		
-DMG_target:
-		CALL [gets_Injury_from_attacker]
-		MOV EAX,ECX ; перенесем урон в EAX, чтобы проще было работать
-		CMP EDX,0 ; damage type 0 to recieve
-		JE [Dtype_0_t]
-		CMP EDX,1 ; damage type 1 to recieve
-		JE [Dtype_1_t]
-		CMP EDX,2 ; damage type 2 to recieve
-		JE [Dtype_2_t]
-		CMP EDX,3 ; damage type 3 to recieve
-		JE [Dtype_3_t]
-		CMP EDX,4 ; damage type 4 to recieve
-		JE [Dtype_4_t]
-		CMP EDX,5 ; damage type 5 to recieve
-		JE [Dtype_5_t]
-		CMP EDX,6 ; damage type 6 to recieve
-		JE [Dtype_6_t]
-		CMP EDX,7 ; damage type 7 to recieve
-		JE [Dtype_7_t]
-		
-Dtype_0_t:
-		CMP DWORD PTR DS:[EDI+160h],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+160h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_1_t:
-		CMP DWORD PTR DS:[EDI+164h],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+164h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_2_t:
-		CMP DWORD PTR DS:[EDI+168h],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+168h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_3_t:
-		CMP DWORD PTR DS:[EDI+16Ch],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+16Ch] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_4_t:
-		CMP DWORD PTR DS:[EDI+170h],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+170h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_5_t:
-		CMP DWORD PTR DS:[EDI+174h],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+174h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_6_t:
-		CMP DWORD PTR DS:[EDI+178h],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+178h] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-Dtype_7_t:
-		CMP DWORD PTR DS:[EDI+17Ch],0
-		JLE [Taking_DMG] ; если сопротивления урону равно 0, то сразу идем в нанесение урона.
-		MOV ECX, DWORD PTR DS:[EDI+17Ch] ; берем % сопротивления урону
-		CALL [Calculate_DMG_RESIST]
-		JMP [Taking_DMG]
-
-Taking_DMG:
-		SUB DWORD PTR DS:[EDI+2FCh],EAX ; вычитаем хп у атакующего
-		ADD DWORD PTR DS:[EDI+34Ch],EAX ; добавляем HP Lost
-		ADD DWORD PTR DS:[EBX+348h],EAX ; добавляем защищающемуся Attack
-		JMP [bdy_done]
-
-; ======================================================================================
-
-Calculate_DMG_RESIST:
-		PUSH ESI
-		MOV ESI,EAX ; резервируем начальный урон, который должен получить враг до учета сопротивления
-		IMUL EAX,ECX ; перемножаем Урон на % Сопротивления
-		MOV ECX,100
-		IDIV ECX ; делим на 100, получаем сколько урона будет ВЫТЕРПЛЕНО
-		SUB ESI,EAX ; вычитаем из изначального урона ОТРЕЗИСТЕННЫЙ
-		MOV EAX,ESI ; перемещаем результат в EAX
-		POP ESI
-		RET
-
-gets_Injury_from_attacker:
-		CMP DWORD PTR DS:[EBX+70h],0
-		JLE [zero_fix]
-		
-		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h
-		FSTP ST
-		ADD ECX,DWORD PTR DS:[EBX+368h]
-		LEA ECX,DWORD PTR DS:[ECX+958h] 			
-		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX+64h] ; gets Damage Type in EDX
-		MOV ECX,DWORD PTR DS:[ECX+44h] ; gets Injury in ECX
-		RET ; result in ECX, type of Injury in EDX
-		
-	zero_fix:		
-		IMUL ECX,DWORD PTR DS:[EBX+74h],1B0h ; если 70-й почему-то пустой, то будет браться с 74
-		FSTP ST
-		ADD ECX,DWORD PTR DS:[EBX+368h]
-		LEA ECX,DWORD PTR DS:[ECX+958h] 			
-		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX+64h] ; gets Damage Type in EDX
-		MOV ECX,DWORD PTR DS:[ECX+44h] ; gets Injury in ECX
-		RET ; result in ECX, type of Injury in EDX
-		
-; ======================================================================================
-
-type_r: ; для завершени
-		POP EDX
-		POP ECX
-		POP EAX
-
-		SUB DWORD PTR DS:[EDI+2FCh],ECX
-		ADD DWORD PTR DS:[EDI+34Ch],ECX
-		JMP [regular_damage]
-		
-no_chance: ; если не хватило рандома, урон просто пройдется по цели
-		POP EBX
-		POP EDX
-		POP ECX
-		POP EAX
-
-		SUB DWORD PTR DS:[EDI+2FCh],ECX
-		ADD DWORD PTR DS:[EDI+34Ch],ECX
-		JMP [regular_damage]
-		
-bdy_done:
-		POP EDX
-		POP ECX
-		POP EAX
-		MOV DWORD PTR DS:[EBX+0B4h],3 ; даем Шейк Атакующему в 1\10 секунды
-		MOV DWORD PTR DS:[EDI+0B4h],-3 ; даем Шейк Цели в 1\10 секунды
-		JMP [after_damage]
-		
-cold_weapon:
-		
-		
-
-hurtingBodies endp
-
-
-
-
-bdy50 proc
+untouchable proc
 
 		PUSH EDX
 		PUSH ECX
@@ -553,42 +121,303 @@ bdy50 proc
 		CMP DWORD PTR DS:[ECX],0 	
 		JLE [skip]
 		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX]
-		CMP EDX, 50
-		JE [bdy_50]
+		MOV EDX,DWORD PTR DS:[ECX+20h]
+		TEST EDX,EDX
+		JNZ [untouchable_true]
 skip:
 		POP ECX
 		POP EDX
 		MOV DWORD PTR DS:[EDI+0B0h],50h
-		JMP [bdy50_back]
+		JMP [untouchable_back]
 
-bdy_50:
-		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h ; получаем страницу фрейма
-		FSTP ST
-		ADD ECX,DWORD PTR DS:[EBX+368h]
-		LEA ECX,DWORD PTR DS:[ECX+958h] ;bdy
-		CMP DWORD PTR DS:[ECX],0 	
-		JLE [skip]
-		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX+2Ch]
-		CMP EDX, 2
-		JE [skip]
-		CMP EDX, 20
-		JE [skip]
-		CMP EDX, 21
-		JE [skip]
-		CMP EDX, 22
-		JE [skip]
+untouchable_true:
+		MOV EDX,DWORD PTR DS:[EDX]
+		TEST EDX,EDX
+		JZ [skip]
 
 		POP ECX
 		POP EDX
 		MOV DWORD PTR DS:[EDI+0B0h],0
-    	JMP [bdy50_back]
-    	
+    	JMP [untouchable_back]
 
-bdy50 endp
+untouchable endp
 
 
+
+bdy_rework proc
+
+
+		SUB DWORD PTR DS:[EDI+2FCh],ECX
+		ADD DWORD PTR DS:[EDI+34Ch],ECX
+		MOV EAX,DWORD PTR DS:[EDI+368h]
+		CMP DWORD PTR DS:[EAX+6F8h],0
+		JNZ SHORT [exit]
+		CMP DWORD PTR DS:[EDI+2F4h],-1
+		JNZ SHORT [exit]
+		MOV EDX,DWORD PTR DS:[EBX+354h]
+		MOV EAX,DWORD PTR DS:[ESI+EDX*4+3ECh]
+		ADD DWORD PTR DS:[EAX+348h],ECX
+
+
+exit:	JMP [after_damage]
+		
+
+
+bdy_rework endp
+
+
+
+
+
+
+
+
+
+bdy_solo_hit_recall proc ; записывает какой bdy был подвержен атаке
+
+		MOV DWORD PTR DS:[EDI+280h],EDX ; оригинальная строка по записи № объекта
+			
+			;PUSH EAX
+			;PUSH ECX
+			
+			MOV EAX,DWORD PTR DS:[EDI+170h]
+			MOV ECX,DWORD PTR SS:[EBP-20h]
+			MOV DWORD PTR DS:[EAX+0],ECX
+
+			;POP ECX
+			;POP EAX
+
+
+			JMP [solo_hit_recall]
+
+bdy_solo_hit_recall endp
+
+
+
+bdy_multi_hit_recall proc ; записывает какой bdy был подвержен атаке
+
+		MOV DWORD PTR DS:[EDI+EDX*4+280h],ECX ; оригинальная строка по записи № объектов
+
+
+			PUSH EAX
+			PUSH ECX
+			
+			MOV EAX,DWORD PTR DS:[EDI+170h]
+			MOV ECX,DWORD PTR SS:[EBP-20h]
+			MOV DWORD PTR DS:[EAX+EDX*4+0h],ECX
+
+			POP ECX
+			POP EAX
+
+
+			JMP [multi_hit_recall]
+
+bdy_multi_hit_recall endp
+
+
+
+
+
+
+
+dmg_calc_rework proc
+			; 0042E756h
+
+			CALL [karters_attributes] ; poison, silence, slow, confuse reading
+
+			; EBX - атакующий
+			; EDI - жертва
+			; ECX - урон
+			; ESI - указание на количество игроков \ флажков
+			
+			; EAX - пусто
+			; EDX - пусто
+
+			; ==== Содержание стека ====
+			; +0 - указатель на указатель с Indiv страницей атакующего
+			; +4 - номер атакующего объекта
+			; +8 - указание на количество игроков \ флажков (он же в ESI уже)
+			; +C - указатель на часть стека, где полностью подгружен весь ITR со всеми атрибутами
+			; 		( записывается по адресу 0042E2EC при команде MOV DWORD PTR SS:[ESP+C],EDX )
+						; +0 - kind
+						; +4 - x
+						; +8 - y
+						; +C - w
+						; +10 - h
+						; ....
+						; +68 - bdefend
+						; +6C - injury
+						; ....
+						; +8C - указатель на дополнительные параметры от Neora
+			; +10 - ???
+			; +14 - возврат из общей процедуры взаимодействия ITR и BDY на воспроизведение звука (?)
+			; +68 - bdefend (в обычной части стека тоже есть)
+			; +6C - injury  (в обычной части стека тоже есть)
+			; +8C - указатель на дополнительные параметры от Neora (в обычной части стека тоже есть + аналог "EBP-18h")
+
+			PUSH EBX
+			MOV EAX,DWORD PTR DS:[EBX+354h] ; выделенная память у атакующего
+			CMP EAX,99 ; фикс для нейтральных объектов, падающих с неба, их хозяин "объект 99"
+			JE [finish_it]
+			MOV EBX,DWORD PTR DS:[ESI+EAX*4+3ECh] ; получаем хозяина объекта для считывания статов из его данных
+
+			CALL [calculate_scaling] ; возвращает в ECX значение "injury + scale_stat@scale_value"
+			CALL [calculate_critical] ; возвращает в ECX значение помноженное на crit_power в случае успеха крита
+			CALL [calculate_resists] ; возвращает в ECX значение после учета сопротивления цели урону в "dtype"
+			
+			
+			
+			MOV EAX,DWORD PTR DS:[EDI+368h]
+			CMP DWORD PTR DS:[EAX+6F8h],0 ; t0
+			JNE [finish_it] ; функции call ниже актуальны только для t0; если жертва не t0 - пропуск
+			
+			CALL [hp_regen_hurt_cd] ; заносит время отката до работы ренега хп в таймер 
+			CALL [mp_regen_hurt_cd] ; заносит время отката до работы ренега мп в таймер 
+			CALL [mp_regen_on_hurt] ; реген мп при получении урона жертвой
+
+finish_it:	POP EBX
+			JMP [dmg_calc_rework_back]
+			
+dmg_calc_rework endp
+
+
+
+
+calculate_scaling proc
+			PUSH ESI
+			PUSH EDI
+			
+			MOV EDX, DWORD PTR SS:[EBP-18h] ; вытаскиваем указатель на расширенную память ITR
+			TEST EDX,EDX
+			JZ [skip] ; отсутствует память
+			MOV EAX, DWORD PTR SS:[EDX+4h] ; scale_stat в EAX
+			MOV ESI, DWORD PTR SS:[EBX+190h] ; выделенная память у атакующего
+			MOV ESI, DWORD PTR SS:[ESI+EAX*4] ; получаем нужный стат в ESI
+			TEST ESI,ESI ; проверяем что стат не равен 0
+			JLE [skip]
+			
+			MOV EAX, DWORD PTR SS:[EDX+8h] ; scale_value в EAX
+			TEST EAX,EAX ; проверяем что стат не равен 0
+			JLE [skip]
+			IMUL EAX,ESI ; перемножаем scale_stat и scale_value
+			CDQ
+			MOV EDI,100
+			IDIV EDI ; делим на 100, получаем в EAX проскалированный урон
+			
+			ADD ECX,EAX ; прибавляем получившийся урон к обычному от injury
+			
+			skip:
+			POP EDI
+			POP ESI
+			RET
+calculate_scaling endp
+
+calculate_critical proc
+			PUSH ESI
+			PUSH EDI
+
+			PUSH 100 ; лимит рандома
+			PUSH ECX ; резервируем
+			CALL DWORD PTR DS:[random]
+			MOV EDI,EAX ; результат рандома в EDI
+			POP ECX   ; восстанавливаем текущий урон
+			ADD ESP,4 ; фикс стека
+
+			MOV EDX, DWORD PTR SS:[EBP-18h] ; вытаскиваем указатель на расширенную память ITR
+			TEST EDX,EDX
+			JZ [skip] ; отсутствует память
+			MOV EAX, DWORD PTR SS:[EDX+0Ch] ; crit_chance в EAX
+			MOV ESI, DWORD PTR SS:[EBX+190h] ; выделенная память у атакующего
+			TEST ESI,ESI
+			JZ [skip] ; отсутствует память
+			ADD EAX, DWORD PTR SS:[ESI+50h] ; получаем нужный стат "crit_chance_total" и складываем оба крита
+			
+			CMP EAX,EDI
+			JL [skip] ; если шанс меньше рандома
+			
+			MOV EAX, DWORD PTR SS:[EDX+10h] ; crit_power от ITR в EAX
+			ADD EAX, DWORD PTR SS:[ESI+54h] ; получаем нужный стат "crit_power_total" и складываем оба крита
+			
+			IMUL EAX,ECX
+			CDQ
+			MOV EDI,100
+			IDIV EDI
+			
+			MOV ECX,EAX
+			
+			skip:
+			POP EDI
+			POP ESI
+			RET
+			
+calculate_critical endp
+
+calculate_resists proc
+
+			PUSH ESI
+			PUSH EDI
+
+			MOV EDX, DWORD PTR SS:[EBP-18h] ; вытаскиваем указатель на расширенную память ITR
+			TEST EDX,EDX
+			JZ [skip] ; отсутствует память
+			MOV EAX, DWORD PTR SS:[EDX+0h] ; dtype в EAX
+			MOV ESI, DWORD PTR SS:[EDI+190h] ; выделенная жертвы
+			MOV ESI, DWORD PTR SS:[ESI+EAX*4+28h] ; получаем нужный резист в ESI
+			TEST ESI,ESI ; проверяем что резист не равен 0
+			JLE [skip]
+
+			MOV EAX,ECX ; копируем наносимый урон
+			IMUL EAX,ESI
+			CDQ
+			MOV EDI,100
+			IDIV EDI ; получаем в EAX количество урона, которое не пройдет
+			SUB ECX,EAX ; вычитаем это значение из ECX (количества наносимого урона)
+			
+			skip:
+			POP EDI
+			POP ESI
+			RET
+	
+calculate_resists endp
+
+hp_regen_hurt_cd proc
+			
+			MOV EDX, DWORD PTR DS:[EDI+190h] ; выделенная память у атакующего
+			MOV EAX, DWORD PTR DS:[EDX+78h] ; hp_regen_hurt_cd total
+			TEST EAX,EAX 
+			JLE [skip] ; пропуск, если время отката 0 или отсутствует
+			MOV DWORD PTR DS:[EDX+0D4h],EAX ; hp_regen_hurt_cd timer | счетчик до зарешения на регенерацию
+			
+			skip:
+			RET
+
+hp_regen_hurt_cd endp
+
+mp_regen_hurt_cd proc
+			
+			MOV EDX, DWORD PTR DS:[EDI+190h] ; выделенная память у атакующего
+			MOV EAX, DWORD PTR DS:[EDX+7Ch] ; mp_regen_hurt_cd total
+			TEST EAX,EAX 
+			JLE [skip] ; пропуск, если время отката 0 или отсутствует
+			MOV DWORD PTR DS:[EDX+0DCh],EAX ; mp_regen_hurt_cd timer | счетчик до зарешения на регенерацию
+			
+			skip:
+			RET
+
+mp_regen_hurt_cd endp
+
+mp_regen_on_hurt proc
+			
+			MOV EDX, DWORD PTR DS:[EDI+190h] ; выделенная память у атакующего
+			MOV EAX, DWORD PTR DS:[EDX+80h] ; mp_regen_on_hurt
+			TEST EAX,EAX 
+			JE [skip] ; пропуск, если там 0 или параметр отсутствует
+			ADD DWORD PTR DS:[EDI+308h],EAX ; прибавка мп жертве
+			
+			skip:
+			RET
+
+mp_regen_on_hurt endp
 
 
 
