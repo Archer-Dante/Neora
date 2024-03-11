@@ -88,7 +88,7 @@ SpawnerCom1 proc
 
 		ADD EAX,DWORD PTR DS:[EDI+4h]
 		MOV EDX,DWORD PTR DS:[ESI+28h]
-		MOV DWORD PTR DS:[EDX+18],EAX ; спавн компов по Z. Можно заменить EAX на число, если хочется точной точки спавна
+		MOV DWORD PTR DS:[EDX+18h],EAX ; спавн компов по Z. Можно заменить EAX на число, если хочется точной точки спавна
 		MOV EAX,DWORD PTR DS:[ESI+28]
 		MOV DWORD PTR DS:[EAX+14h],0h ; спавн компов по Y
 		MOV EAX,DWORD PTR DS:[ESI+28h]
