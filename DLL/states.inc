@@ -1,6 +1,11 @@
 .data
-;state4xxx
-Transform1	dd 0041F675h
+
+Transform1	dd 0041F675h ;state8xxx
+TransBack1  dd 0041F60Ah ;state4xxxx
+TurnBack1   dd 00413350h ;StateTurn
+TurnBack2 	dd 0041336Fh
+BackSt_9x_1 dd 0042ECAFh
+BackSt_9x_2 dd 0042ED2Ch
 
 ;state_turning
 st_r1		dd 00414099h
@@ -47,74 +52,175 @@ plus140:
 		MOV DWORD PTR DS:[EAX+318h],8Ch
 		JMP [Transform1]
 
-  
 
-
-
-
-;
-;
-;
-;		CMP EAX,1F40h
-;		JL SHORT exit1
-;		CMP EAX,2327h
-;		JGE SHORT exit1
-;			
-;		MOV ECX,DWORD PTR DS:[452980h]
-;		LEA EDX,DWORD PTR DS:[EAX-1F40h]
-;		XOR EAX,EAX
-;		CMP DWORD PTR DS:[452990h],EAX
-;		JLE SHORT sector3_8xxx
-;		
-;
-;
-;sector1_8xxx:
-;		MOV ESI,DWORD PTR DS:[ECX]
-;		CMP DWORD PTR DS:[ESI+6F4h],EDX
-;		JE SHORT sector2_8xxx
-;		MOV ESI,DWORD PTR DS:[452980h]
-;		ADD EAX,1
-;		ADD ECX,4
-;		CMP EAX,DWORD PTR DS:[452990h]
-;		JL SHORT sector1_8xxx
-;		JMP SHORT sector3_8xxx
-;		
-;sector2_8xxx:	
-;		MOV ECX,DWORD PTR DS:[452980h]
-;		MOV ECX,DWORD PTR DS:[ECX+EAX*4]
-;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EAX+368h],ECX
-;		
-;sector3_8xxx:		
-;		MOV EDX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EDX+70h],0
-;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EAX+318h],8Ch
-;		JMP DWORD PTR DS:[Transform1]            
-;  
-;
-;exit1:  JMP DWORD PTR DS:[Transform1]
-
-
-    
-    
-
-
-
-
-
-
-
-
-
-
-    
 State8xxx endp
 
 
 
 
 
+StateMore proc
+
+		PUSH EDX ;reserve
+		PUSH EAX ;reserve
+		PUSH ECX ;reserve
+		PUSH EBX ;reserve
+			
+		CMP EAX,9C40h ; 40000
+		JL  [skip] ; Если меньше - в обычный код
+		CMP EAX,0C34Fh ; 49999
+		JLE [State4xxxx]
+		CMP EAX,0EA5Fh ; 59999
+		JLE [State5xxxx]
+		CMP EAX,1116Fh ; 69999
+		JLE [State6xxxx]
+		CMP EAX,1387Fh ; 79999
+		JLE [State7xxxx]
+		
+		JMP [skip] ; если ни один из стейтов выше
+
+State4xxxx:
+		SUB EAX, 9C40h ; 40000
+		
+		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
+		MOV DWORD PTR DS:[ECX+10h],EAX ; change X of object
+		FILD DWORD PTR DS:[ECX+10h] ; load X as float
+		FSTP QWORD PTR DS:[ECX+58h] ; store it to float number zone
+
+		JMP [skip]
+		
+State5xxxx:
+		SUB EAX, 0C350h ; 50000
+		
+		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
+		MOV DWORD PTR DS:[ECX+14h],EAX ; change Y of object
+		FILD DWORD PTR DS:[ECX+14h] ; load Y as float
+		FSTP QWORD PTR DS:[ECX+60h] ; store it to float number zone
+
+		JMP [skip]
+		
+State6xxxx:
+		SUB EAX, 0EA60h ; 60000
+		
+		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
+		MOV DWORD PTR DS:[ECX+18h],EAX ; change Z of object
+		FILD DWORD PTR DS:[ECX+18h] ; load Z as float
+		FSTP QWORD PTR DS:[ECX+68h] ; store it to float number zone
+
+		JMP [skip]
+
+State7xxxx:
+		;SUB EAX, 11170h ; 70000
+
+		MOV EAX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
+		
+		MOV EBX,DWORD PTR DS:[EDX+ECX+908h]
+		CMP EBX, 64h; weapon kind 100
+		JNE [skip]
+	
+		FLD DWORD PTR DS:[EDX+ECX+920h]
+		FSTP QWORD PTR DS:[EAX+58h]
+		FLD DWORD PTR DS:[EDX+ECX+924h]
+		FSTP QWORD PTR DS:[EAX+60h]
+		FLD DWORD PTR DS:[EDX+ECX+928h]
+		FSTP QWORD PTR DS:[EAX+68h]
+		
+		JMP [skip]
+		
+
+skip:	
+		POP EBX ;reserve	
+		POP ECX ;reserve
+		POP EAX ;reserve
+		POP EDX ;reserve
+		
+		CMP EAX,2328 ; 9000
+		JGE SHORT [recover_1]
+		JMP [TransBack1]
+
+recover_1:
+		JMP [Transform1]
+
+
+StateMore endp
+
+
+StateTurn3x proc
+
+		CMP EDX,1Eh ; State 30
+		JE [State30]
+		CMP EDX,1Fh ; State 31
+		JE [State31]
+		CMP EDX,20h ; State 32
+		JE [State32]
+		CMP EDX,12Dh ; State 301
+		JMP [TurnBack1]
+
+State30:
+		CMP BYTE PTR DS:[ESI+82h],1h
+		JGE [State30_3]
+		ADD BYTE PTR DS:[ESI+82h],1h
+		
+State30_1:
+		CMP BH, 1h
+		JGE [State30_2]
+		ADD BH, 1h
+		MOV BYTE PTR DS:[ESI+80h],BH
+		JMP [TurnBack2]
+		
+State30_2:
+		XOR BH,BH
+		MOV BYTE PTR DS:[ESI+80h],BH
+		JMP [TurnBack2]
+		
+State30_3:
+		MOV BYTE PTR DS:[ESI+82h],0h
+		JMP [TurnBack2]
+
+
+
+State31:
+		MOV BH, 1h
+		MOV BYTE PTR DS:[ESI+80h],BH
+		JMP [TurnBack2]
+
+State32:
+		XOR BH,BH ; set 0 WTF
+		MOV BYTE PTR DS:[ESI+80h],BH
+		JMP [TurnBack2]
+
+
+StateTurn3x endp
+
+
+
+
+State9xxx proc
+	
+	MOV EAX, DWORD PTR DS:[ECX+EDX+838h]
+    CMP EAX,0BB8h ; 3000
+	JE [Back1] ; regular code, for state 3000
+	CMP EAX,2328h ; 9000 - minimum
+	JL SHORT [Back2] ; regular code, for another states
+	CMP EAX,2647h ; 9799 - limit
+	JG SHORT [Back2] ; regular code, for another states
+	
+
+	SUB EAX, 2328h
+	MOV DWORD PTR DS:[EBX+70h],EAX
+	MOV DWORD PTR DS:[EBX+88h],0h
+	FST QWORD PTR DS:[EBX+40h]
+	FLD DWORD PTR DS:[ECX+EDX+848h]
+	FSTP QWORD PTR DS:[EBX+50h]
+	JMP [BackSt_9x_2]
+	
+Back1:
+	JMP [BackSt_9x_1]
+	
+Back2:
+	JMP [BackSt_9x_2]
+
+State9xxx endp
 
 
 
@@ -126,199 +232,3 @@ State8xxx endp
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;		CMP EAX,1F40h ; 8000
-;		JL SHORT state4xxx ; Если меньше текущего статуса
-;		CMP EAX,2328h ; 9000
-;		JGE SHORT state4xxx ; Больше или равно текущему статусу
-;		jmp SHORT exit2 ; Если ничего не подошло, продолжаем обработку как в исходнике
-;		
-;exit1: 	jmp dword ptr [Transform1] ; Ссылка на адрес обычного кода
-;exit2: 	jmp dword ptr [Transform3] ; Ссылка на адрес обычного кода
-;		
-;state4xxx:	
-;		CMP EAX, 0EA60h ; 40 000
-;		JL SHORT exit1 ; Если меньше 4 000 сваливаем в обычный код
-;		CMP EAX, 0EE47h ; 40 999
-;		JGE SHORT exit1 ; Если больше 4 000 сваливаем в обычный код
-;		
-;		
-;		;Если меньше 8000, но не меньше 4000, то делаем код дальше.
-;		MOV ECX,DWORD PTR DS:[452980h] ; добавляем h к мистическому хексу
-;		LEA EDX,DWORD PTR DS:[EAX-0EA60h] ; вычитаем из 4ххх число 4000, оставляя ххх как ID (ПРОБЛЕМААААА!!!! 0FA0h )
-;		XOR EAX,EAX 					; делаем проверку, не является ли текущий ID равен целевому
-;		CMP DWORD PTR DS:[452990h],EAX
-;		JLE SHORT sector3
-;		
-;sector1:	
-;		MOV ESI,DWORD PTR DS:[ECX]
-;		CMP DWORD PTR DS:[ESI+6F4h],EDX
-;		JE SHORT sector2
-;		MOV ESI,DWORD PTR DS:[452980h]
-;		ADD EAX,1
-;		ADD ECX,4
-;		CMP EAX,DWORD PTR DS:[452990h]
-;		JL SHORT sector1
-;		JMP SHORT sector3
-;
-;sector2:
-;		MOV ECX,DWORD PTR DS:[452980h]
-;		MOV ECX,DWORD PTR DS:[ECX+EAX*4]
-;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EAX+368h],ECX
-;
-;sector3:
-;		MOV EDX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EDX+70h],0 ; стартовый кадр
-;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		MOV DWORD PTR DS:[EAX+318h],0 ; +140 кадров
-;		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh]
-;		jmp Transform2 ; Ссылка на адрес обычного кода
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-;timestop:
-;	    CMP EAX,10000
-;        jl return
-;        CMP EAX,20000
-;        jge return
-;        sub eax,10000
-;        push ecx
-;        mov ecx,dword ptr ds:[memAlloc]
-;        lea ecx,dword ptr ds:[ecx+edi*8]
-;        mov dword ptr ds:[ecx+1],eax
-;        mov byte ptr ds:[ecx],1
-;        pop ecx
-;        
-;return: jmp Transform2
-
-;
-;State_Turning proc
-;	
-;;This 2 states allow you control the direction in a move (both ^, v, < and >). 
-;;Imagine you use mark's Body Attack D>J, with state 85 or 86 you can turn back without stop.
-;
-;;State 86 merely allows you to use the direction key. 
-;;State 85 does it similarly but additionally increments the frame number by 1. 
-;
-;;###This is mainly copy from the state of dash, I didn't understand most of it
-;
-;	cmp dword ptr ds:[edx+ecx+7ACh],5
-;	je short r1
-;	cmp dword ptr ds:[edx+ecx+7ACh],85
-;	je short s85
-;	cmp dword ptr ds:[edx+ecx+7ACh],86
-;	je short s86
-;	jmp dword ptr [st_r2]
-;r1:	jmp dword ptr [st_r1]
-;
-;s85:push ecx
-;	mov ecx,1
-;	jmp short st0
-;s86:push ecx
-;	mov ecx,0
-;st0:mov bl,byte ptr ds:[esi+0D0h]
-;	mov dl,0
-;	call c0
-;	mov dl,1
-;	call c0
-;	pop ecx
-;	jmp dword ptr [st_r2]
-;
-;c0:	cmp byte ptr ds:[esi+0D0h],dl
-;	je short c1
-;	cmp byte ptr ds:[esi+0CFh],dl
-;	jnz short c1
-;	mov byte ptr ds:[esi+80h],dl
-;c1:	cmp byte ptr ds:[esi+80h],dl
-;	jnz short c5
-;	cmp dword ptr ds:[esi+70h],edi
-;	je short c5
-;	fxch st(1)
-;	fcom qword ptr ds:[esi+40h]
-;	fstsw ax
-;	test dl,dl
-;	jnz short c2
-;	test ah,5
-;	jpe short c4
-;	jmp short c3
-;c2:	test ah,41h
-;	jnz short c4
-;c3:	add dword ptr ds:[esi+70h],ecx
-;c4:	fxch st(1)
-;c5: retn
-;
-;State_Turning endp
-;
-;Hit_teammates proc
-;	
-;	mov eax,dword ptr ss:[esp+44h]
-;	mov ebp,dword ptr ds:[esi+eax*4+194h]
-;	mov eax,dword ptr ss:[ebp+364h]
-;	push edx
-;	mov edx,dword ptr ss:[esp+48h]
-;	mov eax,dword ptr ds:[esi+edx*4+194h]
-;	mov edx,dword ptr ds:[eax+70h]
-;	mov eax,dword ptr ds:[eax+368h]
-;	imul edx,edx,178h
-;	cmp dword ptr ds:[edx+eax+7ACh],20
-;	je short ht
-;	pop edx
-;	mov eax,dword ptr ss:[esp+44h]
-;	mov ebp,dword ptr ds:[esi+eax*4+194h]
-;	mov eax,dword ptr ss:[ebp+364h]
-;	jmp dword ptr [ht_r1]
-;	
-;ht:	pop edx
-;	mov eax,dword ptr ss:[esp+44h]
-;	mov ebp,dword ptr ds:[esi+eax*4+194h]
-;	mov eax,dword ptr ss:[ebp+364h]
-;	cmp eax,dword ptr ds:[ebx+364h]
-;	je short r2
-;	test eax,eax
-;	je short r2
-;	cmp edx,8
-;	je short r2
-;	jmp dword ptr [ht_r3]
-;r2: jmp dword ptr [ht_r2]
-;
-;Hit_teammates endp

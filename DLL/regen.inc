@@ -9,6 +9,8 @@ mana_speed proc
 	
 	push ecx ; reserve
 	push edx ; reserve
+	push ebx ; reserve
+	push edi ; reserve
 
 	MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh] ; connetion to object
 	MOV EDX,DWORD PTR DS:[ECX+368h] ; data-file
@@ -22,6 +24,8 @@ mana_speed proc
 	JMP [mp_std]
 	
 	mp_mod:
+	pop edi ; reserve
+	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
     ADD ECX, 0Ah ; mega-regen
@@ -30,6 +34,8 @@ mana_speed proc
     JMP [mp_back]
     
     mp_std:
+	pop edi ; reserve
+	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
     ADD DWORD PTR DS:[ESI+308h],ECX ; standart regen
@@ -37,6 +43,8 @@ mana_speed proc
     JMP [mp_back]
     
     mp_boss:
+	pop edi ; reserve
+	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
     ADD ECX, 1h ; +1 special mp for Julian & Firzen
@@ -50,6 +58,8 @@ hp_speed proc
 	
 	push ecx ; reserve
 	push edx ; reserve
+	push ebx ; reserve
+	push edi ; reserve
 
 	MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh] ; connetion to object
 	MOV EDX,DWORD PTR DS:[ECX+368h] ; data-file
@@ -59,6 +69,8 @@ hp_speed proc
 	JMP [hp_std]
 	
 	hp_mod:
+	pop edi ; reserve
+	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
     ADD DWORD PTR DS:[ESI+2FCh],0Ah
@@ -66,6 +78,8 @@ hp_speed proc
     JMP [hp_back]
     
     hp_std:
+	pop edi ; reserve
+	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
     ADD DWORD PTR DS:[ESI+2FCh],1 ; standart regen

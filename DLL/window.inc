@@ -24,8 +24,8 @@ Window_back21	dd 004384EAh
 Window_back22	dd 0043854Dh
 
 
-win_width  dd 40bh ; ”правление шириной окна
-win_height dd 2A3h ; ”правление высотой окна
+win_width  dd 31Ah ; ”правление шириной окна
+win_height dd 226h ; ”правление высотой окна
 
 .Code
 
@@ -38,8 +38,13 @@ Window_Size proc
 		JNZ jnz_02
 		XOR EAX,EAX
 		MOV DWORD PTR SS:[ESP+1Ch],EAX
-		CMP DWORD PTR DS:[ECX],40bh ; не дает мен€ть на переменную :c
+		
+		PUSH EBX
+		MOV EBX,[win_width]
+		CMP DWORD PTR DS:[ECX],EBX
 		JLE SHORT jle_03
+		POP EBX
+		
 		MOV EDX,DWORD PTR DS:[452984h]
 		MOV EDI,DWORD PTR DS:[ECX]
 		MOV EAX,DWORD PTR DS:[EDX+ESI*4+0DB0h]
@@ -55,6 +60,7 @@ jnz_01:
 jnz_02:
 		JMP DWORD PTR [Window_back10]
 jle_03:
+		POP EBX
 		JMP DWORD PTR [Window_back11]
 
 Window_Size endp
@@ -189,7 +195,11 @@ Window_Size_11 proc
 
 		MOV EAX,DWORD PTR DS:[452984h]
 		MOV EBX,DWORD PTR DS:[EAX]
-		LEA EAX,DWORD PTR DS:[EBX-40Bh] ;решить
+		
+
+		LEA EAX,DWORD PTR DS:[EBX] ;решить
+		SUB EAX,[win_width] ; добавлено
+		
 		CMP EDI,EAX
 		JLE SHORT Window_blabla2
 		JMP [Window_back17]
