@@ -93,6 +93,7 @@ DLLStartup proc
 	;=================states(states.inc)================
 	invoke JmpPatch, 0041F656h, addr State8xxx ; 140-frameless fix (+id list for +140)
 	invoke JmpPatch, 0041F603h, addr StateMore ; Set X-coord, Y-coord, Z-coord, TimeStop State and more
+	invoke WriteMem, 00412C63h, addr JNEtoJMP,1
 	invoke JmpPatch, 0041334Ah, addr StateTurn3x ; Turning State 30, 31
 	invoke JmpPatch, 0042EC9Eh, addr State9xxx ; Go to XXX Frame if hit something. XXX from 0 to 799
 	;==================================================

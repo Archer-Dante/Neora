@@ -11,4 +11,6 @@ random			dq 00417170h
 keyByte0	 		dd 66h
 cleaner		 	dd 00
 TimeStopTime 		dd 459E00h
+JNEtoJMP		byte 0EBh
 numbersFix	 	byte 81h
+; jne 00412C74
