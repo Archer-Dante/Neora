@@ -17,6 +17,11 @@ Window_back14	dd 0041A910h
 Window_back15	dd 0041BB96h
 Window_back16	dd 0041BC4Bh
 Window_back17	dd 0041BC43h
+Window_back18	dd 0042A1C9h
+Window_back19	dd 004010EDh
+Window_back20	dd 00437B68h
+Window_back21	dd 004384EAh
+Window_back22	dd 0043854Dh
 
 
 win_width  dd 40bh ; ”правление шириной окна
@@ -184,7 +189,7 @@ Window_Size_11 proc
 
 		MOV EAX,DWORD PTR DS:[452984h]
 		MOV EBX,DWORD PTR DS:[EAX]
-		LEA EAX,DWORD PTR DS:[EBX-40Bh]
+		LEA EAX,DWORD PTR DS:[EBX-40Bh] ;решить
 		CMP EDI,EAX
 		JLE SHORT Window_blabla2
 		JMP [Window_back17]
@@ -195,7 +200,61 @@ Window_blabla2:
 Window_Size_11 endp
 
 
+Window_Size_12 proc
+
+		PUSH [win_height]
+		PUSH [win_width]
+		
+		JMP [Window_back18]
+
+Window_Size_12 endp
 
 
+Window_Size_13 proc 
 
+		SUB ESI,[win_width]
+		
+		JMP [Window_back20]
 
+Window_Size_13 endp
+
+Window_Size_14 proc 
+
+		MOV ECX,15h
+		SUB ECX,EAX
+		IMUL ECX,ECX,2Bh
+		MOV EAX,66666667h
+		IMUL ECX
+		SAR EDX,2
+		MOV EAX,EDX
+		PUSH 0
+		SHR EAX,1Fh
+		ADD EAX,EDX
+		PUSH EAX
+		PUSH [win_width]
+		PUSH ESI
+		PUSH 0
+
+		JMP [Window_back21]
+
+Window_Size_14 endp
+
+Window_Size_15 proc 
+
+		IMUL EAX,EAX,2Bh
+		MOV ECX,EAX
+		MOV EAX,66666667h
+		IMUL ECX
+		SAR EDX,2
+		MOV ECX,EDX
+		PUSH 0
+		SHR ECX,1Fh
+		ADD ECX,EDX
+		PUSH ECX
+		PUSH [win_width]
+		PUSH ESI
+		PUSH 0
+
+		JMP [Window_back22]
+
+Window_Size_15 endp

@@ -25,10 +25,14 @@ include ai.inc
 include window.inc
 include replay.inc
 include battle.inc
+include regen.inc
 
 .data
 memAlloc dd ?
 solAlloc dd ?
+
+.data?
+
 
 .code
 DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD
@@ -93,26 +97,36 @@ DLLStartup proc
 	;=====================================================
 	
 	;===============Window Properities(window.inc)=========
-	invoke JmpPatch, 00401B3Ch, addr Window_Size_2	 	
-	invoke JmpPatch, 00401007h, addr Window_Size_3 ; check
-	invoke JmpPatch, 00401050h, addr Window_Size_4 ; check
-	invoke JmpPatch, 0042386Dh, addr Window_Size_5
-	invoke JmpPatch, 0043F03Dh, addr Window_Size_6
-	invoke JmpPatch, 0043F08Bh, addr Window_Size_7
-	invoke JmpPatch, 0041A0AEh, addr Window_Size   ; check
-	invoke JmpPatch, 0041A1DBh, addr Window_Size_8 ; check
-	invoke JmpPatch, 0041A8FEh, addr Window_Size_9 ; check
-	invoke JmpPatch, 0041BB87h, addr Window_Size_10 ; check
-	invoke JmpPatch, 0041BC32h, addr Window_Size_11 ; check	
+;	invoke JmpPatch, 00401B3Ch, addr Window_Size_2	 	
+;	invoke JmpPatch, 00401007h, addr Window_Size_3 ; check
+;	invoke JmpPatch, 00401050h, addr Window_Size_4 ; check
+;	invoke JmpPatch, 0042386Dh, addr Window_Size_5
+;	invoke JmpPatch, 0043F03Dh, addr Window_Size_6
+;	invoke JmpPatch, 0043F08Bh, addr Window_Size_7
+;	invoke JmpPatch, 0041A0AEh, addr Window_Size   ; check
+;	invoke JmpPatch, 0041A1DBh, addr Window_Size_8 ; check
+;	invoke JmpPatch, 0041A8FEh, addr Window_Size_9 ; check
+;	invoke JmpPatch, 0041BB87h, addr Window_Size_10 ; check
+;	invoke JmpPatch, 0041BC32h, addr Window_Size_11 ; check	
+;	invoke JmpPatch, 0042A1BFh, addr Window_Size_12 ; check		
+;	invoke JmpPatch, 00437B62h, addr Window_Size_13 ; check	
+;	invoke JmpPatch, 004384C4h, addr Window_Size_14 ; check	
+;	invoke JmpPatch, 0043852Ch, addr Window_Size_15 ; check	
 	;===================================================
-	
-	;=============== Replays (replay.inc)=========
+
+	;=============== Replays (replay.inc)===============
 	invoke JmpPatch, 004326D6h, addr comparator	 	
 	;===================================================	
 	
-	;=============== Battle Mode (battle.inc)=========
+	;=============== Battle Mode (battle.inc)===========
 	invoke JmpPatch, 0043947Fh, addr defence	 	
 	;===================================================	
+	
+	;=============== Regen (regen.inc)==================
+	invoke JmpPatch, 0041FAE5h, addr mana_speed	 	
+	invoke JmpPatch, 0041F9E2h, addr hp_speed
+	;===================================================	
+
 
 
 	;call AI
