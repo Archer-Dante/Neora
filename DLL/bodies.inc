@@ -254,7 +254,9 @@ hurtingBodies proc
 		IMUL ECX,DWORD PTR DS:[EDI+70h],1B0h
 		FSTP ST
 		ADD ECX,DWORD PTR DS:[EDI+368h]
-		LEA EDX,DWORD PTR DS:[ECX+95Ch] 			
+		LEA EDX,DWORD PTR DS:[ECX+95Ch] 
+		CMP DWORD PTR DS:[EDX],0 ; фикс, если ни одного bdy нету
+		JE	[type_r]
 		MOV EAX,DWORD PTR DS:[EDX+8]
 		MOV EAX,DWORD PTR DS:[EAX]	
 

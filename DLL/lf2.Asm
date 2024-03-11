@@ -35,7 +35,7 @@ solAlloc dd ?
 ; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
 copycat  	db "Neora Engine build by Archer-Dante",00
 ; Put your game name between quotes below
-GameName	db "LF2: Neora Engine 2.01",00
+GameName	db "LF2: Neora Engine 2.02",00
 .data?
 
 
