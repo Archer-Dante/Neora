@@ -34,29 +34,29 @@ include event.inc
 memAlloc dd ?
 solAlloc dd ?
 ; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
-copycat  db "Neora Engine by Archer-Dante",00
+copycat  db "Neora Engine by Archer-Dante aka EdL",00
 
 
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.07 Prototype-Test Version",00 ; Name of the Game Window
-		win_width   	dd 794		; Game window width  in pixels. "794" is default
-		win_height  	dd 550 		; Game window height in pixels. "550" is default
+		GameName		db "LF2: Neora Engine 2.08",00 ; Name of the Game Window
+		win_width   		dd 794		; Game window width  in pixels. "794" is default
+		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
-		shake_value 	db 3 		; Value of both Shaking effect on attack. "3" is default
+		shake_value 		db 3 			; Value of both Shaking effect on attack. "3" is default
 		
-		slow_motion 	db 1 		; Slow Motion at the end of Round. (1 - on, 0 - off)
-		slow_power  	dd 65 		; "65" is recommend value of slow power
+		slow_motion 		db 1 			; Slow Motion at the end of Round. (1 - on, 0 - off)
+		slow_power  		dd 65 		; "65" is recommend value of slow power
 		
-		replay_switch	db 1		; Makes game Always counts replay file as valid. (1 - on, 0 - off)
+		replay_switch		db 1			; Makes game Always counts replay file as valid. (1 - on, 0 - off)
 		
-		battle_limit	dd 1000		; Battle Mode defence limit. (ex.300 = 3.0), "300" is default
+		battle_limit		dd 1000		; Battle Mode defence limit. (ex.300 = 3.0), "300" is default
 		battle_step		dd 100		; Increasing and Decreasing step of defence change (ex.50 = 0.5), "50" is default
 		
-		Menu_Picture_R	dd 0		; Resets CHARMENU.png picture coords to 0 by x\y axis. (1 - on, 0 - off)
-		Unlock_Teams	dd 1		; Allows to change Team in Stage Mode. (1 - on, 0 - off)
-		F7_for_dead		dd 1		; Allows to use F7 after round ends. (1 - on, 0 - off)
+		Menu_Picture_R	dd 0			; Resets CHARMENU.png picture coords to 0 by x\y axis. (1 - on, 0 - off)
+		Unlock_Teams		dd 1			; Allows to change Team in Stage Mode. (1 - on, 0 - off)
+		F7_for_dead		dd 1			; Allows to use F7 after round ends. (1 - on, 0 - off)
 		;====================================================================================
 
 .data?
@@ -266,6 +266,11 @@ DLLStartup proc
 	
 	invoke JmpPatch, 0043EA10h, addr dropbox3_fix		; fixes game crash after being affected by Dropbox 3+
 	invoke WriteMem, 0043EA15h, addr oneNOP,1	
+	
+	invoke JmpPatch, 00413697h , addr heavy_walking_speed_fix		; fixes PDK bug
+	invoke JmpPatch, 0041373Ch, addr heavy_walking_speedz_fix		; fixes PDK bug
+	invoke JmpPatch, 00413A36h , addr heavy_running_speed_fix		; fixes PDK bug
+	invoke JmpPatch, 00413A5Fh , addr heavy_running_speedz_fix		; fixes PDK bug
 	;===================================================
 
 

@@ -106,9 +106,6 @@ not_match1:
 
 weNeedMoarBodies endp
 
-
-
-
 untouchable proc
 
 		PUSH EDX
@@ -142,8 +139,6 @@ untouchable_true:
 
 untouchable endp
 
-
-
 bdy_rework proc
 
 
@@ -165,14 +160,6 @@ exit:	JMP [after_damage]
 
 bdy_rework endp
 
-
-
-
-
-
-
-
-
 bdy_solo_hit_recall proc ; записывает какой bdy был подвержен атаке
 
 		MOV DWORD PTR DS:[EDI+280h],EDX ; оригинальная строка по записи № объекта
@@ -191,8 +178,6 @@ bdy_solo_hit_recall proc ; записывает какой bdy был подвержен атаке
 			JMP [solo_hit_recall]
 
 bdy_solo_hit_recall endp
-
-
 
 bdy_multi_hit_recall proc ; записывает какой bdy был подвержен атаке
 
@@ -213,12 +198,6 @@ bdy_multi_hit_recall proc ; записывает какой bdy был подвержен атаке
 			JMP [multi_hit_recall]
 
 bdy_multi_hit_recall endp
-
-
-
-
-
-
 
 dmg_calc_rework proc
 			; 0042E756h
@@ -279,9 +258,6 @@ finish_it:	POP EBX
 			JMP [dmg_calc_rework_back]
 			
 dmg_calc_rework endp
-
-
-
 
 calculate_scaling proc
 			PUSH ESI

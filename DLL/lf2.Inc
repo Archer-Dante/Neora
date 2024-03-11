@@ -1,8 +1,5 @@
 .Data
 JmpByte		db 0EBh
-oneNOP		db 90h
-doubleNOP   dw 9090h
-FourNOP		dd 90909090h
 
 .Data?
 lgJmp 					db 5 dup(?)

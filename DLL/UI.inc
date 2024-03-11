@@ -79,9 +79,6 @@ go_to_push:
 	
 HP_bars_change endp
 
-
-
-
 total_bar_rework proc
 
 		; most of code here is just copy from exe

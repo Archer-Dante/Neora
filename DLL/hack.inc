@@ -36,6 +36,11 @@ db3_fix  dd 00423B2Dh
 
 DropBoxLPfixb	dd 0043EA16h
 
+heavy_walking_speed_fix_back		dd	0041369Ch
+heavy_walking_speedz_fix_back		dd	00413742h
+heavy_running_speed_fix_back		dd	00413A3Bh
+heavy_running_speedz_fix_back		dd	00413A65h
+
 .Code
 
 
@@ -52,8 +57,6 @@ skip:
 		JMP [comp_back1]
 
 comparator endp
-
-
 
 F7_rework proc
 
@@ -165,9 +168,6 @@ F9_save:
 		
 F9_rework endp
 
-
-
-
 ; "Fn_custom_modes" procedures, where may be:
 ; 0 - VS mode
 ; 1 - Stage mode
@@ -191,7 +191,6 @@ F6_custom_back:
 		JMP [F6_back_way1]
 
 F6_custom_modes endp
-
 
 F7_custom_modes proc
 		MOV ECX,1
@@ -349,7 +348,6 @@ repeatJG:
  		
 Independent_Stages endp
 
-
 ChangeAble_teams proc
 
 		CMP [Unlock_Teams],TRUE
@@ -382,13 +380,6 @@ Result_Sound_Delay proc
 
 Result_Sound_Delay endp
 
-
-
-
-
-
-
-
 main_Shake proc
  		
  		XOR EAX,EAX
@@ -403,8 +394,6 @@ victim:
 		JMP [shake_back]
 
 main_Shake endp
-
-
 
 Stage_Spawn_Coords proc
 
@@ -425,7 +414,6 @@ no_random:
 		JMP [spawner]
 
 Stage_Spawn_Coords endp
-
 
 dropbox3_fix proc
 
@@ -449,6 +437,41 @@ dropbox3_fix endp
 
 
 
+heavy_walking_speed_fix proc
+
+		FLD QWORD PTR DS:[ECX+30h]
+		test bh,bh
+		
+		JMP [heavy_walking_speed_fix_back]
+
+heavy_walking_speed_fix endp
+     
+heavy_walking_speedz_fix proc
+
+		fld qword ptr ds:[ecx+38h]
+		test bl,1
+		
+		JMP [heavy_walking_speedz_fix_back]
+
+heavy_walking_speedz_fix endp
+
+heavy_running_speed_fix proc
+
+		fld qword ptr ds:[ecx+40h]
+		test bh,bh
+		
+		JMP [heavy_running_speed_fix_back]
+
+heavy_running_speed_fix endp
+
+heavy_running_speedz_fix proc
+
+		FLD QWORD PTR DS:[ECX+48h]
+		test bl,1
+		
+		JMP [heavy_running_speedz_fix_back]
+
+heavy_running_speedz_fix endp
 
 
 
