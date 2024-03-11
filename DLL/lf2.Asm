@@ -29,6 +29,7 @@ include loading.inc
 include time.inc 
 include rpg.inc 
 include event.inc
+include stage.inc
 
 .data
 memAlloc dd ?
@@ -40,7 +41,7 @@ copycat  db "Neora Engine by Archer-Dante aka EdL",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.08",00 ; Name of the Game Window
+		GameName		db "LF2: Neora Engine 2.09",00 ; Name of the Game Window
 		win_width   		dd 794		; Game window width  in pixels. "794" is default
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
@@ -115,6 +116,10 @@ DLLStartup proc
 	invoke JmpPatch, 00437B62h, addr Window_Size_13 
 	invoke JmpPatch, 004384C4h, addr Window_Size_14 
 	invoke JmpPatch, 0043852Ch, addr Window_Size_15
+	;===================================================
+	
+	;=============== Stage (stage.inc)=================
+	invoke JmpPatch, 0042E6B0h, addr better_criminals
 	;===================================================
 
 	;=============== Replays (replay.inc)===============

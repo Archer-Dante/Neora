@@ -89,7 +89,7 @@ TimeStop endp
 FPS_rework proc
 
 		MOV EBX,3 ; fast value in F5 mode
-		CMP DWORD PTR DS:[44D02Ch],0 ; check if F5 is enabled
+		CMP DWORD PTR DS:[44D02Ch],0 ; check if F5 is enabled	
 		JE SHORT [change_fps]
 		
 		MOV EBX,33 ; regular FPS
