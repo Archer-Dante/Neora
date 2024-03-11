@@ -10,3 +10,4 @@ keyByte0	 dd 66h
 cleaner		 dd 00
 TimeStopTime dd 459E00h
 numbersFix	 byte 81h
+JNEtoJMP byte 0EBh

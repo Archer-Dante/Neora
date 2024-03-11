@@ -58,14 +58,34 @@ StateMore proc
 		PUSH EBX ;reserve
 		PUSH EDI ;reserve
 			
-		CMP EAX,2000000 ; 2xxxyyy
+			
+		CMP EAX,1000000 ; 1xxyyy
 		JL  [skip] ; Если меньше - в обычный код
+		CMP EAX,1999999 ; 1xxyyy
+		JLE [State1xxxyyy]
 		CMP EAX,2999999 ; 2999999
 		JLE [State2xxxyyy]
 		CMP EAX,3999999 ; 3999999
 		JLE [State3xxxyyy]
 		
 		JMP [skip] ; если ни один из стейтов выше
+		
+		
+State1xxxyyy:
+		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
+		CMP DWORD PTR DS:[ECX+88h],0
+		JNE [skip]
+		
+		SUB EAX, 1000000 ; 1xxxyyy
+
+		MOV EBX,1000
+		CDQ
+		IDIV EBX
+		CMP DWORD PTR DS:[ECX+2FCh],EAX
+		JG [skip]
+		MOV DWORD PTR DS:[ECX+70h],EDX
+		JMP [skip]
+
 
 State2xxxyyy:
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]

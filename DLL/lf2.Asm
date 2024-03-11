@@ -39,7 +39,7 @@ copycat  db "Neora Engine by Archer-Dante",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.04",00 ; Name of the Game Window
+		GameName		db "LF2 - Bizzare Adventure",00 ; Name of the Game Window
 		win_width   	dd 794		; Game window width  in pixels. "794" is default
 		win_height  	dd 550 		; Game window height in pixels. "550" is default
 		
@@ -91,6 +91,7 @@ DLLStartup proc
 	;=================states(states.inc)================
 	invoke JmpPatch, 0041F656h, addr State8xxx ; 140-frameless fix (+id list for +140)
 	invoke JmpPatch, 0041F603h, addr StateMore ; Set X-coord, Y-coord, Z-coord, TimeStop State and more
+	invoke WriteMem, 00412C63h, addr JNEtoJMP,1
 	invoke JmpPatch, 0041334Ah, addr StateTurn3x ; Turning State 30, 31
 	invoke JmpPatch, 0042EC9Eh, addr State9xxx ; Go to XXX Frame if hit something. XXX from 0 to 799
 	;==================================================
