@@ -2,6 +2,7 @@
 fix_hidden   db "hidden:",00
 fix_silence  db "silence:",00
 fix_slow	 db "slow:",00
+fix_slow_b   dd 004110E0h
 fix_confuse  db "confuse:",00
 fix_sound    db "sound:",0000
 weapon_hp		db "weapon_hp:",00
@@ -53,6 +54,17 @@ wrong:
 
 		
 Loading_Rework endp
+
+
+
+Loading_Rework_SlowAttr proc
+
+			LEA EDI,[fix_slow]
+			LEA ESI,DWORD PTR SS:[ESP+70h]
+			MOV ECX,6
+			JMP [fix_slow_b]
+
+Loading_Rework_SlowAttr endp
 
 
 

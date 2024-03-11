@@ -112,13 +112,14 @@ State3xxxyyy:
 		POP EAX ; перемещаем остаток в EAX для дальнейшего парсинга
 		ADD ESP,4h ; выравниваем стек
 		CMP EBX,EDX ; сравниваем (наш %) и (рандом %)
-		JL [skip] ; если не хватило - допускаем, что урон просто пройдется по цели
+		JL [TS_no_random] ; если не хватило - допускаем, что урон просто пройдется по цели
 		JMP [check_type]
 
 skip_random:
 		XCHG EAX,EDX ; отправляем в EAX остаток
 check_type:
 		MOV ECX,1000
+		CDQ
 		IDIV ECX ; оставит в EAX тип, а в EDX время
 		
 		XOR ECX,ECX
@@ -202,7 +203,8 @@ ts_setup_2:
 		MOV DWORD PTR DS:[ts_type],2 ; записываем Time Stop Type
 		JMP [skip]
 
-
+TS_no_random:
+		POP EBX
 ;==============================================================
 
 skip:	

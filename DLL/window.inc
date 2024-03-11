@@ -23,9 +23,6 @@ Window_back20	dd 00437B68h
 Window_back21	dd 004384EAh
 Window_back22	dd 0043854Dh
 
-win_width  dd 31Ah ; ”правление шириной окна
-win_height dd 226h ; ”правление высотой окна
-
 name_back 	dd 00401B8Ch
 
 

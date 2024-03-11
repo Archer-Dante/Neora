@@ -563,6 +563,23 @@ skip:
 		JMP [bdy50_back]
 
 bdy_50:
+		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h ; получаем страницу фрейма
+		FSTP ST
+		ADD ECX,DWORD PTR DS:[EBX+368h]
+		LEA ECX,DWORD PTR DS:[ECX+958h] ;bdy
+		CMP DWORD PTR DS:[ECX],0 	
+		JLE [skip]
+		MOV ECX,DWORD PTR DS:[ECX+8]
+		MOV EDX,DWORD PTR DS:[ECX+2Ch]
+		CMP EDX, 2
+		JE [skip]
+		CMP EDX, 20
+		JE [skip]
+		CMP EDX, 21
+		JE [skip]
+		CMP EDX, 22
+		JE [skip]
+
 		POP ECX
 		POP EDX
 		MOV DWORD PTR DS:[EDI+0B0h],0

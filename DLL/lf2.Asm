@@ -33,11 +33,32 @@ include time.inc
 memAlloc dd ?
 solAlloc dd ?
 ; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
-copycat  	db "Neora Engine build by Archer-Dante",00
-; Put your game name between quotes below
-GameName	db "LF2: Neora Engine 2.02",00
-.data?
+copycat  db "Neora Engine by Archer-Dante",00
 
+
+		;====================================================================================
+		;================================= Configuration Block ==============================
+		;====================================================================================
+		GameName		db "LF2: Neora Engine 2.03",00 ; Name of the Game Window
+		win_width   	dd 794		; Game window width  in pixels. "794" is default
+		win_height  	dd 550 		; Game window height in pixels. "550" is default
+		
+		shake_value 	db 3 		; Value of both Shaking effect on attack. "3" is default
+		
+		slow_motion 	db 1 		; Slow Motion at the end of Round. (1 - on, 0 - off)
+		slow_power  	dd 65 		; "65" is recommend value of slow power
+		
+		replay_switch	db 1		; Makes game Always counts replay file as valid. (1 - on, 0 - off)
+		
+		battle_limit	dd 1000		; Battle Mode defence limit. (ex.300 = 3.0), "300" is default
+		battle_step		dd 100		; Increasing and Decreasing step of defence change (ex.50 = 0.5), "50" is default
+		
+		Menu_Picture_R	dd 0		; Resets CHARMENU.png picture coords to 0 by x\y axis. 1 - enable, 0 - disable
+		Unlock_Teams	dd 1		; Allows to change Team in Stage Mode. (1 - on, 0 - off)
+		F7_for_dead		dd 1		; Allows to use F7 after round ends. (1 - on, 0 - off)
+		;====================================================================================
+
+.data?
 
 .code
 DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD
@@ -180,8 +201,11 @@ DLLStartup proc
 	;===================================================
 
 	;===================================================
-	;invoke WriteMem, 0042A1E1h, addr ResetCoord,2 ; resets CHARMENU coords to zero
-	;invoke WriteMem, 0042A1E3h, addr ResetCoord,2 ; resets CHARMENU coords to zero
+			CMP [Menu_Picture_R],TRUE
+			JNE [no_ResetCoord]
+	invoke WriteMem, 0042A1E1h, addr ResetCoord,2 ; resets CHARMENU coords to zero
+	invoke WriteMem, 0042A1E3h, addr ResetCoord,2 ; resets CHARMENU coords to zero
+			no_ResetCoord:
 	;===================================================
 
 	;=============== Hacked Regulars (hack.inc)==========
@@ -195,19 +219,23 @@ DLLStartup proc
 												; also there is a filter by ID or type, if you're 
 												; using item-key-objects in your maps or stages
 
-	invoke JmpPatch, 00437719h, addr act_rework  		; allows to use "act:" not only with type 0 and 5	
+	invoke JmpPatch, 00437719h, addr act_rework  		; allows to use "act:" not only with type 0 and 5
+	
+			CMP [F7_for_dead],TRUE
+			JNE [no_F7_after_end]	
 	invoke WriteMem, 00416EE0h, addr oneNOP,9 			; Allows to use F7 after round ends, like in 1.9 version!
+			no_F7_after_end:
+	
 	;invoke JmpPatch, 0042A037h, addr Independent_Stages    ; Makes All players be in Independent team
 															; disable if u're using "ChangeAble_teams" (below)
 															; and on the contrary
 	invoke JmpPatch, 0042A837h, addr ChangeAble_teams 	; Allows players choose Team in Stage Mode
-													 	; Must be disabled if u're using "Independent_Stages"
+														; Must be disabled if u're using "Independent_Stages"
 	invoke JmpPatch, 0041DB46h, addr Result_Sound_Delay  	; time before sound play after last fighter defeated
 														 	; has regular LF2 value, so you can keep it work
+	invoke JmpPatch, 0042EE0Eh, addr main_Shake	      	; Allows to change Shaking via Config Block
 	
-
-	
-	
+	invoke JmpPatch, 00437664h, addr Stage_Spawn_Coords
 	;===================================================
 
 
@@ -237,12 +265,12 @@ DLLStartup proc
 	;================ Loading Rework ================	
 	invoke WriteMem, 00447F68h, addr fix_hidden,8     ; change "hiden:" to "hidden:" attribute                
 	invoke WriteMem, 00447F80h, addr fix_silence,9	  ; change "manacle:" to "silence:" attribute
-	invoke WriteMem, 00447E4Eh, addr fix_slow,6	  	  ; change "delay:" to "slow:" attribute
 	invoke WriteMem, 00447FACh, addr fix_confuse,9	  ; change "confus:" to "confuse:" attribute
 	invoke WriteMem, 0044860Ch, addr fix_sound,8	  ; change "respond:" to "sound:" attribute
 	invoke WriteMem, 00448613h, addr cleaner,1		  ; memory fix
 	
 	invoke JmpPatch, 0040F2D3h, addr Loading_Rework
+	invoke JmpPatch, 004110D2h, addr Loading_Rework_SlowAttr ; change "delay:" to "slow:" attribute (except armor)
 	invoke JmpPatch, 0042D4EFh, addr Player_Stats	
 	invoke JmpPatch, 0042D3E1h, addr Computer_Stats
 	;===================================================
@@ -252,9 +280,16 @@ DLLStartup proc
 	invoke JmpPatch, 0041310Dh, addr TimeStop 			; TimeStop Engine
 	invoke JmpPatch, 0041DD4Ah, addr TS_substactor		; part of TS Engine
 	
-	invoke JmpPatch, 0043D154h, addr TS_menu_fix
+	invoke JmpPatch, 0043D154h, addr TS_menu_fix        ; resets TS while game in menu
+	invoke JmpPatch, 00421191h, addr TS_fire_disable	; disables flame particles while TimeStop
+	invoke JmpPatch, 00407DCAh, addr TS_JanC1_disable	; removes Tail from Jan Chase while TS
+	invoke JmpPatch, 0040DA72h, addr TS_Fa_disable_1	; fixes HP substract from Balls while TS
+	invoke JmpPatch, 00408378h, addr TS_Fa_disable_2	; fixes HP substract from Balls while TS
+	invoke JmpPatch, 0041A12Fh, addr TS_bg_stop_1 			; stops HK Coliseum BG
+	invoke WriteMem, 0041A134h, addr oneNOP,4 				; fix code
+	invoke JmpPatch, 0041A1BDh, addr TS_bg_stop_2 			; stops all another BGs
 	;===================================================
-	
+
 	;================== RPG Rework ====================
 	invoke JmpPatch, 0041FAEBh, addr limit_breaker
 	invoke JmpPatch, 0041FA8Eh, addr limit_breaker2

@@ -12,7 +12,17 @@ ts_team  dd ?
 ts_type  dd ?
 
 ts_fix	 dd 0043D159h
+ts_fire	 dd 004211A0h
+ts_jan1	 dd 0040704Dh
+ts_jan1b dd 00407DD3h
+ts_fa_b1 dd 0040DA78h
+ts_fa_b2 dd 0040837Eh
+ts_fa_b3 dd 00408396h
+ts_bg_b1 dd 0041A138h
+ts_bg_b2 dd 0041A2E9h
+ts_bg_b3 dd 0041A1C6h
 
+some_function dd 00417170h
 .Code
 
 
@@ -84,11 +94,14 @@ FPS_rework proc
 		
 		MOV EBX,33 ; regular FPS
 		
+		CMP [slow_motion],TRUE
+		JNE [change_fps]
+		
 		CMP DWORD PTR DS:[450BDCh],1 ; check if round close to ends up
 		JLE [change_fps]
-		CMP DWORD PTR DS:[450BDCh],18h ; check timer of round ending
+		CMP DWORD PTR DS:[450BDCh],24 ; check timer of round ending
 		JGE [regular]
-		ADD EBX,65 ; end round slow motion
+		ADD EBX,DWORD PTR DS:[slow_power] ; end round slow motion
 
 change_fps:
 		JMP [FPS_back]
@@ -133,6 +146,96 @@ skip:
 	JMP [ts_fix]
 
 TS_menu_fix endp
+
+TS_fire_disable proc
+	
+		CMP DWORD PTR DS:[ts_timer],0
+		JG [skip_fire]
+	
+		PUSH 4h
+		PUSH 0CBh
+		CALL [some_function];
+		ADD ESP,8
+		
+skip_fire:
+		JMP [ts_fire]
+
+TS_fire_disable endp
+
+
+TS_JanC1_disable proc
+
+		CMP EAX,-1
+		JE [skip]
+		CMP DWORD PTR DS:[ts_timer],0
+		JG [skip]
+		JMP [ts_jan1b]
+skip:
+		JMP [ts_jan1]
+
+TS_JanC1_disable endp
+
+TS_Fa_disable_1 proc
+	
+		CMP DWORD PTR DS:[ts_timer],0
+		JG [skip]
+		SUB DWORD PTR DS:[ESI+2FCh],EAX
+skip:
+		JMP [ts_fa_b1]
+
+TS_Fa_disable_1 endp
+
+
+TS_Fa_disable_2 proc
+
+		CMP DWORD PTR DS:[ts_timer],0
+		JG [skip]
+		FLD QWORD PTR DS:[4479C0h]
+		JMP [ts_fa_b2]
+skip:
+		FCOMP ST(3)
+		JE [nya]
+		nya:
+		FLD DWORD PTR DS:[4479C0h]
+		FSTP QWORD PTR DS:[ECX+48h]
+		JMP [ts_fa_b3]
+
+TS_Fa_disable_2 endp
+
+
+
+TS_bg_stop_1 proc
+
+		CMP DWORD PTR DS:[ts_timer],0
+		JG [skip]
+		
+		MOV DWORD PTR DS:[EDI],EDX
+skip:
+		LEA EAX,DWORD PTR DS:[ECX+ESI*4+1580h]
+		JMP [ts_bg_b1]
+
+TS_bg_stop_1 endp
+
+
+TS_bg_stop_2 proc
+
+		CMP DWORD PTR DS:[ts_timer],0
+		JG [skip]
+
+		MOV DWORD PTR DS:[EDI],EDX
+skip:
+		CMP EDX,DWORD PTR DS:[ECX+ESI*4+1580h]
+		JMP [ts_bg_b3]
+
+TS_bg_stop_2 endp
+
+
+
+
+
+
+
+
 
 
 

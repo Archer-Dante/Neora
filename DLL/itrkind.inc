@@ -141,8 +141,11 @@ itr_kind8 proc
 kind8_dvx_X:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_0]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_0:
 	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
 	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
 	
@@ -157,8 +160,11 @@ kind8_dvx_X:
 kind8_dvx_X_Y:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_1]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_1:
 	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
 	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
 	
@@ -176,8 +182,11 @@ kind8_dvx_X_Y:
 kind8_dvx_Y:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_2]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_2:
 	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
 	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
 	
@@ -192,8 +201,11 @@ kind8_dvx_Y:
 kind8_X:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_3]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_3:
 	FLD QWORD PTR DS:[EDI+58h] ; загружает X основного объекта
 	FSTP QWORD PTR DS:[EBX+58h] ; записывает Х копирующего объекта
 	
@@ -205,8 +217,11 @@ kind8_X:
 kind8_X_Y:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_4]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_4:
 	FLD QWORD PTR DS:[EDI+58h] ; загружает X основного объекта
 	FSTP QWORD PTR DS:[EBX+58h] ; записывает Х копирующего объекта
 	
@@ -221,8 +236,11 @@ kind8_X_Y:
 kind8_Y:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_5]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_5:
 	FLD QWORD PTR DS:[EDI+60h] ; загружает Y основного объекта
 	FSTP QWORD PTR DS:[EBX+60h] ; записывает Y копирующего объекта
 	
@@ -234,8 +252,11 @@ kind8_Y:
 kind8_dvx:
 	MOV EAX,DWORD PTR SS:[ESP+0Ch]
 	MOV EDX,DWORD PTR DS:[EAX+44h] ; gets HEAL from Injury tag of ITR
+	CMP EDX,0
+	JLE [skip_6]
 	ADD EDX,3E8h
 	MOV DWORD PTR DS:[EDI+0E0h],EDX ; writes heal to curing function
+	skip_6:
 	FLD DWORD PTR DS:[EAX+14h] ; загружает dvx из itr
 	FISTP DWORD PTR DS:[EBX+70h] ; ставит кадр как в dvx
 	JMP [ik8_return]

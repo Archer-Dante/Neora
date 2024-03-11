@@ -17,7 +17,7 @@ F9_back_way2 dd 00416F79h
 act_rework_back dd 0043778Eh
 
 Ind_Stages 	 dd 0042A041h
-Change_Team  dd 0042A84Ah
+Change_Team  dd 0042A843h
 
 Results_Delay 	dd 0041DB58h
 
@@ -25,7 +25,9 @@ limit_b_back	dd 0041FB28h
 limit_b_back2 	dd 0041FA93h
 limit_b_back3 	dd 0041FAD3h
  
+shake_back 	dd 0042EE2Fh
 
+spawner	dd 0043766Fh
 .Code
 
 
@@ -291,9 +293,23 @@ Independent_Stages endp
 
 ChangeAble_teams proc
 
+		CMP [Unlock_Teams],TRUE
+		JNE [Lock_Teams]
+
 		MOV ECX, 2
 		MOV DWORD PTR DS:[EBP*4+451288h],ECX
 		JMP [Change_Team]
+		
+Lock_Teams:
+		MOV ECX,DWORD PTR DS:[EAX]
+		SUB ECX,1
+		NEG ECX
+		SBB ECX,ECX
+		ADD ECX,3
+		JMP [Change_Team]
+
+
+		
 
 ChangeAble_teams endp
 
@@ -358,6 +374,43 @@ limit_breaker3 endp
 
 
 
+
+main_Shake proc
+ 		
+ 		XOR EAX,EAX
+ 		MOV AL, BYTE PTR DS:[shake_value]
+		CMP DWORD PTR DS:[EBX+0B4h],0
+		JL SHORT [victim]
+		MOV DWORD PTR DS:[EBX+0B4h],EAX
+victim:
+		MOV ECX,DWORD PTR SS:[ESP+0Ch]
+		NEG EAX
+		MOV DWORD PTR DS:[EDI+0B4h],EAX
+		JMP [shake_back]
+
+main_Shake endp
+
+
+
+Stage_Spawn_Coords proc
+
+		CMP DWORD PTR DS:[EBX+0B0h],100000 ; F4240, filter 1xxxxx
+		JGE SHORT [no_random]
+
+random_on:
+		ADD EAX,DWORD PTR DS:[EBX+0B0h] ; С учетом рандома
+		ADD ESP,8
+		MOV EDX,EAX
+		JMP [spawner]	
+
+no_random:		
+		MOV EAX,DWORD PTR DS:[EBX+0B0h] ; Без учета рандома
+		SUB EAX,100000
+		ADD ESP,8
+		MOV EDX,EAX
+		JMP [spawner]
+
+Stage_Spawn_Coords endp
 
 
 
