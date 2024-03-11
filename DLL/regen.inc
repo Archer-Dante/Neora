@@ -29,7 +29,7 @@ mana_speed proc
     pop edx ; reserve
     pop ecx ; reserve
     ADD ECX, 0Ah ; mega-regen
-    ADD DWORD PTR DS:[ESI+308h],ECX
+    ADD DWORD PTR DS:[ESI+308h],0
 
     JMP [mp_back]
     
@@ -38,7 +38,7 @@ mana_speed proc
 	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
-    ADD DWORD PTR DS:[ESI+308h],ECX ; standart regen
+    ADD DWORD PTR DS:[ESI+308h],0 ; standart regen
 
     JMP [mp_back]
     
@@ -48,7 +48,7 @@ mana_speed proc
     pop edx ; reserve
     pop ecx ; reserve
     ADD ECX, 1h ; +1 special mp for Julian & Firzen
-    ADD DWORD PTR DS:[ESI+308h],ECX
+    ADD DWORD PTR DS:[ESI+308h],0
 
     JMP [mp_back]
     
