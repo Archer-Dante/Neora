@@ -23,6 +23,8 @@ include itrkind.inc
 include states.inc
 include ai.inc
 include window.inc
+include replay.inc
+include battle.inc
 
 .data
 memAlloc dd ?
@@ -54,18 +56,16 @@ DLLStartup proc
 	invoke JmpPatch, 0042EE17h, addr Shaker	      ;Shake_It_Baby!
 	;===================================================
 
-
 	;=============itr kind(itrkind.inc)=================
-	;invoke JmpPatch, 004297F0h, addr itr_kind8
-	;invoke JmpPatch, 004297F5h, addr itr_kind8_2
+	invoke JmpPatch, 0042FFF8h, addr itr_kind8
+	;invoke JmpPatch, 00417678h, addr itr_kind8_2 
 	;===================================================
-
 
 	;=============itr effects(itreff.inc)===============
 	;invoke JmpPatch, 004297FAh, addr itr_effect_fall
 	;invoke JmpPatch, 0042FCB1h, addr itr_effect
 	;===================================================
-
+  
 	;=================states(states.inc)================
 	invoke JmpPatch, 0041F656h, addr State8xxx
 	;invoke JmpPatch, 0041408Bh, addr State_Turning
@@ -92,19 +92,30 @@ DLLStartup proc
 	;invoke JmpPatch, 0042D473h, addr perspective4
 	;=====================================================
 	
-	
 	;===============Window Properities(window.inc)=========
 	invoke JmpPatch, 00401B3Ch, addr Window_Size_2	 	
-	invoke JmpPatch, 00401007h, addr Window_Size_3
-	invoke JmpPatch, 00401050h, addr Window_Size_4
+	invoke JmpPatch, 00401007h, addr Window_Size_3 ; check
+	invoke JmpPatch, 00401050h, addr Window_Size_4 ; check
 	invoke JmpPatch, 0042386Dh, addr Window_Size_5
 	invoke JmpPatch, 0043F03Dh, addr Window_Size_6
 	invoke JmpPatch, 0043F08Bh, addr Window_Size_7
-	invoke JmpPatch, 0041A0AEh, addr Window_Size	
-	invoke JmpPatch, 0041A1DBh, addr Window_Size_8
+	invoke JmpPatch, 0041A0AEh, addr Window_Size   ; check
+	invoke JmpPatch, 0041A1DBh, addr Window_Size_8 ; check
+	invoke JmpPatch, 0041A8FEh, addr Window_Size_9 ; check
+	invoke JmpPatch, 0041BB87h, addr Window_Size_10 ; check
+	invoke JmpPatch, 0041BC32h, addr Window_Size_11 ; check	
 	;===================================================
+	
+	;=============== Replays (replay.inc)=========
+	invoke JmpPatch, 004326D6h, addr comparator	 	
+	;===================================================	
+	
+	;=============== Battle Mode (battle.inc)=========
+	invoke JmpPatch, 0043947Fh, addr defence	 	
+	;===================================================	
 
-	call AI
+
+	;call AI
 	ret
 
 DLLStartup endp
@@ -154,8 +165,8 @@ AI proc
 	invoke JmpPatch, 00404DBBh, addr AI_Woody
 	invoke WriteMem, 00404DC0h, addr doubleNOP,2
 	;Davis AI
-	invoke JmpPatch, 00404C12h, addr AI_Davis
-	invoke WriteMem, 00404C17h, addr doubleNOP,2
+	;invoke JmpPatch, 00404C12h, addr AI_Davis
+	;invoke WriteMem, 00404C17h, addr doubleNOP,2
 	;Sorcerer AI
 	invoke JmpPatch, 0040555Dh, addr AI_Sorcerer
 	invoke WriteMem, 00405562h, addr doubleNOP,2

@@ -1,5 +1,5 @@
 .Data
-;mp recover
+
 Window_back1	dd 0041A0FBh
 Window_back2 	dd 0041A103h
 Window_back3 	dd 00401B48h
@@ -12,9 +12,15 @@ Window_back9	dd 0041A27Ah
 Window_back10	dd 0041A197h
 Window_back11	dd 0041A103h
 Window_back12	dd 0041A208h
+Window_back13	dd 0041A90Eh
+Window_back14	dd 0041A910h
+Window_back15	dd 0041BB96h
+Window_back16	dd 0041BC4Bh
+Window_back17	dd 0041BC43h
 
-win_width  dd 40bh
-win_height dd 2A3h
+
+win_width  dd 40bh ; ”правление шириной окна
+win_height dd 2A3h ; ”правление высотой окна
 
 .Code
 
@@ -144,9 +150,50 @@ Window_Size_8 proc
 
 		JMP [Window_back12]
 
-
-
 Window_Size_8 endp
+
+
+
+Window_Size_9 proc
+	
+		CMP EAX,[win_width]
+		JL Window_blabla1
+		MOV EDX,[win_width]
+		LEA EAX,DWORD PTR DS:[ECX+ECX+1h]
+
+		JMP [Window_back13]
+		
+Window_blabla1:
+		JMP [Window_back14]
+
+Window_Size_9 endp
+
+
+Window_Size_10 proc
+
+		MOV EDX,DWORD PTR DS:[452984h]
+		MOV EAX,DWORD PTR DS:[EDX]
+		SUB EAX,[win_width] ;важна€ часть, определ€ет границу карты относительно экрана вычитанием
+		CMP ESI,EAX	
+
+		JMP [Window_back15]
+
+Window_Size_10 endp
+
+Window_Size_11 proc
+
+		MOV EAX,DWORD PTR DS:[452984h]
+		MOV EBX,DWORD PTR DS:[EAX]
+		LEA EAX,DWORD PTR DS:[EBX-40Bh]
+		CMP EDI,EAX
+		JLE SHORT Window_blabla2
+		JMP [Window_back17]
+ 
+Window_blabla2:
+		JMP [Window_back16]
+
+Window_Size_11 endp
+
 
 
 

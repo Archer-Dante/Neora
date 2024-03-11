@@ -8,14 +8,7 @@ Max_HP2		dd 00420223h
 ;hiding shadow
 hs_r1		dd 0041A770h
 hs_r2		dd 0041A6F4h
-;itr/kind8
-ik8_pos1	dd 00430C8Ch
-ik8_pos2	dd 00430CEBh
-ik8_pos3	dd 0043187Ah
-ik8_pos4	dd 00447A08h
-;itr/kind8_2
-ik8_other1	dd 004176CBh
-ik8_other2	dd 00417F59h
+
 ;opoint_kinds
 opoints_r   dd 004202D1h
 ;shaker
