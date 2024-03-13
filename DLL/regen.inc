@@ -82,7 +82,7 @@ hp_speed proc
 	pop ebx ; reserve
     pop edx ; reserve
     pop ecx ; reserve
-    ADD DWORD PTR DS:[ESI+2FCh],1 ; standart regen
+    ADD DWORD PTR DS:[ESI+2FCh],0 ; standart regen
 
     JMP [hp_back]
     
