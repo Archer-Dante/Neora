@@ -22,22 +22,22 @@ itr_effect_1xxx_to_9xxx proc
 
 	; REPEATING CODE SHOULD BE REWORKED WITH PROCS AND CALLS
 	CMP EAX, 0
-	JGE [skip_neg] ; скипаем если не негативное
+	JGE [skip_neg] ; skip if not negative value
 	NEG EAX ; invertion
 
 skip_neg:
 
 	
 
-	CMP EAX,3 ; Ice Effect
+	CMP EAX,3 ; freeze Effect
 	JE [Back1]
 	CMP EAX, 3E8h ; 1000
 	JL [Back2]  ; Если меньше 1000, уходим сразу
 	
-	PUSH EAX ; резервируем
-	PUSH EBX ; резервируем
-	PUSH ECX ; резервируем
-	PUSH EDX ; резервируем
+	PUSH EAX ; reserve
+	PUSH EBX ; reserve
+	PUSH ECX ; reserve
+	PUSH EDX ; reserve
 
 effect1xxx:
 	CMP EAX, 7CFh ; 1999
@@ -148,47 +148,47 @@ effect8xxx:
 
 effect9xxx:
 	CMP EAX, 270Fh ; 9999
-	JG [Back2_over9000] ; больше некуда, поэтому валим.
+	JG [Back2_over9000] ; no highter value, so going to return
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
 	JNZ [wrong_type9] ; завершаем обработку, но обрабатываем звук
 
-	PUSH EAX ; резервируем
+	PUSH EAX ; reserve
 	
 	SUB EAX,2328h ; -9000
 	MOV DWORD PTR DS:[EDI+70h],EAX ; выставляем кадр
 
-	POP EAX ; восстанавливаем
+	POP EAX ; recover
 	
 	wrong_type9:	
 	JMP [Back4]
 
 Back1: 
-	JMP [e1_t1_e9] ; Если это заморозка Фриза, то сюда уходим
+	JMP [e1_t1_e9] ; if it's freeze effect then return
 Back2:
-	JMP [e1_t2_e9] ; уход на проверку других эффектов, если ни один из списка
+	JMP [e1_t2_e9] ; return to other effects check if nothing matches 
 	
 Back2_over9000:
-	POP EDX ; восстанавливаем
-	POP ECX ; восстанавливаем
-	POP EBX ; восстанавливаем
-	POP EAX ; восстанавливаем
+	POP EDX ; recover 
+	POP ECX ; recover
+	POP EBX ; recover
+	POP EAX ; recover
 	JMP [e1_t2_e9] ; уход на проверку других эффектов, если ни один из списка
 	
 Back3:
 	JMP [e_finish]
 Back4:
-	POP EDX ; восстанавливаем
-	POP ECX ; восстанавливаем
-	POP EBX ; восстанавливаем
-	POP EAX ; восстанавливаем
+	POP EDX ; recover
+	POP ECX ; recover
+	POP EBX ; recover
+	POP EAX ; recover
 	
-	MOV ECX,DWORD PTR SS:[ESP+0Ch] ; восстанавливаем подключение к ITR сектору
+	MOV ECX,DWORD PTR SS:[ESP+0Ch] ; ITR-pointer getter
 	PUSH DWORD PTR DS:[ECX+28h] ; respond TAG
-	MOV EAX,DWORD PTR DS:[EDI+10h] ; кусок оригинального кода, берет Х-координату
+	MOV EAX,DWORD PTR DS:[EDI+10h] ; original code, X-ccord getter
 	
-	JMP [e1_t3_e9] ; завершаем обработку
+	JMP [e1_t3_e9] ; finish
 
 itr_effect_1xxx_to_9xxx endp
 
