@@ -7,10 +7,27 @@ e1_t3_e9 dd 0042F594h ;0042F58Fh ; куда возвращаются эффекты после выполнения
 e_finish dd 0043087Ch ; куда уходят все эффекты после всех сравнений и выполнений.
 					  ; В коде ниже не используется, но может сократить нагрузку на комп
 e50_back1 dd 0042E918h
+
+back_to_effect_cmps   dd 004174ABh
+back_to_effect_cmps2 dd 0042F5A9h
+back_to_inv_cmps	      dd 0041753Bh
+back_it_bypasses_inv   dd 0041754Bh
+
+
+
 .Code
 
 
 itr_effect_1xxx_to_9xxx proc
+
+	; REPEATING CODE SHOULD BE REWORKED WITH PROCS AND CALLS
+	CMP EAX, 0
+	JGE [skip_neg] ; скипаем если не негативное
+	NEG EAX ; invertion
+
+skip_neg:
+
+	
 
 	CMP EAX,3 ; Ice Effect
 	JE [Back1]
@@ -131,7 +148,7 @@ effect8xxx:
 
 effect9xxx:
 	CMP EAX, 270Fh ; 9999
-	JG [Back2] ; больше некуда, поэтому валим.
+	JG [Back2_over9000] ; больше некуда, поэтому валим.
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
@@ -151,6 +168,14 @@ Back1:
 	JMP [e1_t1_e9] ; Если это заморозка Фриза, то сюда уходим
 Back2:
 	JMP [e1_t2_e9] ; уход на проверку других эффектов, если ни один из списка
+	
+Back2_over9000:
+	POP EDX ; восстанавливаем
+	POP ECX ; восстанавливаем
+	POP EBX ; восстанавливаем
+	POP EAX ; восстанавливаем
+	JMP [e1_t2_e9] ; уход на проверку других эффектов, если ни один из списка
+	
 Back3:
 	JMP [e_finish]
 Back4:
@@ -237,6 +262,72 @@ bdy_50:
 
 
 effect50 endp
+
+
+
+
+pierce_invincibles proc
+	
+	mov ecx,[ebx+2Ch] ; original code
+	
+	CMP ECX, 0
+	JGE [skip] ; скипаем если не негативное
+	
+	MOV EAX, 42h ; magic number, flags that effect was neg
+	NEG ECX ; invertion
+	
+skip: 
+	cmp ecx,04h ; original code
+	JMP [back_to_effect_cmps]
+
+pierce_invincibles endp
+
+eff_chk_pierce_inv proc ; effect_check_for_pierce_invincibles
+
+	mov eax,[ecx+2Ch] 		;original code
+	
+	; REPEATING CODE SHOULD BE REWORKED WITH PROCS AND CALLS
+	CMP EAX, 0
+	JGE [skip_neg] ; скипаем если не негативное
+	NEG EAX ; invertion
+	
+skip_neg:
+	cmp eax,02h
+	JMP [back_to_effect_cmps2]
+
+eff_chk_pierce_inv endp
+
+
+
+pierce_inv_checker proc
+	
+	mov edx,[ebx]				;original code (without it selfharm appears xD)
+	
+	CMP EAX, 42h
+	JE [attack_invincible]
+
+	cmp dword ptr [esi+08],00	;original code
+	JMP [back_to_inv_cmps]
+	
+attack_invincible: 
+	JMP [back_it_bypasses_inv]
+	
+
+pierce_inv_checker endp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
