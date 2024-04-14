@@ -146,15 +146,15 @@ bdy_rework proc
 		ADD DWORD PTR DS:[EDI+34Ch],ECX
 		MOV EAX,DWORD PTR DS:[EDI+368h]
 		CMP DWORD PTR DS:[EAX+6F8h],0
-		JNZ SHORT [exit]
+		JNZ SHORT [to_exit]
 		CMP DWORD PTR DS:[EDI+2F4h],-1
-		JNZ SHORT [exit]
+		JNZ SHORT [to_exit]
 		MOV EDX,DWORD PTR DS:[EBX+354h]
 		MOV EAX,DWORD PTR DS:[ESI+EDX*4+3ECh]
 		ADD DWORD PTR DS:[EAX+348h],ECX
 
 
-exit:	JMP [after_damage]
+to_exit:	JMP [after_damage]
 		
 
 

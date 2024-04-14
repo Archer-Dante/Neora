@@ -57,7 +57,7 @@ BackFrame18 dd 00425F94h
 ENDING db "sprite\UI\ENDING.png",0
 BackFrame19 dd 00425FB2h
 
-PAUSE db "sprite\UI\PAUSE.png",0
+PAUSED db "sprite\UI\PAUSE.png",0
 BackFrame20 dd 004273C1h
 
 DEMO db "sprite\UI\DEMO.png",0
@@ -234,7 +234,7 @@ ENDINGimg proc
 ENDINGimg endp
 
 PAUSEimg proc
-	MOV ECX, offset [PAUSE]
+	MOV ECX, offset [PAUSED]
 	PUSH ECX 
 	JMP [BackFrame20]
 PAUSEimg endp
