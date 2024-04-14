@@ -7,10 +7,9 @@ include C:\masm32\include\masm32.inc
 include C:\masm32\include\user32.inc
 include C:\masm32\include\kernel32.inc
 include C:\masm32\include\debug.inc
-includelib C:\masm32\lib\masm32.lib
-includelib C:\masm32\lib\user32.lib
-includelib C:\masm32\lib\kernel32.lib
-includelib C:\masm32\lib\debug.lib
+include C:\masm32\include\masm32rt.inc
+; include C:\masm32\masmbasic\masmbasic.inc
+; include C:\masm32\masmbasic\res\jbasic.inc
 
 include lf2.inc
 include addresses.inc
@@ -61,6 +60,7 @@ copycat  db "Neora Engine by Archer-Dante",00
 .data?
 
 .code
+
 DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD
 
 	mov eax,reason
