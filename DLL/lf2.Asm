@@ -1,15 +1,24 @@
-.386
+.486
+.xmm
 .Model Flat, StdCall
 OPTION CASEMAP :NONE
 
-include C:\masm32\include\windows.inc
-include C:\masm32\include\masm32.inc
-include C:\masm32\include\user32.inc
-include C:\masm32\include\kernel32.inc
-include C:\masm32\include\debug.inc
-; include C:\masm32\include\masm32rt.inc
-; include C:\masm32\masmbasic\masmbasic.inc
-; include C:\masm32\masmbasic\res\jbasic.inc
+; include C:\masm32\include\windows.inc
+; include C:\masm32\include\masm32.inc
+; include C:\masm32\include\user32.inc
+; include C:\masm32\include\kernel32.inc
+; include C:\masm32\include\debug.inc
+
+include masm32rt.inc
+include C:\masm32\masmbasic\masmbasic.inc
+includelib "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22621.0\ucrt\x86\ucrt.lib"
+;includelib "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\lib\x86\vcruntime.lib"
+includelib vcruntime.lib
+include cjson_x86.inc
+includelib cjson_x86.lib
+;include jansson_x86.inc
+;includelib jansson_x86.lib
+;include C:\masm32\masmbasic\res\jbasic.inc
 
 include lf2.inc
 include addresses.inc
@@ -30,6 +39,7 @@ include rpg.inc
 include event.inc
 include stage.inc
 
+
 .data
 memAlloc dd ?
 solAlloc dd ?
@@ -39,28 +49,35 @@ copycat  db "Neora Engine by Archer-Dante aka EdL",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.10 RC1",00 ; Name of the Game Window
-		win_width   		dd 794		; Game window width  in pixels. "794" is default
+		GameName			db "LF2: Neora Engine 2.10 dev",00 ; Name of the Game Window
+		win_width   		dd 999		; Game window width  in pixels. "794" is default
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
-		shake_value 		db 3 			; Value of both Shaking effect on attack. "3" is default
+		shake_value 		db 3 		; Value of both Shaking effect on attack. "3" is default
 		
-		slow_motion 		db 1 			; Slow Motion at the end of Round. (1 - on, 0 - off)
+		slow_motion 		db 1 		; Slow Motion at the end of Round. (1 - on, 0 - off)
 		slow_power  		dd 65 		; "65" is recommend value of slow power
 		
-		replay_switch		db 1			; Makes game Always counts replay file as valid. (1 - on, 0 - off)
+		replay_switch		db 1		; Makes game Always counts replay file as valid. (1 - on, 0 - off)
 		
 		battle_limit		dd 1000		; Battle Mode defence limit. (ex.300 = 3.0), "300" is default
-		battle_step		dd 100		; Increasing and Decreasing step of defence change (ex.50 = 0.5), "50" is default
+		battle_step			dd 100		; Increasing and Decreasing step of defence change (ex.50 = 0.5), "50" is default
 		
-		Menu_Picture_R	dd 0			; Resets CHARMENU.png picture coords to 0 by x\y axis. (1 - on, 0 - off)
-		Unlock_Teams		dd 1			; Allows to change Team in Stage Mode. (1 - on, 0 - off)
-		F7_for_dead		dd 1			; Allows to use F7 after round ends. (1 - on, 0 - off)
+		Menu_Picture_R		dd 0		; Resets CHARMENU.png picture coords to 0 by x\y axis. (1 - on, 0 - off)
+		Unlock_Teams		dd 1		; Allows to change Team in Stage Mode. (1 - on, 0 - off)
+		F7_for_dead			dd 1		; Allows to use F7 after round ends. (1 - on, 0 - off)
 		;====================================================================================
 
 .data?
 
 .code
+
+; EXTERN 
+
+
+
+
+
 DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD
 
 	mov eax,reason
@@ -361,16 +378,16 @@ DLLStartup proc
 	; There nothing of public nor useful, so u can juse ignore it
 	;===============================================================
 	;=======================   Event Only   ========================
-;	MOV DWORD PTR DS:[451160h],1 ; в стадию
-;	MOV DWORD PTR DS:[450C30h],-1 ; только Crazy
+;	MOV DWORD PTR DS:[451160h],1 ; a noaae?
+;	MOV DWORD PTR DS:[450C30h],-1 ; oieuei Crazy
 ;	
-;	invoke CallPatch, 00432114h, addr lock_game_mode ; сразу перейти к выбору перса
+;	invoke CallPatch, 00432114h, addr lock_game_mode ; n?aco ia?aeoe e auai?o ia?na
 ;	
-;	invoke WriteMem,  0042A4EBh, addr oneNOP, 6 ; отрубаем возможность вернуться назад
-;	invoke WriteMem,  0042A4D7h, addr oneNOP, 12 ; отрубаем звук клика назад по меню
-;	invoke WriteMem,  00429F9Bh, addr disable_menu_render, 1 ; отрубаем отрисовку меню (блик перехода)
+;	invoke WriteMem,  0042A4EBh, addr oneNOP, 6 ; io?oaaai aicii?iinou aa?ioouny iacaa
+;	invoke WriteMem,  0042A4D7h, addr oneNOP, 12 ; io?oaaai caoe eeeea iacaa ii iai?
+;	invoke WriteMem,  00429F9Bh, addr disable_menu_render, 1 ; io?oaaai io?eniaeo iai? (aeee ia?aoiaa)
 ;	
-;	invoke JmpPatch,  0042D749h, addr only_crazy ; не даем менять сложность
+;	invoke JmpPatch,  0042D749h, addr only_crazy ; ia aaai iaiyou nei?iinou
 	;===============================================================
 
 
