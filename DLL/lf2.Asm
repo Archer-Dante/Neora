@@ -7,7 +7,7 @@ include C:\masm32\include\masm32.inc
 include C:\masm32\include\user32.inc
 include C:\masm32\include\kernel32.inc
 include C:\masm32\include\debug.inc
-; include C:\masm32\include\masm32rt.inc
+include C:\masm32\include\masm32rt.inc
 ; include C:\masm32\masmbasic\masmbasic.inc
 ; include C:\masm32\masmbasic\res\jbasic.inc
 
@@ -39,7 +39,7 @@ copycat  db "Neora Engine by Archer-Dante aka EdL",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName		db "LF2: Neora Engine 2.10 RC1",00 ; Name of the Game Window
+		GameName		db "LF2: Neora Engine 2.09",00 ; Name of the Game Window
 		win_width   		dd 794		; Game window width  in pixels. "794" is default
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
