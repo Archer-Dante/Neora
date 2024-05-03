@@ -666,5 +666,10 @@ sprite/template1/1_mirror.bmp
 sprite/template1/face.bmp
 sprite/template1/s.bmp
 Easier Data-Editor.lnk
+<<<<<<< HEAD
 DLL/lf2.obj
 sprite/sys/spark.png
+=======
+sprite/sys/spark.png
+DC v1.5.lnk
+>>>>>>> origin/dev
