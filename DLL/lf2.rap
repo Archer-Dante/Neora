@@ -193,16 +193,16 @@ ProductVer4Range=0
 [BreakPoint]
 0=
 [Find]
-1="PAUSE"
-2="slow_power"
-3="fps_rework"
-4="body_back_3"
-5="not_match1"
-6="fourNOP"
-7="oneNop"
-8="+0C0h]"
-9="+0C0]"
-10="dmgDec"
+1="invoke WriteMem, 00412C63h, addr JNEtoJMP,1"
+2="PAUSE"
+3="slow_power"
+4="fps_rework"
+5="body_back_3"
+6="not_match1"
+7="fourNOP"
+8="oneNop"
+9="+0C0h]"
+10="+0C0]"
 [LANGUAGE]
 LANGUAGE=25
 SubLang=1

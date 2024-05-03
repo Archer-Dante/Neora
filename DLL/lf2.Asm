@@ -50,7 +50,7 @@ copycat  db "Neora Engine by Archer-Dante aka EdL",00
 		;================================= Configuration Block ==============================
 		;====================================================================================
 		GameName			db "LF2: Neora Engine 2.10 dev",00 ; Name of the Game Window
-		win_width   		dd 999		; Game window width  in pixels. "794" is default
+		win_width   		dd 794		; Game window width  in pixels. "794" is default
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
 		shake_value 		db 3 		; Value of both Shaking effect on attack. "3" is default
@@ -103,6 +103,13 @@ DLLStartup proc
 	;=============itr effects(itreff.inc)===============
 	invoke JmpPatch, 0042F54Ah, addr itr_effect_1xxx_to_9xxx 
 	invoke JmpPatch, 0042E90Fh, addr effect50 			; contains part of Untouchable work
+	invoke JmpPatch, 004174A5h, addr pierce_invincibles	; negative effects to pierce invincibles
+	invoke WriteMem, 004174AAh, addr oneNOP,1			; removes 6th byte leftover
+	invoke JmpPatch, 0042F5A3h, addr eff_chk_pierce_inv	; negative effects to pierce invincibles
+	invoke WriteMem, 0042F5A8h, addr oneNOP,1			; removes 6th byte leftover
+	invoke JmpPatch, 00417535h, addr pierce_inv_checker	; negative effects to pierce invincibles
+	invoke WriteMem, 0041753Ah, addr oneNOP,1			; removes 6th byte leftover
+	
 	;===================================================
 
 	;=================states(states.inc)================
