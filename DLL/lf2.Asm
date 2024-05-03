@@ -303,10 +303,10 @@ DLLStartup proc
 
 
 	;==============body kinds(bodies.inc)===============
-	;invoke JmpPatch, 0042E677h, addr weNeedMoarBodies
-	;invoke WriteMem, 0042E67Ch, addr oneNOP,7
-	;invoke JmpPatch, 0042E89Ah, addr untouchable
-	;invoke JmpPatch, 0042E75Bh, addr bdy_rework
+	invoke JmpPatch, 0042E677h, addr weNeedMoarBodies
+	invoke WriteMem, 0042E67Ch, addr oneNOP,7
+	invoke JmpPatch, 0042E89Ah, addr untouchable
+	invoke JmpPatch, 0042E75Bh, addr bdy_rework
 	
 	
 	
