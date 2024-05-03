@@ -3,16 +3,6 @@
 .Model Flat, StdCall
 OPTION CASEMAP :NONE
 
-<<<<<<< HEAD
-include C:\masm32\include\windows.inc
-include C:\masm32\include\masm32.inc
-include C:\masm32\include\user32.inc
-include C:\masm32\include\kernel32.inc
-include C:\masm32\include\debug.inc
-include C:\masm32\include\masm32rt.inc
-; include C:\masm32\masmbasic\masmbasic.inc
-; include C:\masm32\masmbasic\res\jbasic.inc
-=======
 ; include C:\masm32\include\windows.inc
 ; include C:\masm32\include\masm32.inc
 ; include C:\masm32\include\user32.inc
@@ -29,7 +19,6 @@ includelib cjson_x86.lib
 ;include jansson_x86.inc
 ;includelib jansson_x86.lib
 ;include C:\masm32\masmbasic\res\jbasic.inc
->>>>>>> origin/dev
 
 include lf2.inc
 include addresses.inc
@@ -60,11 +49,7 @@ copycat  db "Neora Engine by Archer-Dante aka EdL",00
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-<<<<<<< HEAD
-		GameName		db "LF2: Neora Engine 2.09",00 ; Name of the Game Window
-=======
 		GameName			db "LF2: Neora Engine 2.10 dev",00 ; Name of the Game Window
->>>>>>> origin/dev
 		win_width   		dd 794		; Game window width  in pixels. "794" is default
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
