@@ -2,10 +2,10 @@
 
 e1_t1_e9 dd 0042F554h
 e1_t2_e9 dd 0042F54Fh
-e1_t3_e9 dd 0042F594h ;0042F58Fh ; куда возвращаются эффекты после выполнения
+e1_t3_e9 dd 0042F594h ;0042F58Fh ; РєСѓРґР° РІРѕР·РІСЂР°С‰Р°СЋС‚СЃСЏ СЌС„С„РµРєС‚С‹ РїРѕСЃР»Рµ РІС‹РїРѕР»РЅРµРЅРёСЏ
 
-e_finish dd 0043087Ch ; куда уходят все эффекты после всех сравнений и выполнений.
-					  ; В коде ниже не используется, но может сократить нагрузку на комп
+e_finish dd 0043087Ch ; РєСѓРґР° СѓС…РѕРґСЏС‚ РІСЃРµ СЌС„С„РµРєС‚С‹ РїРѕСЃР»Рµ РІСЃРµС… СЃСЂР°РІРЅРµРЅРёР№ Рё РІС‹РїРѕР»РЅРµРЅРёР№.
+					  ; Р’ РєРѕРґРµ РЅРёР¶Рµ РЅРµ РёСЃРїРѕР»СЊР·СѓРµС‚СЃСЏ, РЅРѕ РјРѕР¶РµС‚ СЃРѕРєСЂР°С‚РёС‚СЊ РЅР°РіСЂСѓР·РєСѓ РЅР° РєРѕРјРї
 e50_back1 dd 0042E918h
 
 back_to_effect_cmps  dd 004174ABh
@@ -27,26 +27,26 @@ skip_neg:
 	CMP EAX,3 ; Ice Effect
 	JE [Back1]
 	CMP EAX, 3E8h ; 1000
-	JL [Back2]  ; Если меньше 1000, уходим сразу
+	JL [Back2]  ; Р•СЃР»Рё РјРµРЅСЊС€Рµ 1000, СѓС…РѕРґРёРј СЃСЂР°Р·Сѓ
 	
-	PUSH EAX ; резервируем
-	PUSH EBX ; резервируем
-	PUSH ECX ; резервируем
-	PUSH EDX ; резервируем
+	PUSH EAX ; СЂРµР·РµСЂРІРёСЂСѓРµРј
+	PUSH EBX ; СЂРµР·РµСЂРІРёСЂСѓРµРј
+	PUSH ECX ; СЂРµР·РµСЂРІРёСЂСѓРµРј
+	PUSH EDX ; СЂРµР·РµСЂРІРёСЂСѓРµРј
 
 effect1xxx:
 	CMP EAX, 7CFh ; 1999
 	JG [effect2xxx]
 	
-	SUB EAX,3E8h ; -1000, получаем число для урона
-	MOV EDX,DWORD PTR DS:[EBX+2FCh] ; получаем ХП атакующего в ЕBХ
-	SUB EDX, EAX ; вычитаем из ХП нужный урон.
-	CMP EDX, 0 ; проверяем, что полученное значение не меньше нуля
+	SUB EAX,3E8h ; -1000, РїРѕР»СѓС‡Р°РµРј С‡РёСЃР»Рѕ РґР»СЏ СѓСЂРѕРЅР°
+	MOV EDX,DWORD PTR DS:[EBX+2FCh] ; РїРѕР»СѓС‡Р°РµРј РҐРџ Р°С‚Р°РєСѓСЋС‰РµРіРѕ РІ Р•BРҐ
+	SUB EDX, EAX ; РІС‹С‡РёС‚Р°РµРј РёР· РҐРџ РЅСѓР¶РЅС‹Р№ СѓСЂРѕРЅ.
+	CMP EDX, 0 ; РїСЂРѕРІРµСЂСЏРµРј, С‡С‚Рѕ РїРѕР»СѓС‡РµРЅРЅРѕРµ Р·РЅР°С‡РµРЅРёРµ РЅРµ РјРµРЅСЊС€Рµ РЅСѓР»СЏ
 	JGE [valid_1xxx]
-	MOV EDX, 0 ; если вдруг ушли в минус, выставляем 0, анти-баг
+	MOV EDX, 0 ; РµСЃР»Рё РІРґСЂСѓРі СѓС€Р»Рё РІ РјРёРЅСѓСЃ, РІС‹СЃС‚Р°РІР»СЏРµРј 0, Р°РЅС‚Рё-Р±Р°Рі
 	valid_1xxx:
-	MOV DWORD PTR DS:[EBX+2FCh],EDX ; записываем полученное хп
-	ADD DWORD PTR DS:[EBX+34Ch],EDX ; запись HP Lost
+	MOV DWORD PTR DS:[EBX+2FCh],EDX ; Р·Р°РїРёСЃС‹РІР°РµРј РїРѕР»СѓС‡РµРЅРЅРѕРµ С…Рї
+	ADD DWORD PTR DS:[EBX+34Ch],EDX ; Р·Р°РїРёСЃСЊ HP Lost
 
 	JMP [Back4]
 
@@ -56,10 +56,10 @@ effect2xxx:
 
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
-	JNZ [wrong_type2] ; завершаем обработку, но обрабатываем звук
+	JNZ [wrong_type2] ; Р·Р°РІРµСЂС€Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ, РЅРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј Р·РІСѓРє
 	
-	SUB EAX,7D0h ; -2000, число для отхила
-	ADD DWORD PTR DS:[EBX+2FCh],EAX ; добавляем полученное хп
+	SUB EAX,7D0h ; -2000, С‡РёСЃР»Рѕ РґР»СЏ РѕС‚С…РёР»Р°
+	ADD DWORD PTR DS:[EBX+2FCh],EAX ; РґРѕР±Р°РІР»СЏРµРј РїРѕР»СѓС‡РµРЅРЅРѕРµ С…Рї
 
 	wrong_type2:	
 	JMP [Back4]
@@ -69,7 +69,7 @@ effect3xxx:
 	JG [effect4xxx]
 	
 	SUB EAX,0BB8h ; -3000
-	ADD DWORD PTR DS:[EBX+2FCh],EAX ; добавляем полученное хп
+	ADD DWORD PTR DS:[EBX+2FCh],EAX ; РґРѕР±Р°РІР»СЏРµРј РїРѕР»СѓС‡РµРЅРЅРѕРµ С…Рї
 
 	JMP [Back4]
 
@@ -78,8 +78,8 @@ effect4xxx:
 	JG [effect5xxx]
 
 	SUB EAX,0FA0h ; -4000
-	SUB DWORD PTR DS:[EBX+308h],EAX ; отнимаем ману
-	ADD DWORD PTR DS:[EBX+350h],EAX ; запись MP Lost
+	SUB DWORD PTR DS:[EBX+308h],EAX ; РѕС‚РЅРёРјР°РµРј РјР°РЅСѓ
+	ADD DWORD PTR DS:[EBX+350h],EAX ; Р·Р°РїРёСЃСЊ MP Lost
 
 	JMP [Back4]
 	
@@ -89,10 +89,10 @@ effect5xxx:
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
-	JNZ [wrong_type5] ; завершаем обработку, но обрабатываем звук
+	JNZ [wrong_type5] ; Р·Р°РІРµСЂС€Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ, РЅРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј Р·РІСѓРє
 	
 	SUB EAX,1388h ; -5000
-	ADD DWORD PTR DS:[EBX+308h],EAX ; добавляем ману
+	ADD DWORD PTR DS:[EBX+308h],EAX ; РґРѕР±Р°РІР»СЏРµРј РјР°РЅСѓ
 	
 	wrong_type5:	
 	JMP [Back4]
@@ -102,7 +102,7 @@ effect6xxx:
 	JG [effect7xxx]
 
 	SUB EAX,1770h ; -6000
-	ADD DWORD PTR DS:[EBX+308h],EAX ; добавляем ману
+	ADD DWORD PTR DS:[EBX+308h],EAX ; РґРѕР±Р°РІР»СЏРµРј РјР°РЅСѓ
 	
 	JMP [Back4]
 	
@@ -112,15 +112,15 @@ effect7xxx:
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
-	JNZ [wrong_type7] ; завершаем обработку, но обрабатываем звук
+	JNZ [wrong_type7] ; Р·Р°РІРµСЂС€Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ, РЅРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј Р·РІСѓРє
 
-	PUSH EAX ; резервируем
+	PUSH EAX ; СЂРµР·РµСЂРІРёСЂСѓРµРј
 	
 	SUB EAX,1B58h ; -7000
-	SUB DWORD PTR DS:[EDI+308h],EAX ; отнимаем ману
+	SUB DWORD PTR DS:[EDI+308h],EAX ; РѕС‚РЅРёРјР°РµРј РјР°РЅСѓ
 	ADD DWORD PTR DS:[EDI+350h],EAX
 
-	POP EAX ; восстанавливаем
+	POP EAX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј
 	
 	wrong_type7:	
 	JMP [Back4]
@@ -131,38 +131,38 @@ effect8xxx:
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
-	JNZ [wrong_type8] ; завершаем обработку, но обрабатываем звук
+	JNZ [wrong_type8] ; Р·Р°РІРµСЂС€Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ, РЅРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј Р·РІСѓРє
 	
 	SUB EAX,1F40h ; -8000
-	SUB DWORD PTR DS:[EDI+308h],EAX ; отнимаем ману
+	SUB DWORD PTR DS:[EDI+308h],EAX ; РѕС‚РЅРёРјР°РµРј РјР°РЅСѓ
 	ADD DWORD PTR DS:[EDI+350h],EAX
-	ADD DWORD PTR DS:[EBX+308h],EAX ; добавляем ману
+	ADD DWORD PTR DS:[EBX+308h],EAX ; РґРѕР±Р°РІР»СЏРµРј РјР°РЅСѓ
 	
 	wrong_type8:	
 	JMP [Back4]
 
 effect9xxx:
 	CMP EAX, 270Fh ; 9999
-	JG [Back2_over9000] ; больше некуда, поэтому валим.
+	JG [Back2_over9000] ; Р±РѕР»СЊС€Рµ РЅРµРєСѓРґР°, РїРѕСЌС‚РѕРјСѓ РІР°Р»РёРј.
 	
 	MOV EDX,DWORD PTR DS:[EDI+368h]
 	CMP DWORD PTR DS:[EDX+6F8h],0
-	JNZ [wrong_type9] ; завершаем обработку, но обрабатываем звук
+	JNZ [wrong_type9] ; Р·Р°РІРµСЂС€Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ, РЅРѕ РѕР±СЂР°Р±Р°С‚С‹РІР°РµРј Р·РІСѓРє
 
-	PUSH EAX ; резервируем
+	PUSH EAX ; СЂРµР·РµСЂРІРёСЂСѓРµРј
 	
 	SUB EAX,2328h ; -9000
-	MOV DWORD PTR DS:[EDI+70h],EAX ; выставляем кадр
+	MOV DWORD PTR DS:[EDI+70h],EAX ; РІС‹СЃС‚Р°РІР»СЏРµРј РєР°РґСЂ
 
-	POP EAX ; восстанавливаем
+	POP EAX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј
 	
 	wrong_type9:	
 	JMP [Back4]
 
 Back1: 
-	JMP [e1_t1_e9] ; Если это заморозка Фриза, то сюда уходим
+	JMP [e1_t1_e9] ; Р•СЃР»Рё СЌС‚Рѕ Р·Р°РјРѕСЂРѕР·РєР° Р¤СЂРёР·Р°, С‚Рѕ СЃСЋРґР° СѓС…РѕРґРёРј
 Back2:
-	JMP [e1_t2_e9] ; уход на проверку других эффектов, если ни один из списка
+	JMP [e1_t2_e9] ; СѓС…РѕРґ РЅР° РїСЂРѕРІРµСЂРєСѓ РґСЂСѓРіРёС… СЌС„С„РµРєС‚РѕРІ, РµСЃР»Рё РЅРё РѕРґРёРЅ РёР· СЃРїРёСЃРєР°
 	
 Back2_over9000:
 	POP EDX
@@ -174,16 +174,16 @@ Back2_over9000:
 Back3:
 	JMP [e_finish]
 Back4:
-	POP EDX ; восстанавливаем
-	POP ECX ; восстанавливаем
-	POP EBX ; восстанавливаем
-	POP EAX ; восстанавливаем
+	POP EDX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј
+	POP ECX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј
+	POP EBX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј
+	POP EAX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј
 	
-	MOV ECX,DWORD PTR SS:[ESP+0Ch] ; восстанавливаем подключение к ITR сектору
+	MOV ECX,DWORD PTR SS:[ESP+0Ch] ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РїРѕРґРєР»СЋС‡РµРЅРёРµ Рє ITR СЃРµРєС‚РѕСЂСѓ
 	PUSH DWORD PTR DS:[ECX+28h] ; respond TAG
-	MOV EAX,DWORD PTR DS:[EDI+10h] ; кусок оригинального кода, берет Х-координату
+	MOV EAX,DWORD PTR DS:[EDI+10h] ; РєСѓСЃРѕРє РѕСЂРёРіРёРЅР°Р»СЊРЅРѕРіРѕ РєРѕРґР°, Р±РµСЂРµС‚ РҐ-РєРѕРѕСЂРґРёРЅР°С‚Сѓ
 	
-	JMP [e1_t3_e9] ; завершаем обработку
+	JMP [e1_t3_e9] ; Р·Р°РІРµСЂС€Р°РµРј РѕР±СЂР°Р±РѕС‚РєСѓ
 
 itr_effect_1xxx_to_9xxx endp
 
@@ -196,18 +196,18 @@ effect50 proc
 		PUSH EDX
 		PUSH ECX
 		
-		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h ; получаем страницу фрейма
+		IMUL ECX,DWORD PTR DS:[EBX+70h],1B0h ; РїРѕР»СѓС‡Р°РµРј СЃС‚СЂР°РЅРёС†Сѓ С„СЂРµР№РјР°
 		FSTP ST
 		ADD ECX,DWORD PTR DS:[EBX+368h]
 		LEA ECX,DWORD PTR DS:[ECX+958h] 
 		CMP DWORD PTR DS:[ECX],0 	
 		JLE [skip]
 		MOV ECX,DWORD PTR DS:[ECX+8]
-		MOV EDX,DWORD PTR DS:[ECX+2Ch] ; эффект
+		MOV EDX,DWORD PTR DS:[ECX+2Ch] ; СЌС„С„РµРєС‚
 		CMP EDX, 50
 		JE [eff_50]
 		
-		IMUL ECX,DWORD PTR DS:[EDI+70h],1B0h ; получаем страницу фрейма
+		IMUL ECX,DWORD PTR DS:[EDI+70h],1B0h ; РїРѕР»СѓС‡Р°РµРј СЃС‚СЂР°РЅРёС†Сѓ С„СЂРµР№РјР°
 		FSTP ST
 		ADD ECX,DWORD PTR DS:[EDI+368h]
 		LEA ECX,DWORD PTR DS:[ECX+95Ch] ;bdy

@@ -401,13 +401,13 @@ Stage_Spawn_Coords proc
 		JGE SHORT [no_random]
 
 random_on:
-		ADD EAX,DWORD PTR DS:[EBX+0B0h] ; С учетом рандома
+		ADD EAX,DWORD PTR DS:[EBX+0B0h] ; РЎ СѓС‡РµС‚РѕРј СЂР°РЅРґРѕРјР°
 		ADD ESP,8
 		MOV EDX,EAX
 		JMP [spawner]	
 
 no_random:		
-		MOV EAX,DWORD PTR DS:[EBX+0B0h] ; Без учета рандома
+		MOV EAX,DWORD PTR DS:[EBX+0B0h] ; Р‘РµР· СѓС‡РµС‚Р° СЂР°РЅРґРѕРјР°
 		SUB EAX,100000
 		ADD ESP,8
 		MOV EDX,EAX

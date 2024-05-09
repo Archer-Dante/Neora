@@ -669,3 +669,7 @@ Easier Data-Editor.lnk
 DLL/lf2.obj
 sprite/sys/spark.png
 DC v1.5.lnk
+DLL/.vs/
+DLL/Debug/
+DLL/neora/
+DLL_old/

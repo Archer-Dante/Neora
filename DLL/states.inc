@@ -60,7 +60,7 @@ StateMore proc
 			
 			
 		CMP EAX,1000000 ; 1xxyyy
-		JL  [skip] ; Если меньше - в обычный код
+		JL  [skip] ; Р•СЃР»Рё РјРµРЅСЊС€Рµ - РІ РѕР±С‹С‡РЅС‹Р№ РєРѕРґ
 		CMP EAX,1999999 ; 1xxyyy
 		JLE [State1xxxyyy]
 		CMP EAX,2999999 ; 2999999
@@ -68,11 +68,11 @@ StateMore proc
 		CMP EAX,3999999 ; 3999999
 		JLE [State3xxxyyy]
 		
-		JMP [skip] ; если ни один из стейтов выше
+		JMP [skip] ; РµСЃР»Рё РЅРё РѕРґРёРЅ РёР· СЃС‚РµР№С‚РѕРІ РІС‹С€Рµ
 		
 State1xxxyyy:
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
-		CMP DWORD PTR DS:[ECX+88h],0 ; антибаг
+		CMP DWORD PTR DS:[ECX+88h],0 ; Р°РЅС‚РёР±Р°Рі
 		JNE [skip]
 		
 		SUB EAX, 1000000 ; 1xxxyyy
@@ -80,8 +80,8 @@ State1xxxyyy:
 		MOV EBX,1000
 		CDQ
 		IDIV EBX
-		; EAX - хп для трансформа
-		; EDX - куда перейти в случае успеха
+		; EAX - С…Рї РґР»СЏ С‚СЂР°РЅСЃС„РѕСЂРјР°
+		; EDX - РєСѓРґР° РїРµСЂРµР№С‚Рё РІ СЃР»СѓС‡Р°Рµ СѓСЃРїРµС…Р°
 		CMP DWORD PTR DS:[ECX+2FCh],EAX
 		JG [skip]
 		MOV DWORD PTR DS:[ECX+70h],EDX
@@ -89,7 +89,7 @@ State1xxxyyy:
 
 State2xxxyyy:
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
-		CMP DWORD PTR DS:[ECX+88h],0 ; антибаг
+		CMP DWORD PTR DS:[ECX+88h],0 ; Р°РЅС‚РёР±Р°Рі
 		JNE [skip]
 		
 		SUB EAX, 2000000 ; 2xxxyyy
@@ -112,35 +112,35 @@ not_enough_mp:
 State3xxxyyy:
 
 		MOV ECX,DWORD PTR DS:[EBX+EDI*4h+3ECh]
-		CMP DWORD PTR DS:[ECX+88h],0 ; антибаг
+		CMP DWORD PTR DS:[ECX+88h],0 ; Р°РЅС‚РёР±Р°Рі
 		JNE [skip]
 		
-		PUSH EBX ; сохраним адрес начала объектов
+		PUSH EBX ; СЃРѕС…СЂР°РЅРёРј Р°РґСЂРµСЃ РЅР°С‡Р°Р»Р° РѕР±СЉРµРєС‚РѕРІ
 
 		SUB EAX,3000000 ; 3xxyzzz
 		MOV ECX,10000
 		CDQ
-		IDIV ECX ; % в EAX, остаток в EDX
+		IDIV ECX ; % РІ EAX, РѕСЃС‚Р°С‚РѕРє РІ EDX
 		
 		CMP EAX, 0
 		JE [skip_random]
 		
-		MOV EBX,EAX ; если число рандом не 0, то сохраним его на время после рассчета рандома
-		PUSH 100 ; макс число рандома
-		PUSH EDX ; резервируем остаток
+		MOV EBX,EAX ; РµСЃР»Рё С‡РёСЃР»Рѕ СЂР°РЅРґРѕРј РЅРµ 0, С‚Рѕ СЃРѕС…СЂР°РЅРёРј РµРіРѕ РЅР° РІСЂРµРјСЏ РїРѕСЃР»Рµ СЂР°СЃСЃС‡РµС‚Р° СЂР°РЅРґРѕРјР°
+		PUSH 100 ; РјР°РєСЃ С‡РёСЃР»Рѕ СЂР°РЅРґРѕРјР°
+		PUSH EDX ; СЂРµР·РµСЂРІРёСЂСѓРµРј РѕСЃС‚Р°С‚РѕРє
 		CALL DWORD PTR [random] ; result in EAX ~ EDX
-		POP EAX ; перемещаем остаток в EAX для дальнейшего парсинга
-		ADD ESP,4h ; выравниваем стек
-		CMP EBX,EDX ; сравниваем (наш %) и (рандом %)
-		JL [TS_no_random] ; если не хватило - допускаем, что урон просто пройдется по цели
+		POP EAX ; РїРµСЂРµРјРµС‰Р°РµРј РѕСЃС‚Р°С‚РѕРє РІ EAX РґР»СЏ РґР°Р»СЊРЅРµР№С€РµРіРѕ РїР°СЂСЃРёРЅРіР°
+		ADD ESP,4h ; РІС‹СЂР°РІРЅРёРІР°РµРј СЃС‚РµРє
+		CMP EBX,EDX ; СЃСЂР°РІРЅРёРІР°РµРј (РЅР°С€ %) Рё (СЂР°РЅРґРѕРј %)
+		JL [TS_no_random] ; РµСЃР»Рё РЅРµ С…РІР°С‚РёР»Рѕ - РґРѕРїСѓСЃРєР°РµРј, С‡С‚Рѕ СѓСЂРѕРЅ РїСЂРѕСЃС‚Рѕ РїСЂРѕР№РґРµС‚СЃСЏ РїРѕ С†РµР»Рё
 		JMP [check_type]
 
 skip_random:
-		XCHG EAX,EDX ; отправляем в EAX остаток
+		XCHG EAX,EDX ; РѕС‚РїСЂР°РІР»СЏРµРј РІ EAX РѕСЃС‚Р°С‚РѕРє
 check_type:
 		MOV ECX,1000
 		CDQ
-		IDIV ECX ; оставит в EAX тип, а в EDX время
+		IDIV ECX ; РѕСЃС‚Р°РІРёС‚ РІ EAX С‚РёРї, Р° РІ EDX РІСЂРµРјСЏ
 		
 		XOR ECX,ECX
 		POP EBX
@@ -158,36 +158,36 @@ ts_setup_0:
 		JE [doesnt_exist_0]
 		
 		MOV EAX,DWORD PTR DS:[EBX+ECX*4+3ECh] 
-		MOV DWORD PTR DS:[EAX+150h],EDX ; записываем объекту таймер
+		MOV DWORD PTR DS:[EAX+150h],EDX ; Р·Р°РїРёСЃС‹РІР°РµРј РѕР±СЉРµРєС‚Сѓ С‚Р°Р№РјРµСЂ
 
 		doesnt_exist_0:
 		INC ECX
 		CMP ECX,1000
 		JL [ts_setup_0]
 		
-		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; исходный владелец стейта
-		MOV DWORD PTR DS:[EAX+150h],-1 ; помечаем его как неподверженного эффекту
-		MOV DWORD PTR DS:[ts_timer],EDX ; запись времени ТС для движка
+		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; РёСЃС…РѕРґРЅС‹Р№ РІР»Р°РґРµР»РµС† СЃС‚РµР№С‚Р°
+		MOV DWORD PTR DS:[EAX+150h],-1 ; РїРѕРјРµС‡Р°РµРј РµРіРѕ РєР°Рє РЅРµРїРѕРґРІРµСЂР¶РµРЅРЅРѕРіРѕ СЌС„С„РµРєС‚Сѓ
+		MOV DWORD PTR DS:[ts_timer],EDX ; Р·Р°РїРёСЃСЊ РІСЂРµРјРµРЅРё РўРЎ РґР»СЏ РґРІРёР¶РєР°
 		
-		MOV DWORD PTR DS:[ts_team],0 ; обнуление команды, чтобы ТС 0 работал после ТС 1
-		MOV DWORD PTR DS:[ts_type],0 ; записываем Time Stop Type
+		MOV DWORD PTR DS:[ts_team],0 ; РѕР±РЅСѓР»РµРЅРёРµ РєРѕРјР°РЅРґС‹, С‡С‚РѕР±С‹ РўРЎ 0 СЂР°Р±РѕС‚Р°Р» РїРѕСЃР»Рµ РўРЎ 1
+		MOV DWORD PTR DS:[ts_type],0 ; Р·Р°РїРёСЃС‹РІР°РµРј Time Stop Type
 		JMP [skip]
 
 ts_setup_1:
 		PUSH ESI
 		MOV ESI,DWORD PTR DS:[EBX+EDI*4+3ECh]
-		MOV ESI,DWORD PTR DS:[ESI+364h] ; команда в ESI
-		MOV DWORD PTR DS:[ts_team],ESI ; записываем кто сопротивляется TS
+		MOV ESI,DWORD PTR DS:[ESI+364h] ; РєРѕРјР°РЅРґР° РІ ESI
+		MOV DWORD PTR DS:[ts_team],ESI ; Р·Р°РїРёСЃС‹РІР°РµРј РєС‚Рѕ СЃРѕРїСЂРѕС‚РёРІР»СЏРµС‚СЃСЏ TS
 		
 	next_object_s1:
 		CMP BYTE PTR DS:[EBX+ECX+4h],0
 		JE [doesnt_exist_1]
 		
 		MOV EAX,DWORD PTR DS:[EBX+ECX*4+3ECh] 
-		CMP DWORD PTR DS:[EAX+364h],ESI ; проверка команды
-		MOV DWORD PTR DS:[EAX+150h],EDX ; записываем объекту таймер
+		CMP DWORD PTR DS:[EAX+364h],ESI ; РїСЂРѕРІРµСЂРєР° РєРѕРјР°РЅРґС‹
+		MOV DWORD PTR DS:[EAX+150h],EDX ; Р·Р°РїРёСЃС‹РІР°РµРј РѕР±СЉРµРєС‚Сѓ С‚Р°Р№РјРµСЂ
 		JNE [doesnt_exist_1]
-		MOV DWORD PTR DS:[EAX+150h],-1 ; если равна, то даем сопротивление ТС
+		MOV DWORD PTR DS:[EAX+150h],-1 ; РµСЃР»Рё СЂР°РІРЅР°, С‚Рѕ РґР°РµРј СЃРѕРїСЂРѕС‚РёРІР»РµРЅРёРµ РўРЎ
 
 		doesnt_exist_1:
 		INC ECX
@@ -195,10 +195,10 @@ ts_setup_1:
 		JL [next_object_s1]
 		
 
-		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; исходный владелец стейта
-		MOV DWORD PTR DS:[EAX+150h],-1 ; помечаем его как неподверженного эффекту
-		MOV DWORD PTR DS:[ts_timer],EDX ; запись времени ТС для движка
-		MOV DWORD PTR DS:[ts_type],1 ; записываем Time Stop Type
+		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; РёСЃС…РѕРґРЅС‹Р№ РІР»Р°РґРµР»РµС† СЃС‚РµР№С‚Р°
+		MOV DWORD PTR DS:[EAX+150h],-1 ; РїРѕРјРµС‡Р°РµРј РµРіРѕ РєР°Рє РЅРµРїРѕРґРІРµСЂР¶РµРЅРЅРѕРіРѕ СЌС„С„РµРєС‚Сѓ
+		MOV DWORD PTR DS:[ts_timer],EDX ; Р·Р°РїРёСЃСЊ РІСЂРµРјРµРЅРё РўРЎ РґР»СЏ РґРІРёР¶РєР°
+		MOV DWORD PTR DS:[ts_type],1 ; Р·Р°РїРёСЃС‹РІР°РµРј Time Stop Type
 		POP ESI
 		JMP [skip]
 
@@ -208,19 +208,19 @@ ts_setup_2:
 		JE [doesnt_exist_2]
 		
 		MOV EAX,DWORD PTR DS:[EBX+ECX*4+3ECh] 
-		MOV DWORD PTR DS:[EAX+150h],EDX ; записываем объекту таймер
+		MOV DWORD PTR DS:[EAX+150h],EDX ; Р·Р°РїРёСЃС‹РІР°РµРј РѕР±СЉРµРєС‚Сѓ С‚Р°Р№РјРµСЂ
 
 		doesnt_exist_2:
 		INC ECX
 		CMP ECX,1000
 		JL [ts_setup_2]
 		
-		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; исходный владелец стейта
-		MOV DWORD PTR DS:[EAX+150h],-1 ; помечаем его как неподверженного эффекту
-		MOV DWORD PTR DS:[ts_timer],EDX ; запись времени ТС для движка
+		MOV EAX,DWORD PTR DS:[EBX+EDI*4+3ECh] ; РёСЃС…РѕРґРЅС‹Р№ РІР»Р°РґРµР»РµС† СЃС‚РµР№С‚Р°
+		MOV DWORD PTR DS:[EAX+150h],-1 ; РїРѕРјРµС‡Р°РµРј РµРіРѕ РєР°Рє РЅРµРїРѕРґРІРµСЂР¶РµРЅРЅРѕРіРѕ СЌС„С„РµРєС‚Сѓ
+		MOV DWORD PTR DS:[ts_timer],EDX ; Р·Р°РїРёСЃСЊ РІСЂРµРјРµРЅРё РўРЎ РґР»СЏ РґРІРёР¶РєР°
 		
-		MOV DWORD PTR DS:[ts_team],0 ; обнуление команды, чтобы ТС 0 работал после ТС 1
-		MOV DWORD PTR DS:[ts_type],2 ; записываем Time Stop Type
+		MOV DWORD PTR DS:[ts_team],0 ; РѕР±РЅСѓР»РµРЅРёРµ РєРѕРјР°РЅРґС‹, С‡С‚РѕР±С‹ РўРЎ 0 СЂР°Р±РѕС‚Р°Р» РїРѕСЃР»Рµ РўРЎ 1
+		MOV DWORD PTR DS:[ts_type],2 ; Р·Р°РїРёСЃС‹РІР°РµРј Time Stop Type
 		JMP [skip]
 
 TS_no_random:

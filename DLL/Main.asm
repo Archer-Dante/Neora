@@ -3,14 +3,8 @@
 .Model Flat, StdCall
 OPTION CASEMAP :NONE
 
-; include C:\masm32\include\windows.inc
-; include C:\masm32\include\masm32.inc
-; include C:\masm32\include\user32.inc
-; include C:\masm32\include\kernel32.inc
-; include C:\masm32\include\debug.inc
-
 include masm32rt.inc
-include C:\masm32\masmbasic\masmbasic.inc
+include masmbasic.inc
 includelib "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22621.0\ucrt\x86\ucrt.lib"
 ;includelib "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\lib\x86\vcruntime.lib"
 includelib vcruntime.lib
@@ -43,20 +37,20 @@ include stage.inc
 .data
 memAlloc dd ?
 solAlloc dd ?
-copycat  db "Neora Engine by Archer-Dante aka EdL",00
+copycat  db "Neora Engine v2.10.0 rc-1 by Archer-Dante aka EdL",00
 ; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
 
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName			db "LF2: Neora Engine 2.10 dev",00 ; Name of the Game Window
-		win_width   		dd 794		; Game window width  in pixels. "794" is default
+		GameName			db "LF2: Neora Engine 2.10.0 rc-1",00 ; Name of the Game Window
+		win_width   		dd 794		; Game window width  in pixels. "794" is default при
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
 		shake_value 		db 3 		; Value of both Shaking effect on attack. "3" is default
 		
 		slow_motion 		db 1 		; Slow Motion at the end of Round. (1 - on, 0 - off)
-		slow_power  		dd 65 		; "65" is recommend value of slow power
+		slow_power  		dd 65 		; "65" is recommended value of slow power
 		
 		replay_switch		db 1		; Makes game Always counts replay file as valid. (1 - on, 0 - off)
 		
@@ -80,12 +74,12 @@ copycat  db "Neora Engine by Archer-Dante aka EdL",00
 
 DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD
 
-	mov eax,reason
+	mov eax, reason
 	.if eax == DLL_PROCESS_ATTACH											; Called when our dll loaded
 		invoke VirtualAlloc, NULL, 4000, MEM_COMMIT,PAGE_READWRITE
-        mov memAlloc,eax  
+        mov memAlloc, eax  
         invoke VirtualAlloc, NULL, 20000, MEM_COMMIT,PAGE_READWRITE
-        mov solAlloc,eax       
+        mov solAlloc, eax       
 		call DLLStartup														; Memory patches and jmp patches
 	.endif
 	ret
@@ -113,16 +107,16 @@ DLLStartup proc
 	;===================================================
 
 	;=================states(states.inc)================
-	invoke JmpPatch, 0041F656h, addr State8xxx ; 140-frameless fix (+id list for +140)
-	invoke JmpPatch, 0041F603h, addr StateMore ; Set X-coord, Y-coord, Z-coord, TimeStop State and more
+	invoke JmpPatch, 0041F656h, addr State8xxx			; 140-frameless fix (+id list for +140)
+	invoke JmpPatch, 0041F603h, addr StateMore			; Set X-coord, Y-coord, Z-coord, TimeStop State and more
 	invoke WriteMem, 00412C63h, addr JNEtoJMP,1
-	invoke JmpPatch, 0041334Ah, addr StateTurn3x ; Turning State 30, 31
-	invoke JmpPatch, 0042EC9Eh, addr State9xxx ; Go to XXX Frame if hit something. XXX from 0 to 799
+	invoke JmpPatch, 0041334Ah, addr StateTurn3x		; Turning State 30, 31
+	invoke JmpPatch, 0042EC9Eh, addr State9xxx			; Go to XXX Frame if hit something. XXX from 0 to 799
 	;==================================================
 
 	;===============Window Properities(window.inc)=========
 	invoke JmpPatch, 00401B85h, addr Application_Name
-	invoke WriteMem, 00401B9Ch, addr oneNOP,7 ; Annoying Karter
+	invoke WriteMem, 00401B9Ch, addr oneNOP,7			; Annoying Karter
 
 	invoke JmpPatch, 00401B3Ch, addr Window_Size_2	 	
 	invoke JmpPatch, 00401007h, addr Window_Size_3
@@ -235,20 +229,20 @@ DLLStartup proc
 
 	;=============== UI Manipulation (UI.inc)===========
 	invoke WriteMem, 0041AF3Ah, addr opacity,2 ; Frame
-	invoke WriteMem, 0042A5D2h, addr opacity,2 ; RFace first phase
+	;;;;;;;; invoke WriteMem, 0042A5D2h, addr opacity,2 ; RFace first phase вылет
 	invoke WriteMem, 0042A53Fh, addr opacity,2 ; Character Faces
-	invoke WriteMem, 0042BE93h, addr opacity,2 ; ???
+	;;;;;;;; invoke WriteMem, 0042BE93h, addr opacity,2 ; ??? вылет
 	invoke WriteMem, 0042BDEBh, addr opacity,2 ; ???
-	invoke WriteMem, 0042AFA2h, addr opacity,2 ; ???
-	invoke WriteMem, 0042BB5Dh, addr opacity,2 ; ???
+	;;;;;;;; invoke WriteMem, 0042AFA2h, addr opacity,2 ; ??? вылет
+	;;;;;;;; invoke WriteMem, 0042BB5Dh, addr opacity,2 ; ??? вылет
 	
 	invoke WriteMem, 0041AF85h, addr opacity,2 ; small icons in status-bar
-	invoke WriteMem, 0042A415h, addr opacity,2 ; CMA.png + CMA2.png
-	invoke WriteMem, 0042A444h, addr opacity,2 ; ???
+	;;;;;;;; invoke WriteMem, 0042A415h, addr opacity,2 ; CMA.png + CMA2.png  вылет при попытке перейти в меню выбора чаров
+	;;;;;;;; invoke WriteMem, 0042A444h, addr opacity,2 ; ??? вылет
 	invoke WriteMem, 0042AAA0h, addr opacity,2 ; ???
-	invoke WriteMem, 0042AB09h, addr opacity,2 ; RFace second phase
+	;;;;;;;; invoke WriteMem, 0042AB09h, addr opacity,2 ; RFace second phase вылет
 	
-	;invoke JmpPatch, 0041B01Fh, addr HP_bars_change
+	; invoke JmpPatch, 0041B01Fh, addr HP_bars_change
 	
 	invoke JmpPatch, 0041AF20h, addr total_bar_rework ; complete rehook of original game bar-draw procedure
 	
@@ -295,10 +289,10 @@ DLLStartup proc
 	invoke JmpPatch, 0043EA10h, addr dropbox3_fix		; fixes game crash after being affected by Dropbox 3+
 	invoke WriteMem, 0043EA15h, addr oneNOP,1	
 	
-	invoke JmpPatch, 00413697h , addr heavy_walking_speed_fix		; fixes PDK bug
+	invoke JmpPatch, 00413697h, addr heavy_walking_speed_fix		; fixes PDK bug
 	invoke JmpPatch, 0041373Ch, addr heavy_walking_speedz_fix		; fixes PDK bug
-	invoke JmpPatch, 00413A36h , addr heavy_running_speed_fix		; fixes PDK bug
-	invoke JmpPatch, 00413A5Fh , addr heavy_running_speedz_fix		; fixes PDK bug
+	invoke JmpPatch, 00413A36h, addr heavy_running_speed_fix		; fixes PDK bug
+	invoke JmpPatch, 00413A5Fh, addr heavy_running_speedz_fix		; fixes PDK bug
 	;===================================================
 
 
@@ -316,10 +310,10 @@ DLLStartup proc
 	;invoke JmpPatch, 004179EEh, addr bdy_multi_hit_recall 	; allows game engine track which bdy of target was
 															; attacked (for 2+ targets at once or multihit)
 															
-	invoke JmpPatch, 0042E756h, addr dmg_calc_rework ; makes resists and stats works on
+	;;;;;;;; invoke JmpPatch, 0042E756h, addr dmg_calc_rework ; makes resists and stats works on
 	;===================================================
 
-
+	
 
 
 	;================ Memory Relocation ================
