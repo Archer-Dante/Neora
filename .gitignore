@@ -673,3 +673,7 @@ sprite/sys/spark.png
 sprite/sys/spark.png
 DC v1.5.lnk
 >>>>>>> origin/dev
+DLL/.vs/
+DLL/Debug/
+DLL/neora/Debug/
+DLL_old/

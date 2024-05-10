@@ -83,6 +83,10 @@ total_bar_rework proc
 
 		; most of code here is just copy from exe
 
+
+		NOP
+
+
 		PUSH ESI
 		PUSH EDI
 		PUSH EBX
@@ -235,17 +239,23 @@ total_bar_rework proc
 		; IT'S MANA TIME!
 			
 		MOV ECX,DWORD PTR SS:[ESP+8]
-		
+
 		MOV EDX,DWORD PTR DS:[ECX+190h]
+		TEST EDX,EDX
+		JZ[no_pointer]
 		MOV EDX,DWORD PTR DS:[EDX+60h]
 		TEST EDX,EDX
 		JZ[no_custom_max_mp]
+
 		
 		IMUL EAX,DWORD PTR DS:[ECX+308h],7Ch
 		MOV ECX,EDX
 		CDQ
 		IDIV ECX
 		JMP SHORT [check_if_zero]
+
+		no_pointer:
+		NOP
 		
 		no_custom_max_mp:
 		IMUL EAX,DWORD PTR DS:[ECX+308h],7Ch
@@ -348,13 +358,19 @@ total_bar_rework proc
 		MOV EDI,00455CB8h ; адрес буфера
 		MOV ESI,DWORD PTR DS:[EDX+308h] ; резервируем значение нашей маны, т.к. все регистры полетят по ходу парса
 		
+		MOV EAX,1F4h
 		MOV EBX, DWORD PTR DS:[EDX+190h]
+		TEST EBX,EBX
+		JZ [no_pointer2]
 		MOV EBX, DWORD PTR DS:[EBX+60h]
 		TEST EBX,EBX
-		MOV EAX,1F4h
+		; MOV EAX,1F4h
 		JZ [skip_if_no_max_mp]
 		MOV EAX,DWORD PTR DS:[EDX+190h]
 		MOV EAX,DWORD PTR DS:[EAX+60h] ; если макс мана есть - записываем её
+
+		no_pointer2:
+
 		skip_if_no_max_mp:
 		XOR EBX,EBX
 		
