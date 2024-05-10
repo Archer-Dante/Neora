@@ -44,16 +44,16 @@ ts_setup_0:
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
 		SUB DWORD PTR DS:[ESI+150h],1
-		JMP [blocked] ; отправл€ем дальше, пропуска€ считывание управлени€
+		JMP [blocked] ; ????? ???? ????? ???????????
 		
 ts_setup_1:
 		MOV EAX,DWORD PTR DS:[ts_team]
-		CMP EAX,DWORD PTR DS:[ESI+364h] ; проверка, что команда та
+		CMP EAX,DWORD PTR DS:[ESI+364h] ; ????, ?? ?????
 		JE [proceed]
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
 		SUB DWORD PTR DS:[ESI+150h],1
-		JMP [blocked] ; отправл€ем дальше, пропуска€ считывание управлени€
+		JMP [blocked] ; ????? ???? ????? ???????????
 		
 ts_setup_2:
 		MOV EAX,DWORD PTR DS:[ESI+368h]
@@ -62,7 +62,7 @@ ts_setup_2:
 
 		MOV DWORD PTR DS:[ESI+0B4h],3
 		SUB DWORD PTR DS:[ESI+150h],1
-		JMP [blocked] ; отправл€ем дальше, пропуска€ считывание управлени€
+		JMP [blocked] ; ????? ???? ????? ???????????
 		
 new_object:
 		MOV EAX, DWORD PTR DS:[ts_timer]
@@ -114,11 +114,11 @@ FPS_rework endp
 
 TS_substactor proc
 	
-		CMP BYTE PTR DS:[44FCB0h],1 ; проверка на паузу
+		CMP BYTE PTR DS:[44FCB0h],1 ; ???? ? ???
 		JE [skip]
 		
 		MOV EAX, DWORD PTR DS:[ts_timer]
-		CMP EAX,0 ; провер€ем, есть ли “—
+		CMP EAX,0 ; ?????, ?? ? ?
 		JE [skip]
 		
 		SUB DWORD PTR DS:[ts_timer],1

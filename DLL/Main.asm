@@ -43,13 +43,14 @@ include stage.inc
 .data
 memAlloc dd ?
 solAlloc dd ?
-copycat  db "Neora Engine v2.10.0 rc-1 by Archer-Dante aka EdL",00
+cache	 dd ?
+copycat  db "Neora Engine v2.10.0 rc-2 by Archer-Dante aka EdL",00
 ; as long as you're using Neora you're agreed and accept rule to keep this string as it is 
 
 		;====================================================================================
 		;================================= Configuration Block ==============================
 		;====================================================================================
-		GameName			db "LF2: Neora Engine 2.10.0 rc-1",00 ; Name of the Game Window
+		GameName			db "LF2: Neora Engine 2.10.0 rc-2",00 ; Name of the Game Window
 		win_width   		dd 794		; Game window width  in pixels. "794" is default при
 		win_height  		dd 550 		; Game window height in pixels. "550" is default
 		
@@ -71,11 +72,6 @@ copycat  db "Neora Engine v2.10.0 rc-1 by Archer-Dante aka EdL",00
 .data?
 
 .code
-
-; EXTERN 
-
-
-
 
 
 DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD

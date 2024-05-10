@@ -131,7 +131,6 @@ new_repulse 			db "repulse:",00
 new_dmg_owner			db "dmg_owner:",00
 new_dmg_dec				db "dmg_dec:",00
 
-
 .code
 
 
@@ -139,11 +138,11 @@ Loading_Rework proc
 	
 	weapon_hp:
 			LEA EDX,DWORD PTR SS:[EBP+90h]
-			MOV EDI,004486D8h           	; заменяем MOV на LEA, т.к. нам нужен адрес переменной, а не она сама
+			MOV EDI,004486D8h           	; Р·Р°РјРµРЅСЏРµРј MOV РЅР° LEA, С‚.Рє. РЅР°Рј РЅСѓР¶РµРЅ Р°РґСЂРµСЃ РїРµСЂРµРјРµРЅРЅРѕР№, Р° РЅРµ РѕРЅР° СЃР°РјР°
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,11
 			REPE CMPSB [EDI],[ESI]
-			; если не оно, переходим к проверке наших атрибутов
+			; РµСЃР»Рё РЅРµ РѕРЅРѕ, РїРµСЂРµС…РѕРґРёРј Рє РїСЂРѕРІРµСЂРєРµ РЅР°С€РёС… Р°С‚СЂРёР±СѓС‚РѕРІ
 			JNZ [weapon_drop_hurt]
 			JMP [right_data]
 	weapon_drop_hurt:
@@ -187,16 +186,16 @@ Loading_Rework proc
 
 
 		memory_allocation_in_ID_section:
-			MOV EAX,DWORD PTR DS:[EBP+0B0h] ; проверка, есть ли поинтер
+			MOV EAX,DWORD PTR DS:[EBP+0B0h] ; РїСЂРѕРІРµСЂРєР°, РµСЃС‚СЊ Р»Рё РїРѕРёРЅС‚РµСЂ
 			TEST EAX,EAX
 			JNZ [already_alloced]
 			
-			PUSH 512						; биты
+			PUSH 512						; Р±РёС‚С‹
 			CALL DWORD PTR DS:[447194h] 	; mAlloc
 			ADD ESP,4h
-			MOV DWORD PTR DS:[EBP+0B0h],EAX ; записываем указатель
+			MOV DWORD PTR DS:[EBP+0B0h],EAX ; Р·Р°РїРёСЃС‹РІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ
 			
-				; ниже маленькая процедура очиски выделенной памяти от мусора
+				; РЅРёР¶Рµ РјР°Р»РµРЅСЊРєР°СЏ РїСЂРѕС†РµРґСѓСЂР° РѕС‡РёСЃРєРё РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РѕС‚ РјСѓСЃРѕСЂР°
 				XOR ECX,ECX
 				cleaning:
 				MOV BYTE PTR DS:[EAX+ECX],0
@@ -226,10 +225,10 @@ Loading_Rework proc
 	start_hp:
 			LEA EDI,[new_start_hp]           	
 			LEA ESI,DWORD PTR SS:[ESP+70h]
-			MOV ECX,10						; размер строки
+			MOV ECX,10						; СЂР°Р·РјРµСЂ СЃС‚СЂРѕРєРё
 			REPE CMPSB [EDI],[ESI]
 			JNZ [start_hp_max]
-			MOV EDX,0h						; смещение по +байту
+			MOV EDX,0h						; СЃРјРµС‰РµРЅРёРµ РїРѕ +Р±Р°Р№С‚Сѓ
 			JMP [proceed_decimal]
 	start_hp_max:
 			LEA EDI,[new_start_hp_max]           	
@@ -317,10 +316,10 @@ Loading_Rework proc
 	start_mp:
 			LEA EDI,[new_start_mp]           	
 			LEA ESI,DWORD PTR SS:[ESP+70h]
-			MOV ECX,10						; размер строки
+			MOV ECX,10						; СЂР°Р·РјРµСЂ СЃС‚СЂРѕРєРё
 			REPE CMPSB [EDI],[ESI]
 			JNZ [start_mp_max]
-			MOV EDX,40h						; смещение по +байту
+			MOV EDX,40h						; СЃРјРµС‰РµРЅРёРµ РїРѕ +Р±Р°Р№С‚Сѓ
 			JMP [proceed_decimal]
 	start_mp_max:
 			LEA EDI,[new_start_mp_max]           	
@@ -880,19 +879,19 @@ Loading_Rework proc
 			PUSH EAX ; "%d"
 			
 		data_type_defined_alredy:
-			MOV EAX,DWORD PTR DS:[EBP+0B0h] ; проверка, есть ли поинтер
+			MOV EAX,DWORD PTR DS:[EBP+0B0h] ; РїСЂРѕРІРµСЂРєР°, РµСЃС‚СЊ Р»Рё РїРѕРёРЅС‚РµСЂ
 ;			TEST EAX,EAX
 ;			JNZ [already_alloced]
 ;			
 ;			PUSH EDX
-;			PUSH 512						; биты
+;			PUSH 512						; Р±РёС‚С‹
 ;			CALL DWORD PTR DS:[447194h] 	; mAlloc
 ;			POP EDX ;fix
-;			POP EDX ; восстанавливаем настоящий EDX
-;			MOV DWORD PTR DS:[EBP+0B0h],EAX ; записываем указатель
-;			ADD EDX,EAX						; складываем адрес и смещение
+;			POP EDX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РЅР°СЃС‚РѕСЏС‰РёР№ EDX
+;			MOV DWORD PTR DS:[EBP+0B0h],EAX ; Р·Р°РїРёСЃС‹РІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ
+;			ADD EDX,EAX						; СЃРєР»Р°РґС‹РІР°РµРј Р°РґСЂРµСЃ Рё СЃРјРµС‰РµРЅРёРµ
 ;			
-;				; ниже маленькая процедура очиски выделенной памяти от мусора
+;				; РЅРёР¶Рµ РјР°Р»РµРЅСЊРєР°СЏ РїСЂРѕС†РµРґСѓСЂР° РѕС‡РёСЃРєРё РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РѕС‚ РјСѓСЃРѕСЂР°
 ;				XOR ECX,ECX
 ;				cleaning:
 ;				MOV BYTE PTR DS:[EAX+ECX],0
@@ -906,7 +905,7 @@ Loading_Rework proc
 			ADD EDX,EAX	
 			
 		write_data:
-			POP ECX 	; ASCII "%d" или "%f"
+			POP ECX 	; ASCII "%d" РёР»Рё "%f"
 			MOV EAX,DWORD PTR SS:[ESP+14h]
 			PUSH EDX
 			PUSH ECX
@@ -917,11 +916,10 @@ Loading_Rework proc
 skip:
 			JMP [next_data]
 original_load:
-			MOV EAX,0040F78Bh ; восстанавливаем оригинальный EAX, без него краш, ибо на него есть JMP
+			MOV EAX,0040F78Bh ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј РѕСЂРёРіРёРЅР°Р»СЊРЅС‹Р№ EAX, Р±РµР· РЅРµРіРѕ РєСЂР°С€, РёР±Рѕ РЅР° РЅРµРіРѕ РµСЃС‚СЊ JMP
 			JMP [original_data]
 		
 Loading_Rework endp
-
 
 
 Loading_Rework_SlowAttr proc
@@ -941,15 +939,15 @@ Loading_Rework_ohp proc
 			MOV ECX,5
 			REPE CMPSB [EDI],[ESI]
 			JNZ SHORT [check_ohp]
-			ADD EDX,18h ; только если это oid
+			ADD EDX,18h ; С‚РѕР»СЊРєРѕ РµСЃР»Рё СЌС‚Рѕ oid
 			JMP EAX
 	
-check_ohp:	LEA EDI,[new_ohp] ; атрибут ohp
-			LEA ESI,DWORD PTR SS:[ESP+70h] ; строчка на обработке
-			MOV ECX,5 ; размер включая 00
-			REPE CMPSB [EDI],[ESI] ; сравнение
-			JNZ SHORT [wrong] ; если ошибка
-			ADD EDX,0A4h ; только если это ohp
+check_ohp:	LEA EDI,[new_ohp] ; Р°С‚СЂРёР±СѓС‚ ohp
+			LEA ESI,DWORD PTR SS:[ESP+70h] ; СЃС‚СЂРѕС‡РєР° РЅР° РѕР±СЂР°Р±РѕС‚РєРµ
+			MOV ECX,5 ; СЂР°Р·РјРµСЂ РІРєР»СЋС‡Р°СЏ 00
+			REPE CMPSB [EDI],[ESI] ; СЃСЂР°РІРЅРµРЅРёРµ
+			JNZ SHORT [wrong] ; РµСЃР»Рё РѕС€РёР±РєР°
+			ADD EDX,0A4h ; С‚РѕР»СЊРєРѕ РµСЃР»Рё СЌС‚Рѕ ohp
 			JMP EAX
 
 wrong:		JMP [another_attr1]
@@ -995,23 +993,23 @@ ohp endp
 Loading_Rework_bdy proc
 
 		memory_allocation_in_ID_section:
-			MOV ECX,DWORD PTR SS:[ESP+10h]  ; указатель на Frame страницу
-			MOV EDI,DWORD PTR DS:[ECX+12Ch] ; количество BDY в фрейме
-			MOV ECX,DWORD PTR DS:[ECX+134h] ; указатель на BDY
-			DEC EDI							; вычитаем 1 (т.к. отсчет от 0, а не от 1)
-			IMUL EDI,EDI,28h				; получаем нужное смещение после перемножения
-			ADD EDI,ECX						; добавляем общее смещение на область со всеми BDY
+			MOV ECX,DWORD PTR SS:[ESP+10h]  ; СѓРєР°Р·Р°С‚РµР»СЊ РЅР° Frame СЃС‚СЂР°РЅРёС†Сѓ
+			MOV EDI,DWORD PTR DS:[ECX+12Ch] ; РєРѕР»РёС‡РµСЃС‚РІРѕ BDY РІ С„СЂРµР№РјРµ
+			MOV ECX,DWORD PTR DS:[ECX+134h] ; СѓРєР°Р·Р°С‚РµР»СЊ РЅР° BDY
+			DEC EDI							; РІС‹С‡РёС‚Р°РµРј 1 (С‚.Рє. РѕС‚СЃС‡РµС‚ РѕС‚ 0, Р° РЅРµ РѕС‚ 1)
+			IMUL EDI,EDI,28h				; РїРѕР»СѓС‡Р°РµРј РЅСѓР¶РЅРѕРµ СЃРјРµС‰РµРЅРёРµ РїРѕСЃР»Рµ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ
+			ADD EDI,ECX						; РґРѕР±Р°РІР»СЏРµРј РѕР±С‰РµРµ СЃРјРµС‰РµРЅРёРµ РЅР° РѕР±Р»Р°СЃС‚СЊ СЃРѕ РІСЃРµРјРё BDY
 			
 			MOV ESI,DWORD PTR DS:[EDI+20h]
 			TEST ESI,ESI
 			JNZ [already_alloced]
 
-			PUSH 32						; биты
+			PUSH 32						; Р±РёС‚С‹
 			CALL DWORD PTR DS:[447194h] ; mAlloc
 			ADD ESP,4h
-			MOV DWORD PTR DS:[EDI+20h],EAX ; записываем указатель
+			MOV DWORD PTR DS:[EDI+20h],EAX ; Р·Р°РїРёСЃС‹РІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ
 
-				; ниже маленькая процедура очиски выделенной памяти от мусора
+				; РЅРёР¶Рµ РјР°Р»РµРЅСЊРєР°СЏ РїСЂРѕС†РµРґСѓСЂР° РѕС‡РёСЃРєРё РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РѕС‚ РјСѓСЃРѕСЂР°
 				XOR ECX,ECX
 				cleaning:
 				MOV BYTE PTR DS:[EAX+ECX],0
@@ -1030,7 +1028,7 @@ Loading_Rework_bdy proc
 			JMP [original_write]
 
 	untouchable_check:
-			LEA EDI,[new_untouchable] ; атрибут Untouchable
+			LEA EDI,[new_untouchable] ; Р°С‚СЂРёР±СѓС‚ Untouchable
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,13
 			REPE CMPSB [EDI],[ESI]
@@ -1038,7 +1036,7 @@ Loading_Rework_bdy proc
 			MOV EDX,0
 			JMP [proceed]
 	repulse_check:
-			LEA EDI,[new_repulse] ; атрибут Repulse
+			LEA EDI,[new_repulse] ; Р°С‚СЂРёР±СѓС‚ Repulse
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,9
 			REPE CMPSB [EDI],[ESI]
@@ -1046,7 +1044,7 @@ Loading_Rework_bdy proc
 			MOV EDX,4
 			JMP [proceed]
 	aframe_check:
-			LEA EDI,[new_aframe] ; атрибут aframe
+			LEA EDI,[new_aframe] ; Р°С‚СЂРёР±СѓС‚ aframe
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,8
 			REPE CMPSB [EDI],[ESI]
@@ -1054,7 +1052,7 @@ Loading_Rework_bdy proc
 			MOV EDX,8
 			JMP [proceed]
 	vframe_check:
-			LEA EDI,[new_vframe] ; атрибут vframe
+			LEA EDI,[new_vframe] ; Р°С‚СЂРёР±СѓС‚ vframe
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,8
 			REPE CMPSB [EDI],[ESI]
@@ -1062,7 +1060,7 @@ Loading_Rework_bdy proc
 			MOV EDX,0Ch
 			JMP [proceed]
 	sframe_check:
-			LEA EDI,[new_sframe] ; атрибут sframe
+			LEA EDI,[new_sframe] ; Р°С‚СЂРёР±СѓС‚ sframe
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,8
 			REPE CMPSB [EDI],[ESI]
@@ -1070,7 +1068,7 @@ Loading_Rework_bdy proc
 			MOV EDX,10h
 			JMP [proceed]
 	dmg_owner_check:
-			LEA EDI,[new_dmg_owner] ; атрибут dmg_owner
+			LEA EDI,[new_dmg_owner] ; Р°С‚СЂРёР±СѓС‚ dmg_owner
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,11
 			REPE CMPSB [EDI],[ESI]
@@ -1078,7 +1076,7 @@ Loading_Rework_bdy proc
 			MOV EDX,14h
 			JMP [proceed]
 	dmg_dec_check:
-			LEA EDI,[new_dmg_dec] ; атрибут dmg_dec
+			LEA EDI,[new_dmg_dec] ; Р°С‚СЂРёР±СѓС‚ dmg_dec
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,9
 			REPE CMPSB [EDI],[ESI]
@@ -1089,18 +1087,18 @@ Loading_Rework_bdy proc
 			
 
 	proceed:
-			MOV ECX,DWORD PTR SS:[ESP+10h]  ; указатель на Frame страницу
-			MOV EAX,DWORD PTR DS:[ECX+12Ch] ; количество BDY в фрейме
-			MOV ECX,DWORD PTR DS:[ECX+134h] ; указатель на BDY
-			DEC EAX							; вычитаем 1 (т.к. отсчет от 0, а не от 1)
-			IMUL EAX,EAX,28h				; получаем нужное смещение после перемножения
-			ADD EAX,ECX						; добавляем общее смещение на область со всеми BDY
+			MOV ECX,DWORD PTR SS:[ESP+10h]  ; СѓРєР°Р·Р°С‚РµР»СЊ РЅР° Frame СЃС‚СЂР°РЅРёС†Сѓ
+			MOV EAX,DWORD PTR DS:[ECX+12Ch] ; РєРѕР»РёС‡РµСЃС‚РІРѕ BDY РІ С„СЂРµР№РјРµ
+			MOV ECX,DWORD PTR DS:[ECX+134h] ; СѓРєР°Р·Р°С‚РµР»СЊ РЅР° BDY
+			DEC EAX							; РІС‹С‡РёС‚Р°РµРј 1 (С‚.Рє. РѕС‚СЃС‡РµС‚ РѕС‚ 0, Р° РЅРµ РѕС‚ 1)
+			IMUL EAX,EAX,28h				; РїРѕР»СѓС‡Р°РµРј РЅСѓР¶РЅРѕРµ СЃРјРµС‰РµРЅРёРµ РїРѕСЃР»Рµ РїРµСЂРµРјРЅРѕР¶РµРЅРёСЏ
+			ADD EAX,ECX						; РґРѕР±Р°РІР»СЏРµРј РѕР±С‰РµРµ СЃРјРµС‰РµРЅРёРµ РЅР° РѕР±Р»Р°СЃС‚СЊ СЃРѕ РІСЃРµРјРё BDY
 			
 			MOV ECX,DWORD PTR DS:[EAX+20h]
-			MOV EAX,ECX 					; добавляем наше смещение EDX
+			MOV EAX,ECX 					; РґРѕР±Р°РІР»СЏРµРј РЅР°С€Рµ СЃРјРµС‰РµРЅРёРµ EDX
 			
 			recording_data:
-			ADD EAX,EDX						; добавляем смещение нашего атрибута
+			ADD EAX,EDX						; РґРѕР±Р°РІР»СЏРµРј СЃРјРµС‰РµРЅРёРµ РЅР°С€РµРіРѕ Р°С‚СЂРёР±СѓС‚Р°
 			MOV EDX,DWORD PTR SS:[ESP+14h]
 			PUSH EAX
 			PUSH 00447B08h                  ;  ASCII "%d"
@@ -1122,26 +1120,21 @@ original_codes:
 Loading_Rework_bdy endp
 
 
-
-
-
-
-
 Loading_Rework_itr proc
 
 		memory_allocation_in_ITR_section:
 			MOV EAX,DWORD PTR DS:[EDX+64h]
-			TEST EAX,EAX  ; проверка, есть ли поинтер
+			TEST EAX,EAX  ; РїСЂРѕРІРµСЂРєР°, РµСЃС‚СЊ Р»Рё РїРѕРёРЅС‚РµСЂ
 			JNZ [already_alloced]
 			
 			PUSH EDX
-			PUSH 32							; байты
+			PUSH 32							; Р±Р°Р№С‚С‹
 			CALL DWORD PTR DS:[447194h] 	; mAlloc
 			ADD ESP,4h
 			POP EDX
-			MOV DWORD PTR DS:[EDX+64h],EAX ; записываем указатель
+			MOV DWORD PTR DS:[EDX+64h],EAX ; Р·Р°РїРёСЃС‹РІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ
 			
-				; ниже маленькая процедура очиски выделенной памяти от мусора
+				; РЅРёР¶Рµ РјР°Р»РµРЅСЊРєР°СЏ РїСЂРѕС†РµРґСѓСЂР° РѕС‡РёСЃРєРё РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РѕС‚ РјСѓСЃРѕСЂР°
 				XOR ECX,ECX
 				cleaning:
 				MOV BYTE PTR DS:[EAX+ECX],0
@@ -1253,30 +1246,25 @@ Loading_Rework_itr proc
 Loading_Rework_itr endp
 
 
-
-
-
-
-
 Player_Stats proc
 		PUSH ECX
 		MOV EDX,DWORD PTR DS:[ESI]
 
 		
 		MOV ECX,DWORD PTR DS:[EDX+368h] ; dat
-		CMP ECX,0	; если отсутствует
+		CMP ECX,0	; РµСЃР»Рё РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚
 		JE [no_pointer]
-		MOV ECX,DWORD PTR DS:[ECX+0B0h] ; поинтер
-		CMP ECX,0	; если отсутствует
+		MOV ECX,DWORD PTR DS:[ECX+0B0h] ; РїРѕРёРЅС‚РµСЂ
+		CMP ECX,0	; РµСЃР»Рё РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚
 		JE [no_pointer]
 		CMP DWORD PTR DS:[ECX+40h],0
-		JG [stage_m] ; если там не пусто, то запись уже выполнена ранее и ничего делать не нужно
+		JG [stage_m] ; РµСЃР»Рё С‚Р°Рј РЅРµ РїСѓСЃС‚Рѕ, С‚Рѕ Р·Р°РїРёСЃСЊ СѓР¶Рµ РІС‹РїРѕР»РЅРµРЅР° СЂР°РЅРµРµ Рё РЅРёС‡РµРіРѕ РґРµР»Р°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
 		
 		no_pointer:
-		CMP DWORD PTR DS:[EAX],1 ; если режим стадий
-		MOV DWORD PTR DS:[EDX+308h],0C8h ; стартовое число маны для VS
+		CMP DWORD PTR DS:[EAX],1 ; РµСЃР»Рё СЂРµР¶РёРј СЃС‚Р°РґРёР№
+		MOV DWORD PTR DS:[EDX+308h],0C8h ; СЃС‚Р°СЂС‚РѕРІРѕРµ С‡РёСЃР»Рѕ РјР°РЅС‹ РґР»СЏ VS
 		JNE [stage_m]
-		MOV DWORD PTR DS:[EDX+308h],1F4h ; перезапись на 500 маны
+		MOV DWORD PTR DS:[EDX+308h],1F4h ; РїРµСЂРµР·Р°РїРёСЃСЊ РЅР° 500 РјР°РЅС‹
 		JMP [stage_m]
 
 stage_m:
@@ -1292,19 +1280,19 @@ Computer_Stats proc
 
 		
 		MOV ECX,DWORD PTR DS:[EDX+368h] ; dat
-		CMP ECX,0	; если отсутствует
+		CMP ECX,0	; РµСЃР»Рё РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚
 		JE [no_pointer]
-		MOV ECX,DWORD PTR DS:[ECX+0B0h] ; поинтер
-		CMP ECX,0	; если отсутствует
+		MOV ECX,DWORD PTR DS:[ECX+0B0h] ; РїРѕРёРЅС‚РµСЂ
+		CMP ECX,0	; РµСЃР»Рё РѕС‚СЃСѓС‚СЃС‚РІСѓРµС‚
 		JE [no_pointer]
 		CMP DWORD PTR DS:[ECX+40h],0
-		JG [stage_m] ; если там не пусто, то запись уже выполнена ранее и ничего делать не нужно
+		JG [stage_m] ; РµСЃР»Рё С‚Р°Рј РЅРµ РїСѓСЃС‚Рѕ, С‚Рѕ Р·Р°РїРёСЃСЊ СѓР¶Рµ РІС‹РїРѕР»РЅРµРЅР° СЂР°РЅРµРµ Рё РЅРёС‡РµРіРѕ РґРµР»Р°С‚СЊ РЅРµ РЅСѓР¶РЅРѕ
 		
 		no_pointer:
-		CMP DWORD PTR DS:[EAX],1 ; если режим стадий
-		MOV DWORD PTR DS:[EDX+308h],0C8h ; стартовое число маны для VS
+		CMP DWORD PTR DS:[EAX],1 ; РµСЃР»Рё СЂРµР¶РёРј СЃС‚Р°РґРёР№
+		MOV DWORD PTR DS:[EDX+308h],0C8h ; СЃС‚Р°СЂС‚РѕРІРѕРµ С‡РёСЃР»Рѕ РјР°РЅС‹ РґР»СЏ VS
 		JNE [stage_m]
-		MOV DWORD PTR DS:[EDX+308h],1F4h ; перезапись на 500 маны
+		MOV DWORD PTR DS:[EDX+308h],1F4h ; РїРµСЂРµР·Р°РїРёСЃСЊ РЅР° 500 РјР°РЅС‹
 		JMP [stage_m]
 		
 
@@ -1315,8 +1303,6 @@ stage_m:
 Computer_Stats endp
 
 
-
-
 Initialization proc
 
 		;PUSH EBX
@@ -1324,34 +1310,46 @@ Initialization proc
 		PUSH EDI
 		MOV ESI,ECX
 		MOV EDI,ECX
-		MOV EBX,DWORD PTR DS:[ECX+368h] ; резервация указателя
-		MOV ECX,202h ; число байт для очистки
-		XOR EAX,EAX ; 0 как ресурс очистки
-		REP STOS DWORD PTR ES:[EDI] ; процесс очистки
+		MOV EBX,DWORD PTR DS:[ECX+190h] ; СЂРµР·РµСЂРІР°С†РёСЏ СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РІС‹РґРµР»РµРЅРЅСѓСЋ РїР°РјСЏС‚СЊ С‡РµСЂРµР· malloc РЅР° СЂРїРі-С„РёС‡
+		MOV cache, EBX
+
+		MOV EBX,DWORD PTR DS:[ECX+368h] ; СЂРµР·РµСЂРІР°С†РёСЏ СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РґР°С‚-С„Р°Р№Р»
+		MOV ECX,202h ; С‡РёСЃР»Рѕ Р±Р°Р№С‚ РґР»СЏ РѕС‡РёСЃС‚РєРё
+		XOR EAX,EAX ; 0 РєР°Рє СЂРµСЃСѓСЂСЃ РѕС‡РёСЃС‚РєРё
+		REP STOS DWORD PTR ES:[EDI] ; РїСЂРѕС†РµСЃСЃ РѕС‡РёСЃС‚РєРё
+		; MOV DWORD PTR DS:[EDI+368h], EBX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РґР°С‚-С„Р°Р№Р» (Р° Р·Р°С‡РµРј С‡С‚Рѕ-С‚Рѕ РІРЅРёР·Сѓ...?)
+		; MOV DWORD PTR DS:[EDI+190h], EDX ; РІРѕСЃСЃС‚Р°РЅР°РІР»РёРІР°РµРј СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РґР°С‚-С„Р°Р№Р» (Р° Р·Р°С‡РµРј С‡С‚Рѕ-С‚Рѕ РІРЅРёР·Сѓ...?)
 
 
-			CMP DWORD PTR SS:[ESP+0Ch],0041FDA1h ; место куда возвращается процедура, если вызвана из-за opoint
-			JNE [not_opoint]					 ; единственный способ отсеять фикс для других вызовов процедуры
- 			MOV EBX,EDX		; перезапись правильного указателя на дата-файл сразу же
-							; без этого призываемые клоны и т.д. не имеют выделенной памяти
-							; в EDX хранится нужный указатель только в случае opoint, но так же есть на смещении
-							; ESP+58h, или вне процедуры инициализации это ESP+48h
+			CMP DWORD PTR SS:[ESP+0Ch],0041FDA1h ; РјРµСЃС‚Рѕ РєСѓРґР° РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РїСЂРѕС†РµРґСѓСЂР°, РµСЃР»Рё РІС‹Р·РІР°РЅР° РёР·-Р·Р° opoint
+			JNE [not_opoint]					 ; РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ СЃРїРѕСЃРѕР± РѕС‚СЃРµСЏС‚СЊ С„РёРєСЃ РґР»СЏ РґСЂСѓРіРёС… РІС‹Р·РѕРІРѕРІ РїСЂРѕС†РµРґСѓСЂС‹
+ 			MOV EBX,EDX		; РїРµСЂРµР·Р°РїРёСЃСЊ РїСЂР°РІРёР»СЊРЅРѕРіРѕ СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РґР°С‚Р°-С„Р°Р№Р» СЃСЂР°Р·Сѓ Р¶Рµ
+							; Р±РµР· СЌС‚РѕРіРѕ РїСЂРёР·С‹РІР°РµРјС‹Рµ РєР»РѕРЅС‹ Рё С‚.Рґ. РЅРµ РёРјРµСЋС‚ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё
+							; РІ EDX С…СЂР°РЅРёС‚СЃСЏ РЅСѓР¶РЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ opoint, РЅРѕ С‚Р°Рє Р¶Рµ РµСЃС‚СЊ РЅР° СЃРјРµС‰РµРЅРёРё
+							; ESP+58h, РёР»Рё РІРЅРµ РїСЂРѕС†РµРґСѓСЂС‹ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё СЌС‚Рѕ ESP+48h
 			not_opoint:
 			
-			CMP DWORD PTR SS:[ESP+0Ch],0042D320h ; место куда возвращается процедура, если вызвана из-за Com-игрока
-			JNE [not_com_player]				 ; единственный способ отсеять фикс для других вызовов процедуры
- 			MOV EBX,EBP		; перезапись правильного указателя на дата-файл сразу же
-							; без этого призываемые клоны и т.д. не имеют выделенной памяти
-							; в EBP хранится нужный указатель только в случае Com-игрока
+			CMP DWORD PTR SS:[ESP+0Ch],0042D320h ; РјРµСЃС‚Рѕ РєСѓРґР° РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РїСЂРѕС†РµРґСѓСЂР°, РµСЃР»Рё РІС‹Р·РІР°РЅР° РёР·-Р·Р° Com-РёРіСЂРѕРєР°
+			JNE [not_com_player]				 ; РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ СЃРїРѕСЃРѕР± РѕС‚СЃРµСЏС‚СЊ С„РёРєСЃ РґР»СЏ РґСЂСѓРіРёС… РІС‹Р·РѕРІРѕРІ РїСЂРѕС†РµРґСѓСЂС‹
+ 			MOV EBX,EBP		; РїРµСЂРµР·Р°РїРёСЃСЊ РїСЂР°РІРёР»СЊРЅРѕРіРѕ СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РґР°С‚Р°-С„Р°Р№Р» СЃСЂР°Р·Сѓ Р¶Рµ
+							; Р±РµР· СЌС‚РѕРіРѕ РїСЂРёР·С‹РІР°РµРјС‹Рµ РєР»РѕРЅС‹ Рё С‚.Рґ. РЅРµ РёРјРµСЋС‚ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё
+							; РІ EBP С…СЂР°РЅРёС‚СЃСЏ РЅСѓР¶РЅС‹Р№ СѓРєР°Р·Р°С‚РµР»СЊ С‚РѕР»СЊРєРѕ РІ СЃР»СѓС‡Р°Рµ Com-РёРіСЂРѕРєР°
 			not_com_player:
 		
-			CMP DWORD PTR SS:[ESP+0Ch],0042166Ah ; место куда возвращается процедура, если вызвана из-за падающего оружия
-			JNE [not_weapon]				 ; единственный способ отсеять фикс для других вызовов процедуры
- 			MOV EBX,DWORD PTR SS:[ESP+0]	; перезапись правильного указателя на дата-файл сразу же
-							; без этого призываемые клоны и т.д. не имеют выделенной памяти
+			CMP DWORD PTR SS:[ESP+0Ch],0042166Ah ; РјРµСЃС‚Рѕ РєСѓРґР° РІРѕР·РІСЂР°С‰Р°РµС‚СЃСЏ РїСЂРѕС†РµРґСѓСЂР°, РµСЃР»Рё РІС‹Р·РІР°РЅР° РёР·-Р·Р° РїР°РґР°СЋС‰РµРіРѕ РѕСЂСѓР¶РёСЏ
+			JNE [not_weapon]				 ; РµРґРёРЅСЃС‚РІРµРЅРЅС‹Р№ СЃРїРѕСЃРѕР± РѕС‚СЃРµСЏС‚СЊ С„РёРєСЃ РґР»СЏ РґСЂСѓРіРёС… РІС‹Р·РѕРІРѕРІ РїСЂРѕС†РµРґСѓСЂС‹
+ 			MOV EBX,DWORD PTR SS:[ESP+0]	; РїРµСЂРµР·Р°РїРёСЃСЊ РїСЂР°РІРёР»СЊРЅРѕРіРѕ СѓРєР°Р·Р°С‚РµР»СЏ РЅР° РґР°С‚Р°-С„Р°Р№Р» СЃСЂР°Р·Сѓ Р¶Рµ
+							; Р±РµР· СЌС‚РѕРіРѕ РїСЂРёР·С‹РІР°РµРјС‹Рµ РєР»РѕРЅС‹ Рё С‚.Рґ. РЅРµ РёРјРµСЋС‚ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё
 			not_weapon:
 		
-			MOV DWORD PTR DS:[ESI+368h],EBX ; запись указателя, оригинальная строка
+			MOV DWORD PTR DS:[ESI+368h],EBX ; Р·Р°РїРёСЃСЊ СѓРєР°Р·Р°С‚РµР»СЏ, РѕСЂРёРіРёРЅР°Р»СЊРЅР°СЏ СЃС‚СЂРѕРєР°
+				MOV EBX, cache
+				CMP EBX, 0BAADF00Dh
+				JE [skip_malloc_recover]
+				CMP EBX, 0
+				JE [skip_malloc_recover]
+				MOV DWORD PTR DS:[ESI+190h],EBX ; Р·Р°РїРёСЃСЊ СѓРєР°Р·Р°С‚РµР»СЏ, РѕСЂРёРіРёРЅР°Р»СЊРЅР°СЏ СЃС‚СЂРѕРєР°
+			skip_malloc_recover:
 		
 		FLD QWORD PTR DS:[447920h]
 		FST QWORD PTR DS:[ESI+50h]
@@ -1365,9 +1363,9 @@ Initialization proc
 		FST QWORD PTR DS:[ESI+68h]
 		FST QWORD PTR DS:[ESI+60h]
 		FSTP QWORD PTR DS:[ESI+58h]
-		MOV ECX,1F4h ; ~500, можно освободить ECX, слегка увеличит затраты тактов
-		; LEA EDI,DWORD PTR DS:[ESI+2E8h] - строчка освобождена, как и EDI
-		; свободен EDI
+		MOV ECX,1F4h ; ~500, РјРѕР¶РЅРѕ РѕСЃРІРѕР±РѕРґРёС‚СЊ ECX, СЃР»РµРіРєР° СѓРІРµР»РёС‡РёС‚ Р·Р°С‚СЂР°С‚С‹ С‚Р°РєС‚РѕРІ
+		; LEA EDI,DWORD PTR DS:[ESI+2E8h] - СЃС‚СЂРѕС‡РєР° РѕСЃРІРѕР±РѕР¶РґРµРЅР°, РєР°Рє Рё EDI
+		; СЃРІРѕР±РѕРґРµРЅ EDI
 		
 		MOV DWORD PTR DS:[ESI+3F8h],EAX ; 
 		MOV DWORD PTR DS:[ESI+2F4h],EAX	; 
@@ -1390,29 +1388,37 @@ Initialization proc
 		MOV DWORD PTR DS:[ESI+400h],EAX	; 
 		MOV DWORD PTR DS:[ESI+3FCh],EAX	; 
 		
-		; начиная отсюда свободен и EAX
+		; РЅР°С‡РёРЅР°СЏ РѕС‚СЃСЋРґР° СЃРІРѕР±РѕРґРµРЅ Рё EAX
 
-		CMP EBP, 13h	; в этом месте всегда значение 13, если происходит лишь запуск ЕХЕ.
-		JE [skip_all] 	; в таком состоянии у игры всегда неверный EBX, что крашит игру, там даже не адрес, а мусор
+		CMP EBP, 13h	; РІ СЌС‚РѕРј РјРµСЃС‚Рµ РІСЃРµРіРґР° Р·РЅР°С‡РµРЅРёРµ 13, РµСЃР»Рё РїСЂРѕРёСЃС…РѕРґРёС‚ Р»РёС€СЊ Р·Р°РїСѓСЃРє Р•РҐР•.
+		JE [skip_all] 	; РІ С‚Р°РєРѕРј СЃРѕСЃС‚РѕСЏРЅРёРё Сѓ РёРіСЂС‹ РІСЃРµРіРґР° РЅРµРІРµСЂРЅС‹Р№ EBX, С‡С‚Рѕ РєСЂР°С€РёС‚ РёРіСЂСѓ, С‚Р°Рј РґР°Р¶Рµ РЅРµ Р°РґСЂРµСЃ, Р° РјСѓСЃРѕСЂ
 		
-		CMP EBX, 0h		; если указатель вдруг пустой \ память очищена
-		JLE [skip_all]
+
 	
 	
-;		CMP DWORD PTR DS:[EBX+6F8h],0 ; проверка типа
+;		CMP DWORD PTR DS:[EBX+6F8h],0 ; РїСЂРѕРІРµСЂРєР° С‚РёРїР°
 ;		JNE [skip_all]
 		
-		CMP DWORD PTR DS:[ESI+190h],0 ; проверяем, есть ли выделенная память
-		JNE [skip_mAlloc] ; пропускаем, если уже есть
+
+		MOV EAX,cache	
+		CMP EAX,0BAADF00Dh
+		JE [allocate_on_food]
+
+
+		CMP DWORD PTR DS:[ESI+190h],0 ; РїСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё РІС‹РґРµР»РµРЅРЅР°СЏ РїР°РјСЏС‚СЊ
+
+		JNE [skip_mAlloc] ; РїСЂРѕРїСѓСЃРєР°РµРј, РµСЃР»Рё СѓР¶Рµ РµСЃС‚СЊ
+
+			allocate_on_food:
 			
-			; пострадают EAX, ECX и EDX
-			PUSH 1D00h						; биты
+			; РїРѕСЃС‚СЂР°РґР°СЋС‚ EAX, ECX Рё EDX
+			PUSH 1D00h						; Р±РёС‚С‹
 			CALL DWORD PTR DS:[447194h] 	; mAlloc
 			ADD ESP,4h
 			
 			MOV DWORD PTR DS:[ESI+190h],EAX
 			
-				; ниже маленькая процедура очиски выделенной памяти от мусора
+				; РЅРёР¶Рµ РјР°Р»РµРЅСЊРєР°СЏ РїСЂРѕС†РµРґСѓСЂР° РѕС‡РёСЃРєРё РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РѕС‚ РјСѓСЃРѕСЂР°
 				XOR ECX,ECX
 				cleaning:
 				MOV BYTE PTR DS:[EAX+ECX],0
@@ -1420,15 +1426,18 @@ Initialization proc
 				CMP ECX,1D00h
 				JL [cleaning]
 
-		skip_mAlloc: ; уходим
+		CMP EBX, 0h		; РµСЃР»Рё СѓРєР°Р·Р°С‚РµР»СЊ РІРґСЂСѓРі РїСѓСЃС‚РѕР№ \ РїР°РјСЏС‚СЊ РѕС‡РёС‰РµРЅР°
+		JLE [skip_all]
+
+		skip_mAlloc: ; СѓС…РѕРґРёРј
 		
-			; // Изначально эта часть отвечала за фильтрацию объектов, кому не нужно выделение памяти
-			; // Но сейчас выделяем память всем. Однако атрибуты есть всё-таки не у всех.
-			; // Поэтому если указателя на собственные атрибуты нет - просто не загружаем их
-			; // Такой подход несколько лучше, чем просто выделять память заранее пустую...
-			; // Ведь она автоматически выделится если будет хотя бы 1 новый атрибут
-			;CMP DWORD PTR DS:[EBX+0B0h],0	; если указатель на новые атрибуты вдруг пустой \ память очищена
-			;JLE [skip_all]					; !!! более не актуально, так как сейчас выделяем память всем и всегда !!!
+			; // РР·РЅР°С‡Р°Р»СЊРЅРѕ СЌС‚Р° С‡Р°СЃС‚СЊ РѕС‚РІРµС‡Р°Р»Р° Р·Р° С„РёР»СЊС‚СЂР°С†РёСЋ РѕР±СЉРµРєС‚РѕРІ, РєРѕРјСѓ РЅРµ РЅСѓР¶РЅРѕ РІС‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё
+			; // РќРѕ СЃРµР№С‡Р°СЃ РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РІСЃРµРј. РћРґРЅР°РєРѕ Р°С‚СЂРёР±СѓС‚С‹ РµСЃС‚СЊ РІСЃС‘-С‚Р°РєРё РЅРµ Сѓ РІСЃРµС….
+			; // РџРѕСЌС‚РѕРјСѓ РµСЃР»Рё СѓРєР°Р·Р°С‚РµР»СЏ РЅР° СЃРѕР±СЃС‚РІРµРЅРЅС‹Рµ Р°С‚СЂРёР±СѓС‚С‹ РЅРµС‚ - РїСЂРѕСЃС‚Рѕ РЅРµ Р·Р°РіСЂСѓР¶Р°РµРј РёС…
+			; // РўР°РєРѕР№ РїРѕРґС…РѕРґ РЅРµСЃРєРѕР»СЊРєРѕ Р»СѓС‡С€Рµ, С‡РµРј РїСЂРѕСЃС‚Рѕ РІС‹РґРµР»СЏС‚СЊ РїР°РјСЏС‚СЊ Р·Р°СЂР°РЅРµРµ РїСѓСЃС‚СѓСЋ...
+			; // Р’РµРґСЊ РѕРЅР° Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РІС‹РґРµР»РёС‚СЃСЏ РµСЃР»Рё Р±СѓРґРµС‚ С…РѕС‚СЏ Р±С‹ 1 РЅРѕРІС‹Р№ Р°С‚СЂРёР±СѓС‚
+			;CMP DWORD PTR DS:[EBX+0B0h],0	; РµСЃР»Рё СѓРєР°Р·Р°С‚РµР»СЊ РЅР° РЅРѕРІС‹Рµ Р°С‚СЂРёР±СѓС‚С‹ РІРґСЂСѓРі РїСѓСЃС‚РѕР№ \ РїР°РјСЏС‚СЊ РѕС‡РёС‰РµРЅР°
+			;JLE [skip_all]					; !!! Р±РѕР»РµРµ РЅРµ Р°РєС‚СѓР°Р»СЊРЅРѕ, С‚Р°Рє РєР°Рє СЃРµР№С‡Р°СЃ РІС‹РґРµР»СЏРµРј РїР°РјСЏС‚СЊ РІСЃРµРј Рё РІСЃРµРіРґР° !!!
 		
 		MOV EAX,DWORD PTR DS:[EBX+0B0h]
 		TEST EAX,EAX
@@ -1563,12 +1572,12 @@ Initialization proc
 
 		skip_all:
 
-		; выделение памяти под функцию определения какой bdy был ударен
-			PUSH 80							; биты
+		; РІС‹РґРµР»РµРЅРёРµ РїР°РјСЏС‚Рё РїРѕРґ С„СѓРЅРєС†РёСЋ РѕРїСЂРµРґРµР»РµРЅРёСЏ РєР°РєРѕР№ bdy Р±С‹Р» СѓРґР°СЂРµРЅ
+			PUSH 80							; Р±РёС‚С‹
 			CALL DWORD PTR DS:[447194h] 	; mAlloc
 			ADD ESP,4h
 			MOV DWORD PTR DS:[ESI+170h],EAX
-				; ниже маленькая процедура очиски выделенной памяти от мусора
+				; РЅРёР¶Рµ РјР°Р»РµРЅСЊРєР°СЏ РїСЂРѕС†РµРґСѓСЂР° РѕС‡РёСЃРєРё РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё РѕС‚ РјСѓСЃРѕСЂР°
 				XOR ECX,ECX
 				cleaning2:
 				MOV BYTE PTR DS:[EAX+ECX],0
