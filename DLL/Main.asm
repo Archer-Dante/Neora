@@ -1,7 +1,7 @@
-.486
-.xmm
-.Model Flat, StdCall
-OPTION CASEMAP :NONE
+;.486
+;.xmm
+;.Model Flat, StdCall
+;OPTION CASEMAP :NONE
 
 ; include C:\masm32\include\windows.inc
 ; include C:\masm32\include\masm32.inc
@@ -9,11 +9,12 @@ OPTION CASEMAP :NONE
 ; include C:\masm32\include\kernel32.inc
 ; include C:\masm32\include\debug.inc
 
-include masm32rt.inc
+; include masm32rt.inc
 include masmbasic.inc
 includelib "C:\Program Files (x86)\Windows Kits\10\Lib\10.0.22621.0\ucrt\x86\ucrt.lib"
 ;includelib "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.39.33519\lib\x86\vcruntime.lib"
 includelib vcruntime.lib
+includelib MasmBasic.lib
 include cjson_x86.inc
 includelib cjson_x86.lib
 ;include jansson_x86.inc
@@ -335,6 +336,38 @@ DLLStartup proc
 	;===================================================
 	
 	;================ Loading Rework ================	
+	; старое
+	; invoke JmpPatch, 00402402h, addr Initialization		; initializes everything in game since exe launch
+
+	; инициализация на старте программы
+	; invoke CallPatch, 0042715Ch, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 004271B3h, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 004271F4h, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 00427236h, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 00427278h, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 004272B9h, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 004272FFh, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 00427341h, addr Initialization2		; initializes everything in game since exe launch
+	; invoke CallPatch, 00427386h, addr Initialization2		; initializes everything in game since exe launch
+	
+	; инициализации во время загрузки боя \\ внутри боя
+	;invoke CallPatch, 0042410Ah, addr Initialization2		; initializes everything in game since exe launch
+	;invoke CallPatch, 0042D42Dh, addr Initialization2		; initializes everything in game since exe launch
+	;invoke CallPatch, 0042D6D3h, addr Initialization2		; initializes everything in game since exe launch
+	;invoke CallPatch, 0042D31Bh, addr Initialization2		; initializes everything in game since exe launch
+
+	; только во время боя
+	;invoke CallPatch, 0041F148h, addr Initialization2		; initializes everything in game since exe launch
+	;invoke CallPatch, 00446501h, addr Initialization2		; initializes everything in game since exe launch
+	;invoke CallPatch, 00411E60h, addr Initialization2		; initializes everything in game since exe launch
+	;invoke CallPatch, 0042123Eh, addr Initialization2		; initializes everything in game since exe launch
+
+	invoke WriteMem, 00402403h, addr interrupt,154
+	invoke JmpPatch, 00402403h, addr Initialization2
+	invoke WriteMem, 00402408h, addr oneRET,1
+
+	; 88888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+
 	invoke WriteMem, 00447F68h, addr fix_hidden,8     ; change "hiden:" to "hidden:" attribute                
 	invoke WriteMem, 00447F80h, addr fix_silence,9	  ; change "manacle:" to "silence:" attribute
 	invoke WriteMem, 00447FACh, addr fix_confuse,9	  ; change "confus:" to "confuse:" attribute
@@ -349,8 +382,6 @@ DLLStartup proc
 	invoke JmpPatch, 004201E3h, addr ohp					; makes "ohp:" feature possible
 	invoke JmpPatch, 004111D4h, addr Loading_Rework_bdy		; adds lots of features for bdy
 	invoke JmpPatch, 00410EB8h, addr Loading_Rework_itr		; adds lots of features for itr	
-
-	invoke JmpPatch, 00402402h, addr Initialization			; initializes everything in game since exe launch
 	;===================================================
 
 	;============== Time Tracing (time.inc) ============

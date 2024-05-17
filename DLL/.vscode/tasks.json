@@ -1,0 +1,44 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Compile ASM to OBJ",
+            "type": "shell",
+            "command": "ml",
+            "args": [
+                "/c", "/Zi", "/coff",
+                "/I", "C:\\masm32\\include",
+                "/I", "C:\\masm32\\MasmBasic",
+                "/Fo${fileDirname}\\neora.obj",  // Изменено имя файла на neora.obj
+                "${file}"
+            ],
+            "group": {
+                "kind": "build"
+            },
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        },
+        {
+            "label": "Link OBJ to DLL",
+            "type": "shell",
+            "command": "link",
+            "args": [
+                "/DLL",
+                "/SUBSYSTEM:WINDOWS",
+                "/OUT:${fileDirname}\\..\\neora.dll", // Изменён путь и имя файла на neora.dll
+                "${fileDirname}\\neora.obj"  // Изменено имя файла на neora.obj
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "dependsOn": ["Compile ASM to OBJ"],
+            "presentation": {
+                "reveal": "always",
+                "panel": "new"
+            }
+        }
+    ]
+}

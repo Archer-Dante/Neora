@@ -179,12 +179,6 @@ Loading_Rework proc
 			JMP [right_data]
 
 
-
-
-
-
-
-
 		memory_allocation_in_ID_section:
 			MOV EAX,DWORD PTR DS:[EBP+0B0h] ; проверка, есть ли поинтер
 			TEST EAX,EAX
@@ -208,27 +202,13 @@ Loading_Rework proc
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 	start_hp:
 			LEA EDI,[new_start_hp]           	
 			LEA ESI,DWORD PTR SS:[ESP+70h]
 			MOV ECX,10						; размер строки
 			REPE CMPSB [EDI],[ESI]
 			JNZ [start_hp_max]
-			MOV EDX,0h						; смещение по +байту
+			MOV EDX,0h						; смещение по байту куда загружаем данные
 			JMP [proceed_decimal]
 	start_hp_max:
 			LEA EDI,[new_start_hp_max]           	
@@ -1303,6 +1283,225 @@ stage_m:
 Computer_Stats endp
 
 
+
+Initialization2 proc
+
+		; PUSH EBX
+		; PUSH ESI
+		; PUSH EDI
+		MOV ESI,ECX
+		MOV EDI,ECX
+		MOV EBX,DWORD PTR DS:[ECX+368h] ; сохранение указателя на дату
+		MOV ECX,202h
+		XOR EAX,EAX
+		REP STOSD 
+
+		MOV DWORD PTR DS:[ESI+368h],EBX ; восстановление указателя на дату
+
+
+		FLD QWORD PTR DS:[447920h]
+		FST QWORD PTR DS:[ESI+50h]
+		OR EAX,-1
+		FST QWORD PTR DS:[ESI+48h]
+		FST QWORD PTR DS:[ESI+40h]
+		FST QWORD PTR DS:[ESI+38h]
+		FST QWORD PTR DS:[ESI+30h]
+		FSTP QWORD PTR DS:[ESI+28h]
+		FLDZ 
+		FST QWORD PTR DS:[ESI+68h]
+		FST QWORD PTR DS:[ESI+60h]
+		FSTP QWORD PTR DS:[ESI+58h]
+		MOV ECX,1F4h
+		LEA EDI,DWORD PTR DS:[ESI+2E8h]
+		MOV DWORD PTR DS:[EDI+110h],EAX
+		MOV DWORD PTR DS:[EDI+0Ch],EAX
+		MOV DWORD PTR DS:[EDI+10h],EAX
+		MOV DWORD PTR DS:[EDI+6Ch],63h
+		MOV DWORD PTR DS:[EDI+14h],ECX
+		MOV DWORD PTR DS:[EDI+1Ch],ECX
+		MOV DWORD PTR DS:[EDI+18h],ECX
+		MOV DWORD PTR DS:[EDI+20h],ECX
+		MOV DWORD PTR DS:[EDI+78h],EAX
+		MOV DWORD PTR DS:[EDI+3Ch],EAX
+		MOV DWORD PTR DS:[EDI+40h],EAX
+		MOV DWORD PTR DS:[EDI+44h],EAX
+		MOV DWORD PTR DS:[EDI+54h],EAX
+		MOV EAX,3E8h
+		MOV DWORD PTR DS:[EDI],EAX
+		MOV DWORD PTR DS:[EDI+4h],EAX
+		MOV DWORD PTR DS:[EDI+8h],EAX
+		NEG EAX
+		MOV DWORD PTR DS:[EDI+118h],EAX
+		MOV DWORD PTR DS:[EDI+114h],EAX
+
+		CMP EBP,13h ; если 13h - это старт программы
+		JE [dont_alloc]
+		INVOKE get_memory_alloc,100
+		MOV DWORD PTR DS:[ESI+170h],EAX
+		INVOKE get_memory_alloc,100
+		MOV DWORD PTR DS:[ESI+190h],EAX
+
+		; get_memory_alloc 100
+
+
+		CMP EBX, 0h		; если указатель вдруг пустой \ память очищена
+		JLE [no_data_pointer]
+
+		start_hp_check:
+		CMP DWORD PTR DS:[EAX+0],0 ; start_hp
+		JE [start_hp_max_check]
+		MOV ECX,DWORD PTR DS:[EAX+0]
+		MOV DWORD PTR DS:[ESI+2FCh],ECX
+		MOV DWORD PTR DS:[ESI+300h],ECX
+		
+		start_hp_max_check:
+		CMP DWORD PTR DS:[EAX+4],0 ; start_hp_max
+		JE [regen_hp_check]
+		MOV ECX,DWORD PTR DS:[EAX+4]
+		MOV DWORD PTR DS:[ESI+304h],ECX
+		
+		regen_hp_check:
+		CMP DWORD PTR DS:[EAX+8],0 ; hp_regen
+		JE [regen_hp_cd_check]
+		MOV ECX,DWORD PTR DS:[EAX+8]
+		MOV DWORD PTR DS:[EDX+5Ch],ECX
+		
+		regen_hp_cd_check:
+		CMP DWORD PTR DS:[EAX+0Ch],0 ; hp_regen_cd
+		JE [regen_hp_dark_check]
+		MOV ECX,DWORD PTR DS:[EAX+0Ch]
+		MOV DWORD PTR DS:[EDX+0B0h],ECX
+		
+		regen_hp_dark_check:
+		CMP DWORD PTR DS:[EAX+10h],0 ; hp_dark_regen
+		JE [regen_hp_dark_cd_check]
+		MOV ECX,DWORD PTR DS:[EAX+10h]
+		MOV DWORD PTR DS:[EDX+74h],ECX
+
+		regen_hp_dark_cd_check:
+		CMP DWORD PTR DS:[EAX+14h],0 ; hp_dark_regen_cd
+		JE [start_mp_check]
+		MOV ECX,DWORD PTR DS:[EAX+14h]
+		MOV DWORD PTR DS:[EDX+0B8h],ECX
+
+		start_mp_check:
+		CMP DWORD PTR DS:[EAX+40h],0 ; start_mp
+		JE [start_mp_max_check]
+		MOV ECX,DWORD PTR DS:[EAX+40h]
+		MOV DWORD PTR DS:[ESI+308h],ECX
+
+		start_mp_max_check:
+		CMP DWORD PTR DS:[EAX+44h],0 ; start_mp_max
+		JE [regen_mp_check]
+		MOV ECX,DWORD PTR DS:[EAX+44h]
+		MOV DWORD PTR DS:[EDX+60h],ECX
+		
+		regen_mp_check:
+		CMP DWORD PTR DS:[EAX+48h],0 ; mp_regen
+		JE [regen_mp_cd_check]
+		MOV ECX,DWORD PTR DS:[EAX+48h]
+		MOV DWORD PTR DS:[EDX+64h],ECX
+		
+		regen_mp_cd_check:
+		CMP DWORD PTR DS:[EAX+4Ch],0 ; mp_regen_cd
+		JE [regen_mp_cap_check]
+		MOV ECX,DWORD PTR DS:[EAX+4Ch]
+		MOV DWORD PTR DS:[EDX+0C0h],ECX
+		
+		regen_mp_cap_check:
+		CMP DWORD PTR DS:[EAX+58h],0 ; mp_regen_cap
+		JE [mp_regen_type]
+		MOV ECX,DWORD PTR DS:[EAX+58h]
+		MOV DWORD PTR DS:[EDX+70h],ECX
+		
+		mp_regen_type:
+		CMP DWORD PTR DS:[EAX+54h],0 ; mp_regen_type
+		JE [hp_regen_type]
+		MOV ECX,DWORD PTR DS:[EAX+54h]
+		MOV DWORD PTR DS:[EDX+0C8h],ECX
+		
+		hp_regen_type:
+		CMP DWORD PTR DS:[EAX+1Ch],0 ; hp_regen_type
+		JE [hp_regen_min]
+		MOV ECX,DWORD PTR DS:[EAX+1Ch]
+		MOV DWORD PTR DS:[EDX+0D8h],ECX
+		
+		hp_regen_min:
+		CMP DWORD PTR DS:[EAX+20h],0 ; hp_regen_min
+		JE [hp_regen_max]
+		MOV ECX,DWORD PTR DS:[EAX+20h]
+		MOV DWORD PTR DS:[EDX+68h],ECX
+		
+		hp_regen_max:
+		CMP DWORD PTR DS:[EAX+24h],0 ; hp_regen_min
+		JE [mp_limit]
+		MOV ECX,DWORD PTR DS:[EAX+24h]
+		MOV DWORD PTR DS:[EDX+6Ch],ECX
+		
+		mp_limit:
+		CMP DWORD PTR DS:[EAX+50h],0 ; mp_limit
+		JE [hp_limit]
+		MOV ECX,DWORD PTR DS:[EAX+50h]
+		MOV DWORD PTR DS:[EDX+0CCh],ECX
+		
+		hp_limit:
+		CMP DWORD PTR DS:[EAX+18h],0 ; hp_limit
+		JE [after_damage_cd]
+		MOV ECX,DWORD PTR DS:[EAX+18h]
+		MOV DWORD PTR DS:[EDX+0D0h],ECX
+		
+		after_damage_cd:
+		CMP DWORD PTR DS:[EAX+28h],0 ; hp_regen_hurt_cd
+		JE [mp_regen_hurt_cd_begin]
+		MOV ECX,DWORD PTR DS:[EAX+28h]
+		MOV DWORD PTR DS:[EDX+78h],ECX
+
+		mp_regen_hurt_cd_begin:
+		CMP DWORD PTR DS:[EAX+5Ch],0 ; mp_regen_hurt_cd
+		JE [mp_regen_on_hurt_begin]
+		MOV ECX,DWORD PTR DS:[EAX+5Ch]
+		MOV DWORD PTR DS:[EDX+7Ch],ECX
+
+		mp_regen_on_hurt_begin:
+		CMP DWORD PTR DS:[EAX+60h],0 ; mp_regen_on_hurt
+		JE [no_more_stats]
+		MOV ECX,DWORD PTR DS:[EAX+60h]
+		MOV DWORD PTR DS:[EDX+80h],ECX
+
+
+
+
+		no_more_stats:
+		no_data_pointer:
+
+
+
+
+
+
+
+		dont_alloc:
+		MOV EAX, 0FFFFFC18h ; восстановление оригинального значения
+
+		POP EDI
+		POP ESI
+		POP EBX
+		RET 
+
+Initialization2 endp
+
+
+
+
+
+
+
+
+
+
+
+
+
 Initialization proc
 
 		;PUSH EBX
@@ -1348,6 +1547,7 @@ Initialization proc
 				JE [skip_malloc_recover]
 				CMP EBX, 0
 				JE [skip_malloc_recover]
+				; MsgBox 0, "Reset", "MemState", MB_OK
 				MOV DWORD PTR DS:[ESI+190h],EBX ; запись указателя, оригинальная строка
 			skip_malloc_recover:
 		
@@ -1594,8 +1794,5 @@ Initialization proc
 		RETN
 
 Initialization endp
-
-
-
 
 

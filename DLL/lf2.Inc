@@ -45,3 +45,54 @@ CallPatch proc	uses ecx ebx	from:DWORD, to:DWORD
 	ret
 
 CallPatch endp
+
+
+
+
+
+
+
+
+get_memory_alloc666 MACRO arg
+	PUSH EDX
+	PUSH ECX
+
+	push arg
+    CALL DWORD PTR DS:[447194h]
+
+	XOR ECX,ECX
+	clean:
+	MOV BYTE PTR DS:[EAX+ECX],0
+	INC ECX
+	CMP ECX,100
+	JL [clean]
+
+	ADD ESP,4
+	POP ECX
+	POP EDX
+ENDM
+
+
+
+
+get_memory_alloc proc	memory
+
+	PUSH EDX
+	PUSH ECX
+
+	push memory
+    CALL DWORD PTR DS:[447194h]
+
+	XOR ECX,ECX
+	clean:
+	MOV BYTE PTR DS:[EAX+ECX],0
+	INC ECX
+	CMP ECX,memory
+	JL [clean]
+
+	ADD ESP,4
+	POP ECX
+	POP EDX
+	RET
+
+get_memory_alloc endp
