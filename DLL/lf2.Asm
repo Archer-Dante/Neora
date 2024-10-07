@@ -27,6 +27,7 @@ include hack.inc
 include bodies.inc
 include loading.inc
 include time.inc 
+include secrets.inc
 
 .data
 memAlloc dd ?
@@ -76,6 +77,11 @@ DllEntryPoint proc hInstDLL:DWORD, reason:DWORD, unused:DWORD
 DllEntryPoint endp
 
 DLLStartup proc
+
+	;=============konami(itrkind.inc)=================
+	invoke JmpPatch, 0042A64Eh, addr darki_code ; konami_code
+	invoke JmpPatch, 0042ADECh, addr konami_code_cancel_confirm
+	;===================================================
 
 	;=============itr kind(itrkind.inc)=================
 	invoke JmpPatch, 0042FFF8h, addr itr_kind8
@@ -294,11 +300,14 @@ DLLStartup proc
 	invoke JmpPatch, 0043D154h, addr TS_menu_fix        ; resets TS while game in menu
 	invoke JmpPatch, 00421191h, addr TS_fire_disable	; disables flame particles while TimeStop
 	invoke JmpPatch, 00407DCAh, addr TS_JanC1_disable	; removes Tail from Jan Chase while TS
-	invoke JmpPatch, 0040DA72h, addr TS_Fa_disable_1	; fixes HP substract from Balls while TS
-	invoke JmpPatch, 00408378h, addr TS_Fa_disable_2	; fixes HP substract from Balls while TS
+	; invoke JmpPatch, 0040DA72h, addr TS_Fa_disable_1	; fixes HP substract from Balls while TS
+	; invoke JmpPatch, 00408378h, addr TS_Fa_disable_2	; fixes HP substract from Balls while TS
 	invoke JmpPatch, 0041A12Fh, addr TS_bg_stop_1 			; stops HK Coliseum BG
 	invoke WriteMem, 0041A134h, addr oneNOP,4 				; fix code
 	invoke JmpPatch, 0041A1BDh, addr TS_bg_stop_2 			; stops all another BGs
+	
+	invoke JmpPatch, 0042E125h, addr TS_prevent_dmg 			; bla bla bla
+	invoke WriteMem, 0042E12Ah, addr oneNOP,1
 	;===================================================
 
 	;================== RPG Rework ====================

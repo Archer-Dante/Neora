@@ -228,10 +228,50 @@ TS_bg_stop_2 endp
 
 
 
+;TS_prevent_dmg proc
+;
+;		CMP DWORD PTR DS:[EBX+2E4h],0
+;		JE [quit2]
+;	
+;		CMP DWORD PTR DS:[ts_timer],0
+;		JE [quit1]
+;		
+;		MOV EDX, DWORD PTR DS:[EBX+364h]
+;		CMP DWORD PTR DS:[ts_team],EDX
+;		JNE [quit1]
+;		XOR EAX, EAX ; обнуляем число атак, чтобы миновать все расчёты
+;		
+;quit1:
+;		CMP DWORD PTR DS:[EBX+2E4h],EAX
+;quit2:
+;		push 0042E12Bh
+;		ret
+;		
+;
+;TS_prevent_dmg endp
 
 
+TS_prevent_dmg proc
 
+		CMP DWORD PTR DS:[ts_timer],0
+		JE [quit]
+		
+		MOV EDX, DWORD PTR DS:[EBX+364h]
+		CMP DWORD PTR DS:[ts_team],EDX
+		JE [quit]
+		XOR EAX, EAX ; обнуляем число атак, чтобы миновать все расчёты
+		
+		CMP DWORD PTR DS:[EBX+2E4h],EAX
+		push 00430A67h
+		ret
+		
+quit:
+		CMP DWORD PTR DS:[EBX+2E4h],EAX
+		push 0042E12Bh
+		ret
+		
 
+TS_prevent_dmg endp
 
 
 
